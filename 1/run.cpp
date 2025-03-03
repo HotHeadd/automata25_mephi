@@ -5,6 +5,6 @@ using namespace resolvers;
 
 int main(){
     RegexResolver resolver = RegexResolver();
-    resolver.process_file("z_filez/in.txt", "z_files/out.txt");
+    resolver.process_file("z_files/in.txt", "z_files/out.txt");
     return 0;
 }

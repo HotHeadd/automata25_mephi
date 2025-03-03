@@ -25,25 +25,29 @@ void RegexResolver::process_file(const std::string& in_filename, const std::stri
     static const std::regex name_amount_pattern("([a-z]\\w{0,15})\\[(\\d*)\\]");
     std::string line;
     std::ifstream in(in_filename);
-    // if (!in.is_open()){
-    //     throw std::runtime_error("Wrong input filename format");
-    // }
+    if (!in.is_open()){
+        throw std::runtime_error("Wrong input filename format");
+    }
     std::ofstream out(out_filename);
-    // if (!out.is_open()){
-    //     throw std::runtime_error("Wrong output filename format");
-    // }
-    unsigned count=0;
+    if (!out.is_open()){
+        throw std::runtime_error("Wrong output filename format");
+    }
+    unsigned count=0, correct=0;
     while(std::getline(in, line)){
-        std::cout << line << "\n";
+        ++count;
         if (is_suitable(line)){
+            ++correct;
             auto iter = std::sregex_iterator(line.begin(), line.end(), name_amount_pattern);
             std::smatch match = *iter;
             std::string name = match[1];
             std::string amount = match[2];
-            out << count << ") " << name << " - " << amount << "\n";
+            if (!amount.size()){
+                amount = std::to_string(std::count(line.begin(), line.end(),  ',')+1);
+            }
+            out << name << " - " << amount << "\n";
         }
-        ++count;
     }
+    out << "Correct: " << correct << "/" << count << "\n";
 }
 
 } // namespace resolvers
