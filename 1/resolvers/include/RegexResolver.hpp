@@ -6,7 +6,7 @@ namespace resolvers
 
 class RegexResolver : public IResolver{
 public:
-    void process_file(std::string_view in_file, std::string_view out_file) override;
+    void process_file(const std::string& in_file, const std::string& out_file) override;
     bool is_suitable(const std::string&) override;
 private:
 };

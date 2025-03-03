@@ -5,7 +5,6 @@ using namespace resolvers;
 
 int main(){
     RegexResolver resolver = RegexResolver();
-    std::cout << "hello, world!\n";
-    std::cout << resolver.is_suitable("a[3]={}") << std::endl;
+    resolver.process_file("z_filez/in.txt", "z_files/out.txt");
     return 0;
 }

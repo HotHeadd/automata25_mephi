@@ -5,7 +5,7 @@ namespace resolvers
 
 class IResolver{
 public:
-    virtual void process_file(std::string_view in_file, std::string_view out_file) = 0;
+    virtual void process_file(const std::string& in_file, const std::string& out_file) = 0;
     virtual bool is_suitable(const std::string&) = 0;
 private:
 };
