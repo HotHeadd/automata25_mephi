@@ -6,6 +6,6 @@ using namespace resolvers;
 int main(){
     RegexResolver resolver = RegexResolver();
     std::cout << "hello, world!\n";
-    std::cout << resolver.is_suitable("abcdf") << std::endl;
+    std::cout << resolver.is_suitable("a[3]={}") << std::endl;
     return 0;
 }
