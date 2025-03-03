@@ -3,6 +3,8 @@
 namespace resolvers
 {
 
+const std::regex RegexResolver::arr_pattern = std::regex{"abcde", std::regex_constants::icase}; 
+
 bool RegexResolver::is_suitable(const std::string& str){
     std::smatch matches;
     return std::regex_match(str, arr_pattern);
