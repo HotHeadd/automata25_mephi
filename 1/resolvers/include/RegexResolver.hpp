@@ -1,3 +1,5 @@
+#pragma once
+
 #include "IResolver.hpp"
 #include <regex>
 

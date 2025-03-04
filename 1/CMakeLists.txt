@@ -7,7 +7,7 @@ set(SOURCE_EXE run.cpp)
 #find_package()
 
 add_subdirectory(resolvers)
-add_subdirectory(tests/generator)
+add_subdirectory(tests/generators)
 
 add_executable(run ${SOURCE_EXE})
 
