@@ -1,7 +1,8 @@
 #include "generator.hpp"
 #include <limits>
+#include <iostream>
 
-std::string Generator::generate_string(){
+std::string Generator::gen_correct_string(){
     unsigned amount;
     std::string result = gen_name() + "[" + gen_amount(amount) + "]={";
     for (int i=0; i<amount; ++i){
@@ -12,6 +13,29 @@ std::string Generator::generate_string(){
     }
     result += "}";
     return result;
+}
+
+std::string Generator::gen_incorrect_string(){
+    static std::uniform_int_distribution<unsigned> dist_difference(0, 5);
+    unsigned amount;
+    std::string name=gen_name(), str_amount=gen_amount(amount);
+    switch (dist_difference(rng)){
+        default:
+            std::cout << "Nothing ever happens\n";
+        case 0: // wrong name
+            break;
+        case 1: // wrong amount
+            break;
+        case 2: // wrong literal
+            break;
+        case 3: // wrong literal amount
+            break;
+        case 4: // empty list
+            break;
+        case 5: // no list no amount
+            break;
+    }
+    return "";
 }
 
 std::string Generator::gen_name(){
@@ -28,7 +52,6 @@ std::string Generator::gen_name(){
 
 std::string Generator::gen_amount(unsigned& amount){
     static std::uniform_int_distribution<unsigned> dist_amount(amount_min, amount_max);
-    static std::uniform_int_distribution<unsigned> coinflip(0, 1);
     amount = dist_amount(rng);
     if (coinflip(rng)){
         if (coinflip(rng)){
@@ -43,6 +66,6 @@ std::string Generator::gen_amount(unsigned& amount){
 }
 
 std::string Generator::gen_literal(){
-    static std::uniform_int_distribution<unsigned> dist_literal(0, std::numeric_limits<unsigned>::max());
+    static std::uniform_int_distribution<int> dist_literal(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
     return std::to_string(dist_literal(rng));
 }
