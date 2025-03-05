@@ -2,12 +2,15 @@
 #include <algorithm>
 #include <fstream>
 
+#define NAME "[a-z][a-z\\d]{0,15}"
+#define SCEN1 "0?"           "\\]"     "=\\{-?\\d+(,-?\\d+)*\\}"
+#define SCEN2 "((\\d{1,9})"  "\\]"  "(=\\{(-?\\d+(,-?\\d+)*)?\\})?))"
 namespace resolvers
 {
 
 bool RegexResolver::is_suitable(const std::string& str){
     static const std::regex arr_pattern{
-        "[a-z]\\w{0,15}\\[(0?\\]=\\{-?[1-9]\\d*(,-?[1-9]\\d*)*\\}|((\\d{1,9})\\](=\\{(-?[1-9]\\d*(,-?[1-9]\\d*)*)?\\})?))", 
+        ""NAME"\\[("SCEN1"|"SCEN2"", 
         std::regex_constants::icase};
     std::smatch matches;
     bool result = std::regex_match(str, matches, arr_pattern);
