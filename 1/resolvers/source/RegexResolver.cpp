@@ -3,19 +3,21 @@
 #include <fstream>
 
 #define NAME "[a-z][a-z\\d]{0,15}"
-#define SCEN1 "0?"           "\\]"     "=\\{-?\\d+(,-?\\d+)*\\}"
-#define SCEN2 "((\\d{1,9})"  "\\]"  "(=\\{(-?\\d+(,-?\\d+)*)?\\})?))"
+#define INIT_LIST "(-?\\d+(,-?\\d+)*)?"
 namespace resolvers
 {
 
 bool RegexResolver::is_suitable(const std::string& str){
     static const std::regex arr_pattern{
-        ""NAME"\\[("SCEN1"|"SCEN2"", 
+        NAME  "\\["  "(\\d{0,9})"  "\\]"  "=\\{"INIT_LIST"\\}", 
         std::regex_constants::icase};
     std::smatch matches;
     bool result = std::regex_match(str, matches, arr_pattern);
     if (result){
-        const std::string& arr_size = matches[4].str(); // 4 группа захвата - кол-во элементов
+        const std::string& arr_size = matches[1].str(); // 4 группа захвата - кол-во элементов
+        if ((arr_size.size() == 0 or arr_size == "0") and matches[2].str().size() == 0){
+            result = false;
+        }
         if (arr_size.size() and std::stoi(arr_size) < std::count(str.begin(), str.end(),  ',')+1){
             result = false;
         }

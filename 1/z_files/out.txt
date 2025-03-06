@@ -1,5 +1,5 @@
 a - 3
 abc - 3
-bCC_dc1 - 3
 asdf - 3
-Correct: 4/7
+ajhaadaSDF - 10
+Correct: 4/9

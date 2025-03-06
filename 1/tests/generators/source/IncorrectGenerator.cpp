@@ -4,7 +4,7 @@
 
 std::string IncorrectGenerator::gen_string(){
     static std::uniform_int_distribution<unsigned> dist_defect(0, 2);
-    defect_type = 2; //dist_defect(rng);
+    defect_type = dist_defect(rng); //dist_defect(rng);
     unsigned amount;
     std::string str_amount = gen_amount(amount);
     return gen_name() + str_amount + gen_arr(amount);

@@ -1,7 +1,9 @@
 a[3]={}
-abc[3]
+abc[3]={1,2}
 abcd[2]={1,2,3}
 AbCC_dc1[3]={1,1,1}
 1asdf[2]={1,2}
 asdf[]={1,1,1}
+wrongTest[]={}
 test[0]
+AajhaadaSDF[10]={1,12354,-123}

@@ -49,6 +49,6 @@ std::string CorrectGenerator::gen_amount(unsigned& amount){
 }
 
 std::string CorrectGenerator::gen_literal(){
-    static std::uniform_int_distribution<int> dist_literal(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+    static std::uniform_int_distribution<int> dist_literal(-999999999, 999999999);
     return std::to_string(dist_literal(rng));
 }
