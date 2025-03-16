@@ -1,58 +1,36 @@
 #include "RegexResolver.hpp"
 #include <algorithm>
-#include <fstream>
 
-#define NAME "[a-z][a-z\\d]{0,15}"
+
+#define NAME "([a-z][a-z\\d]{0,15})"
 #define INIT_LIST "(-?\\d+(,-?\\d+)*)?"
+
 namespace resolvers
 {
 
-bool RegexResolver::is_suitable(const std::string& str){
+bool RegexResolver::is_suitable(const std::string& expression, std::unordered_map<std::string, std::string>& token_vector){
     static const std::regex arr_pattern{
-        NAME  "\\["  "(\\d{0,9})"  "\\]"  "=\\{"INIT_LIST"\\}", 
+        NAME  "\\["  "(\\d{0,9})"  "\\]"  "=\\{" INIT_LIST "\\}", 
         std::regex_constants::icase};
     std::smatch matches;
-    bool result = std::regex_match(str, matches, arr_pattern);
+    bool result = std::regex_match(expression, matches, arr_pattern);
     if (result){
-        const std::string& arr_size = matches[1].str(); // 4 группа захвата - кол-во элементов
-        if ((arr_size.size() == 0 or arr_size == "0") and matches[2].str().size() == 0){
+        const std::string& arr_size = matches[2].str(); // 4 группа захвата - кол-во элементов
+        if ((arr_size.size() == 0 or arr_size == "0") and matches[3].str().size() == 0){
             result = false;
         }
-        if (arr_size.size() and std::stoi(arr_size) < std::count(str.begin(), str.end(),  ',')+1){
+        if (arr_size.size() and std::stoi(arr_size) < std::count(expression.begin(), expression.end(),  ',')+1){
             result = false;
         }
+    }
+    if (result){
+        token_vector.emplace("name", matches[1].str());
+        token_vector.emplace("amount", matches[2].str());
     }
     return result;
 }
 
 
-void RegexResolver::process_file(const std::string& in_filename, const std::string& out_filename){
-    static const std::regex name_amount_pattern("([a-z]\\w{0,15})\\[(\\d*)\\]");
-    std::string line;
-    std::ifstream in(in_filename);
-    if (!in.is_open()){
-        throw std::runtime_error("Wrong input filename format");
-    }
-    std::ofstream out(out_filename);
-    if (!out.is_open()){
-        throw std::runtime_error("Wrong output filename format");
-    }
-    unsigned count=0, correct=0;
-    while(std::getline(in, line)){
-        ++count;
-        if (is_suitable(line)){
-            ++correct;
-            auto iter = std::sregex_iterator(line.begin(), line.end(), name_amount_pattern);
-            std::smatch match = *iter;
-            std::string name = match[1];
-            std::string amount = match[2];
-            if (!amount.size()){
-                amount = std::to_string(std::count(line.begin(), line.end(),  ',')+1);
-            }
-            out << name << " - " << amount << "\n";
-        }
-    }
-    out << "Correct: " << correct << "/" << count << "\n";
-}
+
 
 } // namespace resolvers

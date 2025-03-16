@@ -1,12 +1,13 @@
 #include <string_view>
+#include <unordered_map>
+
 
 namespace resolvers
 {
 
 class IResolver{
 public:
-    virtual void process_file(const std::string& in_file, const std::string& out_file) = 0;
-    virtual bool is_suitable(const std::string&) = 0;
+    virtual bool is_suitable(const std::string& expression, std::unordered_map<std::string, std::string>& token_vector) = 0;
 private:
 };
 

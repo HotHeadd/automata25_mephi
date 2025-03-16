@@ -13,7 +13,7 @@ public:
     std::string gen_name() override;
     std::string gen_amount(unsigned& amount) override;
     std::string gen_literal() override;
-    std::string gen_arr(unsigned amount) override;
+    std::string gen_arr(unsigned amount, const std::string& str_amount) override;
 
 private:
     unsigned amount_min, amount_max, defect_type;

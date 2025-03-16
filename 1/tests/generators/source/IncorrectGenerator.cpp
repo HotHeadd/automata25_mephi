@@ -7,7 +7,7 @@ std::string IncorrectGenerator::gen_string(){
     defect_type = dist_defect(rng); //dist_defect(rng);
     unsigned amount;
     std::string str_amount = gen_amount(amount);
-    return gen_name() + str_amount + gen_arr(amount);
+    return gen_name() + str_amount + gen_arr(amount, str_amount);
 }
 
 std::string IncorrectGenerator::gen_name(){

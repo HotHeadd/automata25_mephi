@@ -5,11 +5,11 @@
 std::string CorrectGenerator::gen_string(){
     unsigned amount;
     std::string str_amount = gen_amount(amount);
-    return gen_name() + str_amount + gen_arr(amount);
+    return gen_name() + str_amount + gen_arr(amount, str_amount);
 }
 
 
-std::string CorrectGenerator::gen_arr(unsigned amount){
+std::string CorrectGenerator::gen_arr(unsigned amount, const std::string& str_amount){
     std::string result = "={";
     for (int i=0; i<amount; ++i){
         if (i!=0){
