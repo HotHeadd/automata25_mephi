@@ -62,7 +62,7 @@ std::string IncorrectGenerator::gen_amount(unsigned& amount){
 
 std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_amount){
     if (defect_type != 2){
-        return corr_gen.gen_arr(amount);
+        return corr_gen.gen_arr(amount, str_amount);
     }
     if (is_empty_amount){
         return "";
@@ -71,7 +71,7 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
     std::string result="={";
     switch (dist_defect(rng)){
         case 0:
-            result = corr_gen.gen_arr(amount+1);
+            result = corr_gen.gen_arr(amount+1, str_amount);
             break;
         case 1:
             unsigned bad_ind=dist_index(rng);
