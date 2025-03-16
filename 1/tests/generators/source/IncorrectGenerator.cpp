@@ -60,7 +60,7 @@ std::string IncorrectGenerator::gen_amount(unsigned& amount){
     return "[" + res + "]";
 }
 
-std::string IncorrectGenerator::gen_arr(unsigned amount){
+std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_amount){
     if (defect_type != 2){
         return corr_gen.gen_arr(amount);
     }
