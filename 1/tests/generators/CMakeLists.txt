@@ -1,5 +1,5 @@
-add_library(Generator)
-target_include_directories(Generator PUBLIC include ../../interfaces)
+add_library(Generators)
+target_include_directories(Generators PUBLIC include ../../interfaces)
 
-target_sources(Generator PRIVATE source/CorrectGenerator.cpp
+target_sources(Generators PRIVATE source/CorrectGenerator.cpp
                                  source/IncorrectGenerator.cpp)

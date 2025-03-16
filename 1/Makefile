@@ -2,7 +2,7 @@ MAKEFLAGS += --no-print-directory
 BUILD_DIR = build
 BUILD_TEST_DIR = buildtests
 
-TARGET = run
+TARGET = timetest
 
 .PHONY : build run runsec setup_test_dirs timetest
 
@@ -20,4 +20,4 @@ timetest:
 	mkdir -p ${BUILD_TEST_DIR}
 	cmake -B${BUILD_TEST_DIR} -Stests
 	cmake --build ${BUILD_TEST_DIR}
-	./bin/timetest
+	./bin/timetest 1

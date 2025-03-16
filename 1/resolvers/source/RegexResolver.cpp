@@ -1,6 +1,5 @@
 #include "RegexResolver.hpp"
 #include <algorithm>
-#include <iostream>
 
 #define NAME "([a-zA-Z][a-zA-Z\\d]{0,15})"
 #define INIT_LIST "(-?\\d+(,-?\\d+)*)?"
@@ -17,23 +16,19 @@ bool RegexResolver::is_suitable(const std::string& expression, std::unordered_ma
     if (result){
         const std::string& arr_size = matches[2].str(); // 2 группа захвата - кол-во элементов
         if ((arr_size.size() == 0 or arr_size == "0") and matches[3].str().size() == 0){
-            std::cout << "here1\n";
             result = false;
         }
         if (arr_size.size() and arr_size != "0" and
             std::stoi(arr_size) < std::count(expression.begin(), expression.end(),  ',')+1){
-            std::cout << "here2\n";
             result = false;
         }
     }
     if (result){
-        token_vector.emplace("name", matches[1].str());
-        token_vector.emplace("amount", matches[2].str());
+        token_vector["name"] =  matches[1].str();
+        token_vector["amount"] = matches[2].str();
     }
     return result;
 }
-
-
 
 
 } // namespace resolvers
