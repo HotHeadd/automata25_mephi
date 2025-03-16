@@ -84,6 +84,7 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
                 arr_defect = 1;
         }
     }
+    unsigned bad_ind=dist_index(rng);
     std::string result="={";
     switch (arr_defect){
         case 0:
@@ -91,12 +92,16 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
             break;
         case 1:
         case 2:
-            unsigned bad_ind=dist_index(rng);
+            if (bad_ind == 0){
+                arr_defect = 2; // если индекс 0, то меняем дефект на неправильный литерал
+            }
             for (int i=0; i<amount; ++i){
                 if (i!=0){
-                    result += ",";
+                    if (arr_defect != 1 or i != bad_ind){ // пропускает запятую если дефект 1 и нужный индекс
+                        result += ",";
+                    }
                 }
-                if (i == bad_ind){
+                if (arr_defect == 2 and i == bad_ind){
                     result += gen_literal();
                 }
                 result += corr_gen.gen_literal();
@@ -118,6 +123,7 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
                     result.push_back(gen_symbol());
                     break;
             }
+            break;
     }
     return result;
 }
