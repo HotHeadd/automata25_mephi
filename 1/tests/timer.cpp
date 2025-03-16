@@ -49,9 +49,9 @@ int main(int argc, char* argv[]){ // TODO: выбор распознавател
     }
     std::unordered_map<std::string, std::string> map;
     double sum=0;
-    std::ofstream out("z_files/stats" + filename + ".txt");
-    for (int i=1; i<10; ++i){
-        unsigned amount = std::pow(4, i), repeats=10;
+    std::ofstream out("z_files/stats_" + filename + ".txt");
+    for (int i=8; i<21; ++i){
+        unsigned amount = std::pow(2, i), repeats=10;
         std::cout << amount << std::endl;
         std::vector<std::string> strs = generate_strings(amount);
         for (int j=0; j<repeats; ++j){
