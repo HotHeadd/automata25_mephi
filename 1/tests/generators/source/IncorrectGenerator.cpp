@@ -154,8 +154,8 @@ char IncorrectGenerator::gen_forbidden(){
 }
 
 char IncorrectGenerator::gen_letter(){
-    static std::uniform_int_distribution<unsigned> dist_digit(0, 9);
-    return '0' + dist_digit(rng);
+    static std::uniform_int_distribution<unsigned> dist_letter(0, 25);
+    return 'a' + dist_letter(rng);
 }
 
 char IncorrectGenerator::gen_symbol(){

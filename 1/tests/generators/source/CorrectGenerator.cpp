@@ -10,7 +10,7 @@ std::string CorrectGenerator::gen_string(){
 
 std::string CorrectGenerator::gen_arr(unsigned amount, const std::string& str_amount){
     static std::uniform_int_distribution<unsigned> dist_empty(0, 9);
-    if ((str_amount == "[0]" or str_amount == "[]") and dist_empty(rng) == 0){
+    if (!(str_amount == "[0]" or str_amount == "[]") and dist_empty(rng) == 0){
         return "={}";
     }
     std::string result = "={";
@@ -62,8 +62,8 @@ char CorrectGenerator::gen_digit(){
 }
 
 char CorrectGenerator::gen_letter(){
-    static std::uniform_int_distribution<unsigned> dist_digit(0, 9);
-    return '0' + dist_digit(rng);
+    static std::uniform_int_distribution<unsigned> dist_letter(0, 25);
+    return 'a' + dist_letter(rng);
 }
 
 char CorrectGenerator::gen_symbol(){

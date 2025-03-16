@@ -35,6 +35,11 @@ void process_file(IResolver& resolver, const std::string& in_filename, const std
 
 int main(){
     RegexResolver resolver = RegexResolver();
-    process_file(resolver, "z_files/in.txt", "z_files/out.txt");
+    CorrectGenerator gen(1, 5);
+    std::unordered_map<std::string, std::string> map;
+    for (int i=0; i<100; ++i){
+        std::string res = gen.gen_string();
+        std::cout << res << std::endl;
+    }
     return 0;
 }
