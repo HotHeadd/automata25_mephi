@@ -17,4 +17,8 @@ private:
     unsigned amount_min, amount_max;
     std::random_device device;
     std::mt19937 rng;
+
+    char gen_digit();
+    char gen_symbol();
+    char gen_letter();
 };

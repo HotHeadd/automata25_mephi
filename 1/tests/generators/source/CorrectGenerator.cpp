@@ -8,11 +8,10 @@ std::string CorrectGenerator::gen_string(){
     return gen_name() + str_amount + gen_arr(amount, str_amount);
 }
 
-
 std::string CorrectGenerator::gen_arr(unsigned amount, const std::string& str_amount){
     static std::uniform_int_distribution<unsigned> dist_empty(0, 9);
-    if ((str_amount == "0" or str_amount.size() == 0) and dist_empty(rng) == 0){
-        return "";
+    if ((str_amount == "[0]" or str_amount == "[]") and dist_empty(rng) == 0){
+        return "={}";
     }
     std::string result = "={";
     for (int i=0; i<amount; ++i){
@@ -30,9 +29,9 @@ std::string CorrectGenerator::gen_name(){
     static std::uniform_int_distribution<char> dist_letter(0, 25);
     std::string name;
     unsigned amount = dist_amount(rng);
-    name += 'a'+dist_letter(rng);
+    name += gen_letter();
     for (int i=0; i<amount; ++i){
-        name += 'a'+dist_letter(rng);
+        name += gen_symbol();
     }
     return name;
 }
@@ -55,4 +54,22 @@ std::string CorrectGenerator::gen_amount(unsigned& amount){
 std::string CorrectGenerator::gen_literal(){
     static std::uniform_int_distribution<int> dist_literal(-999999999, 999999999);
     return std::to_string(dist_literal(rng));
+}
+
+char CorrectGenerator::gen_digit(){
+    static std::uniform_int_distribution<unsigned> dist_digit(0, 9);
+    return '0' + dist_digit(rng);
+}
+
+char CorrectGenerator::gen_letter(){
+    static std::uniform_int_distribution<unsigned> dist_digit(0, 9);
+    return '0' + dist_digit(rng);
+}
+
+char CorrectGenerator::gen_symbol(){
+    static std::uniform_int_distribution<unsigned> dist_letter(0, 25), coinflip(0, 1);
+    if (coinflip(rng)){
+        return gen_digit();
+    }
+    return gen_letter();
 }

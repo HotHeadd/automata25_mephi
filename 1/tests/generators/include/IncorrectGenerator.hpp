@@ -21,6 +21,10 @@ private:
     std::mt19937 rng;
     std::uniform_int_distribution<unsigned> coinflip;
 
+    char gen_digit();
+    char gen_symbol();
+    char gen_letter();
+    char gen_forbidden();
+
     CorrectGenerator corr_gen;
-    bool is_empty_amount=false;
 };
