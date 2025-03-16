@@ -1,5 +1,0 @@
-a - 3
-abc - 3
-asdf - 3
-AajhaadaSDF - 10
-Correct: 4/9

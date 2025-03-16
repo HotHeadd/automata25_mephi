@@ -10,6 +10,10 @@ std::string CorrectGenerator::gen_string(){
 
 
 std::string CorrectGenerator::gen_arr(unsigned amount, const std::string& str_amount){
+    static std::uniform_int_distribution<unsigned> dist_empty(0, 9);
+    if ((str_amount == "0" or str_amount.size() == 0) and dist_empty(rng) == 0){
+        return "";
+    }
     std::string result = "={";
     for (int i=0; i<amount; ++i){
         if (i!=0){
@@ -34,9 +38,9 @@ std::string CorrectGenerator::gen_name(){
 }
 
 std::string CorrectGenerator::gen_amount(unsigned& amount){
-    static std::uniform_int_distribution<unsigned> dist_amount(amount_min, std::min(amount_max, 999999999u)), dist_empty(0, 3);
+    static std::uniform_int_distribution<unsigned> dist_amount(amount_min, std::min(amount_max, 999999999u)), dist_empty(0, 6);
     amount = dist_amount(rng);
-    if (!dist_empty(rng)){
+    if (dist_empty(rng) == 0){
         if (dist_empty(rng)%2 == 0){
             return "[]";
         }
