@@ -3,6 +3,7 @@
 #include "RegexResolver.hpp"
 #include "CorrectGenerator.hpp"
 #include "IncorrectGenerator.hpp"
+#include <thread>
 
 using namespace resolvers;
 
@@ -13,9 +14,9 @@ void process_file(IResolver& resolver, std::vector<std::string> lines, const std
         throw std::runtime_error("Wrong output filename format");
     }
     unsigned count=0, correct=0;
+    std::unordered_map<std::string, std::string> tokens;
     for (auto line: lines){
         ++count;
-        std::unordered_map<std::string, std::string> tokens;
         if (resolver.is_suitable(line, tokens)){
             std::string& name = tokens["name"];
             std::string& amount = tokens["amount"];
@@ -44,20 +45,22 @@ std::vector<std::string> generate_strings(const std::string& filename, unsigned&
     std::getline(file, line);
     unsigned line_amount = std::stoi(line);
     for (int i=0; i<line_amount; ++i){
-        --line_amount;
         std::getline(file, line);
         lines.push_back(line);
     }
     file.clear();  // Сбрасываем флаги потока (EOF)
-    unsigned generated = 100;
-    while (generated > 0){
-        if (coinflip(rng)){
+    unsigned right=100, min_wrong=30;
+    while (right>0){
+        if (right < min_wrong or coinflip(rng)){
+            if (min_wrong > 0){
+                --min_wrong;
+            }
             line = inc_gen.gen_string();
         }
         else{
+            --right;
             line = corr_gen.gen_string();
         }
-        --generated;
         lines.push_back(line);
     }
     file.close();

@@ -1,6 +1,5 @@
 #include "IncorrectGenerator.hpp"
 #include <limits>
-#include <iostream>
 
 std::string IncorrectGenerator::gen_string(){
     static std::uniform_int_distribution<unsigned> dist_defect(0, 2);
@@ -67,7 +66,7 @@ std::string IncorrectGenerator::gen_amount(unsigned& amount){
 }
 
 std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_amount){
-    static std::uniform_int_distribution<unsigned> dist_defect(0, 3), dist_index(0, amount-1);
+    std::uniform_int_distribution<unsigned> dist_defect(0, 3), dist_index(0, amount-1);
     if (defect_type != 2){
         return corr_gen.gen_arr(amount, str_amount);
     }
@@ -89,16 +88,22 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
     switch (arr_defect){
         case 0:
             result = corr_gen.gen_arr(amount+1, str_amount);
+            while (result == "={}"){
+                result = corr_gen.gen_arr(amount+1, str_amount);
+            }
             break;
         case 1:
         case 2:
-            if (bad_ind == 0){
+            if (bad_ind == 0 or amount == 1){
                 arr_defect = 2; // если индекс 0, то меняем дефект на неправильный литерал
             }
             for (int i=0; i<amount; ++i){
                 if (i!=0){
                     if (arr_defect != 1 or i != bad_ind){ // пропускает запятую если дефект 1 и нужный индекс
                         result += ",";
+                    }
+                    else{
+                        result += " ";
                     }
                 }
                 if (arr_defect == 2 and i == bad_ind){
@@ -109,7 +114,7 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
             result += "}";
             break;
         case 3:
-            result = corr_gen.gen_arr(amount+1, str_amount);
+            result = corr_gen.gen_arr(amount, str_amount);
             switch (dist_defect(rng)){
                 case 0:
                     result[0] = gen_symbol();
@@ -119,6 +124,7 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
                     break;
                 case 2:
                     result.back() = gen_symbol();
+                    break;
                 case 3:
                     result.push_back(gen_symbol());
                     break;

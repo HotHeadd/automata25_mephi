@@ -1,6 +1,5 @@
 #include "CorrectGenerator.hpp"
 #include <limits>
-#include <iostream>
 
 std::string CorrectGenerator::gen_string(){
     unsigned amount;
