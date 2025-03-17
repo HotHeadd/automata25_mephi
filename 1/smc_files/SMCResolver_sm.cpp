@@ -296,6 +296,27 @@ void Map1_Default::unknown(SMCResolverContext& context)
 
 }
 
+void Map1_Default::EOS(SMCResolverContext& context)
+{
+    SMCResolver& ctxt = context.getOwner();
+
+    context.getState().Exit(context);
+    context.clearState();
+    try
+    {
+        ctxt.Unacceptable();
+        context.setState(Map1::False);
+    }
+    catch (...)
+    {
+        context.setState(Map1::False);
+        throw;
+    }
+    context.getState().Entry(context);
+
+
+}
+
 void Map1_Start::letter(SMCResolverContext& context)
 {
 

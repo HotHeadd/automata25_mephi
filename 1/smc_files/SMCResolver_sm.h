@@ -94,6 +94,7 @@ public:
     virtual void minus(SMCResolverContext& context);
     virtual void comma(SMCResolverContext& context);
     virtual void unknown(SMCResolverContext& context);
+    virtual void EOS(SMCResolverContext& context);
 };
 
 class Map1_Start :

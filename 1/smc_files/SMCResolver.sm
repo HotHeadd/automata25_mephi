@@ -63,5 +63,6 @@ Default
     minus          False       {Unacceptable();}
     comma          False       {Unacceptable();}
     unknown        False       {Unacceptable();}
+    EOS            False       {Unacceptable();}
 }
 %%
