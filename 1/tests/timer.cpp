@@ -31,7 +31,7 @@ std::vector<std::string> generate_strings(unsigned amount){
 int main(int argc, char* argv[]){ // TODO: выбор распознавателя через аргумент
     IResolver* resolver;
     std::string filename;
-    if (argc > 0){
+    if (argc > 1){
         std::string mode = argv[1];
         switch (std::stoi(mode)){
             case 1:
@@ -46,6 +46,10 @@ int main(int argc, char* argv[]){ // TODO: выбор распознавател
                 std::cout << "Wrong mode!\n";
                 return 0;
         }
+    }
+    else{
+        std::cout << "No resolver chosen\n";
+        return 1;
     }
     std::unordered_map<std::string, std::string> map;
     double sum=0;
