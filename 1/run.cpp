@@ -1,11 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include "RegexResolver.hpp"
+#include "SMCResolver.hpp"
 #include "CorrectGenerator.hpp"
 #include "IncorrectGenerator.hpp"
 #include <thread>
-
-using namespace resolvers;
 
 void process_file(IResolver& resolver, std::vector<std::string> lines, const std::string& out_filename){
     std::string line;
@@ -32,7 +31,7 @@ void process_file(IResolver& resolver, std::vector<std::string> lines, const std
 
 std::vector<std::string> generate_strings(const std::string& filename, unsigned& begin_line){
     std::random_device device;
-    std::mt19937 rng;
+    std::mt19937 rng(device());
     static std::uniform_int_distribution<unsigned> coinflip(0, 1);
     CorrectGenerator corr_gen(1, 5);
     IncorrectGenerator inc_gen(1, 5);
@@ -81,6 +80,7 @@ int main(int argc, char* argv[]){
                 resolver = new RegexResolver();
                 break;
             case 2:
+                resolver = new SMCResolver();
                 break;
             case 3:
                 break;

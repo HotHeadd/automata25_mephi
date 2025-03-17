@@ -6,8 +6,6 @@
 #include <fstream>
 #include <cmath>
 
-using namespace resolvers;
-
 std::vector<std::string> generate_strings(unsigned amount){
     static IncorrectGenerator inc_gen(10, 20);
     static CorrectGenerator corr_gen(10, 20);

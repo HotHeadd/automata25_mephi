@@ -1,0 +1,67 @@
+// java -jar smc_files/Smc.jar -c++ smc_files/SMCResolver.sm  
+
+%start Map1::Start
+%class SMCResolver
+%header SMCResolver.hpp
+
+%map Map1
+%%
+// State    Transition  End State   Action(s)
+Start {
+    letter      Name        {}
+}
+
+Name {
+    letter [ctxt.not_too_big_name()]    Name        {}
+    digit [ctxt.not_too_big_name()]     Name        {}
+    lsbracket                      Amount      {}
+}
+
+Amount {
+    digit [ctxt.not_too_big_amount()]    Amount      {}
+    rsbracket                       WF_EQ       {load_amount();}
+}
+
+WF_EQ {
+    eq          WF_BR       {}
+}
+
+WF_BR {
+    lfbracket   Literal_1   {}
+}
+
+Literal_1 {
+    digit       Literal_2   {}
+    minus       Literal_m   {}
+}
+
+Literal_m{
+    digit       Literal_2   {}
+}
+
+Literal_2{
+    digit       Literal_2   {}
+    comma [ctxt.count_amount()]      Literal_1   {}
+    rfbracket   OK          {}
+}
+
+OK {
+    EOS         nil         {Acceptable();}
+}
+
+False {}
+
+Default
+{
+    letter         False       {Unacceptable();}
+    digit          False       {Unacceptable();}
+    lsbracket      False       {Unacceptable();}
+    rsbracket      False       {Unacceptable();}
+    lfbracket      False       {Unacceptable();}
+    rfbracket      False       {Unacceptable();}
+    eq             False       {Unacceptable();}
+    minus          False       {Unacceptable();}
+    comma          False       {Unacceptable();}
+    unknown        False       {Unacceptable();}
+}
+%%

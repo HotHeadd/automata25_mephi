@@ -12,6 +12,7 @@ run: build
 	./bin/run 1
 
 build:
+	make -C smc_files
 	mkdir -p ${BUILD_DIR}
 	cmake -B${BUILD_DIR} -S.
 	cmake --build ${BUILD_DIR}

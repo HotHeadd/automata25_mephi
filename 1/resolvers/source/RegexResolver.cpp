@@ -4,10 +4,7 @@
 #define NAME "([a-zA-Z][a-zA-Z\\d]{0,15})"
 #define INIT_LIST "(-?\\d+(,-?\\d+)*)?"
 
-namespace resolvers
-{
-
-bool RegexResolver::is_suitable(const std::string& expression, std::unordered_map<std::string, std::string>& token_vector){
+bool RegexResolver::is_suitable(const std::string& expression, std::unordered_map<std::string, std::string>& tokens){
     static const std::regex arr_pattern{
         NAME  "\\["  "(\\d{0,9})"  "\\]"  "=\\{" INIT_LIST "\\}", 
         std::regex_constants::optimize}; // optimise конвертирует НКА в ДКА https://en.cppreference.com/w/cpp/regex/syntax_option_type
@@ -24,11 +21,8 @@ bool RegexResolver::is_suitable(const std::string& expression, std::unordered_ma
         }
     }
     if (result){
-        token_vector["name"] =  matches[1].str();
-        token_vector["amount"] = matches[2].str();
+        tokens["name"] =  matches[1].str();
+        tokens["amount"] = matches[2].str();
     }
     return result;
 }
-
-
-} // namespace resolvers
