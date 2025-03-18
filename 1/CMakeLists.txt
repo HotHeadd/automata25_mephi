@@ -13,4 +13,4 @@ add_executable(run ${SOURCE_EXE})
 
 set_target_properties(run PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
-target_link_libraries(run RegexResolver Generators SMCResolver)
+target_link_libraries(run RegexResolver Generators SMCResolver FlexResolver)

@@ -4,6 +4,7 @@
 #include "SMCResolver.hpp"
 #include "CorrectGenerator.hpp"
 #include "IncorrectGenerator.hpp"
+#include "FlexResolver.hpp"
 #include <thread>
 
 void process_file(IResolver& resolver, std::vector<std::string> lines, const std::string& out_filename){
@@ -16,15 +17,15 @@ void process_file(IResolver& resolver, std::vector<std::string> lines, const std
     std::unordered_map<std::string, std::string> tokens;
     for (auto line: lines){
         ++count;
-        if (resolver.is_suitable(line, tokens)){
-            std::string& name = tokens["name"];
-            std::string& amount = tokens["amount"];
-            ++correct;
-            if (!amount.size()){
-                amount = std::to_string(std::count(line.begin(), line.end(),  ',')+1);
-            }
-            out << name << " - " << amount << "\n";
-        }
+        // if (resolver.is_suitable(line, tokens)){
+        //     std::string& name = tokens["name"];
+        //     std::string& amount = tokens["amount"];
+        //     ++correct;
+        //     if (!amount.size()){
+        //         amount = std::to_string(std::count(line.begin(), line.end(),  ',')+1);
+        //     }
+        //     out << name << " - " << amount << "\n";
+        // }
     }
     out << "Correct: " << correct << "/" << count << "\n";
 }
@@ -83,6 +84,7 @@ int main(int argc, char* argv[]){
                 resolver = new SMCResolver();
                 break;
             case 3:
+                resolver = new FlexResolver();
                 break;
             default:
                 std::cout << "Wrong mode!\n";
@@ -95,10 +97,12 @@ int main(int argc, char* argv[]){
     }
     std::string input_file = "z_files/in.txt";
     std::string output_file = "z_files/out.txt";
-    std::vector<std::string> lines = generate_strings(input_file);
-    process_file(*resolver, lines, output_file);
-    // std::unordered_map<std::string, std::string> tokens;
-    // std::cout << resolver->is_suitable("abc[3]={1,2}", tokens) << "\n";
+    // std::vector<std::string> lines = generate_strings(input_file);
+    // process_file(*resolver, lines, output_file);
+    std::unordered_map<std::string, std::string> tokens;
+    std::cout << resolver->is_suitable("ab1c[1]={A1,-3,-2}", tokens) << "\n";
     delete resolver;
     return 0;
 }
+
+// {NAME}\[\d{0,9}\]=\{{INIT_LIST}\}

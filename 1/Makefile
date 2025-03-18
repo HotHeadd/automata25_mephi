@@ -9,9 +9,10 @@ TARGET = run
 final: ${TARGET}
 
 run: build
-	./bin/run 2
+	./bin/run 3
 
 build:
+	make -C flex_files
 	make -C smc_files
 	mkdir -p ${BUILD_DIR}
 	cmake -B${BUILD_DIR} -S.
