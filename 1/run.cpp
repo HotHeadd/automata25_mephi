@@ -29,7 +29,7 @@ void process_file(IResolver& resolver, std::vector<std::string> lines, const std
     out << "Correct: " << correct << "/" << count << "\n";
 }
 
-std::vector<std::string> generate_strings(const std::string& filename, unsigned& begin_line){
+std::vector<std::string> generate_strings(const std::string& filename){
     std::random_device device;
     std::mt19937 rng(device());
     static std::uniform_int_distribution<unsigned> coinflip(0, 1);
@@ -95,9 +95,10 @@ int main(int argc, char* argv[]){
     }
     std::string input_file = "z_files/in.txt";
     std::string output_file = "z_files/out.txt";
-    unsigned begin_line;
-    std::vector<std::string> lines = generate_strings(input_file, begin_line);
+    std::vector<std::string> lines = generate_strings(input_file);
     process_file(*resolver, lines, output_file);
+    // std::unordered_map<std::string, std::string> tokens;
+    // std::cout << resolver->is_suitable("abc[3]={1,2}", tokens) << "\n";
     delete resolver;
     return 0;
 }

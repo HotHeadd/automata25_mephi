@@ -14,12 +14,12 @@ Start {
 Name {
     letter [ctxt.not_too_big_name()]    Name        {}
     digit [ctxt.not_too_big_name()]     Name        {}
-    lsbracket                      Amount      {}
+    lsbracket                           Amount      {}
 }
 
 Amount {
     digit [ctxt.not_too_big_amount()]    Amount      {}
-    rsbracket                       WF_EQ       {load_amount();}
+    rsbracket                            WF_EQ       {load_amount();}
 }
 
 WF_EQ {
@@ -31,8 +31,9 @@ WF_BR {
 }
 
 Literal_1 {
-    digit       Literal_2   {}
-    minus       Literal_m   {}
+    digit                            Literal_2   {}
+    minus                            Literal_m   {}
+    rfbracket [ctxt.check_bracket()] OK          {}
 }
 
 Literal_m{
@@ -40,16 +41,29 @@ Literal_m{
 }
 
 Literal_2{
-    digit       Literal_2   {}
+    digit                            Literal_2   {}
     comma [ctxt.count_amount()]      Literal_1   {}
-    rfbracket   OK          {}
+    rfbracket                        OK          {}
 }
 
 OK {
     EOS         nil         {Acceptable();}
 }
 
-False {}
+False
+{
+    letter         nil       {}
+    digit          nil       {}
+    lsbracket      nil       {}
+    rsbracket      nil       {}
+    lfbracket      nil       {}
+    rfbracket      nil       {}
+    eq             nil       {}
+    minus          nil       {}
+    comma          nil       {}
+    unknown        nil       {}
+    EOS            nil       {}
+}
 
 Default
 {
@@ -64,5 +78,6 @@ Default
     comma          False       {Unacceptable();}
     unknown        False       {Unacceptable();}
     EOS            False       {Unacceptable();}
+    Reset          Start       {}
 }
 %%

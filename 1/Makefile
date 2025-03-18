@@ -9,7 +9,7 @@ TARGET = run
 final: ${TARGET}
 
 run: build
-	./bin/run 1
+	./bin/run 2
 
 build:
 	make -C smc_files

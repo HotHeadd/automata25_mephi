@@ -1,7 +1,8 @@
 #include "SMCResolver.hpp"
+#include <cctype>
 
 bool is_letter(const char symbol) {
-	return ('a' <= symbol <= 'z') or ('A' <= symbol <= 'Z');
+	return std::isalpha(symbol);
 }
 bool is_digit(char symbol){
 	return symbol >= '0' and symbol <= '9';
@@ -24,11 +25,32 @@ bool SMCResolver::not_too_big_amount(){
 }
 
 void SMCResolver::load_amount(){
-	amount_val = std::stoi(amount_str);
+	if (amount_str == "" or amount_str == "0"){
+		amount_val=-1;
+	}
+	else{
+		amount_val = std::stoi(amount_str);
+	}
 }
 
 bool SMCResolver::count_amount(){
-	if (++count_commas < amount_val){
+	++count_commas;
+	if (count_commas < amount_val){
+		from_comma = true;
+		return true;
+	}
+	return false;
+}
+
+void SMCResolver::Acceptable(){
+	is_acceptable = true;
+};
+void SMCResolver::Unacceptable(){
+	is_acceptable = false; 
+};
+
+bool SMCResolver::check_bracket(){
+	if (!from_comma and amount_str != "" and amount_str != "0"){
 		return true;
 	}
 	return false;
@@ -40,7 +62,8 @@ bool SMCResolver::is_suitable(const std::string& expression, std::unordered_map<
 	name_length=0;
 	amount_length=0;
 	count_commas=0;
-	fsm.enterStartState();
+	from_comma=false;
+	fsm.Reset();
 	for (char symbol : expression){
 		current_symbol = symbol;
 		if (is_letter(symbol)){

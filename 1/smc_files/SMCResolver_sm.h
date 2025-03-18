@@ -43,6 +43,7 @@ public:
     virtual void Exit(SMCResolverContext&) {};
 
     virtual void EOS(SMCResolverContext& context);
+    virtual void Reset(SMCResolverContext& context);
     virtual void comma(SMCResolverContext& context);
     virtual void digit(SMCResolverContext& context);
     virtual void eq(SMCResolverContext& context);
@@ -95,6 +96,7 @@ public:
     virtual void comma(SMCResolverContext& context);
     virtual void unknown(SMCResolverContext& context);
     virtual void EOS(SMCResolverContext& context);
+    virtual void Reset(SMCResolverContext& context);
 };
 
 class Map1_Start :
@@ -165,6 +167,7 @@ public:
 
     virtual void digit(SMCResolverContext& context);
     virtual void minus(SMCResolverContext& context);
+    virtual void rfbracket(SMCResolverContext& context);
 };
 
 class Map1_Literal_m :
@@ -210,6 +213,17 @@ public:
     : Map1_Default(name, stateId)
     {};
 
+    virtual void EOS(SMCResolverContext& context);
+    virtual void comma(SMCResolverContext& context);
+    virtual void digit(SMCResolverContext& context);
+    virtual void eq(SMCResolverContext& context);
+    virtual void letter(SMCResolverContext& context);
+    virtual void lfbracket(SMCResolverContext& context);
+    virtual void lsbracket(SMCResolverContext& context);
+    virtual void minus(SMCResolverContext& context);
+    virtual void rfbracket(SMCResolverContext& context);
+    virtual void rsbracket(SMCResolverContext& context);
+    virtual void unknown(SMCResolverContext& context);
 };
 
 class SMCResolverContext :
@@ -251,6 +265,11 @@ public:
     inline void EOS()
     {
         getState().EOS(*this);
+    };
+
+    inline void Reset()
+    {
+        getState().Reset(*this);
     };
 
     inline void comma()

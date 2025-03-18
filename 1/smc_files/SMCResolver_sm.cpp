@@ -27,6 +27,11 @@ void SMCResolverState::EOS(SMCResolverContext& context)
     Default(context);
 }
 
+void SMCResolverState::Reset(SMCResolverContext& context)
+{
+    Default(context);
+}
+
 void SMCResolverState::comma(SMCResolverContext& context)
 {
     Default(context);
@@ -317,6 +322,16 @@ void Map1_Default::EOS(SMCResolverContext& context)
 
 }
 
+void Map1_Default::Reset(SMCResolverContext& context)
+{
+
+    context.getState().Exit(context);
+    context.setState(Map1::Start);
+    context.getState().Entry(context);
+
+
+}
+
 void Map1_Start::letter(SMCResolverContext& context)
 {
 
@@ -455,6 +470,25 @@ void Map1_Literal_1::minus(SMCResolverContext& context)
 
 }
 
+void Map1_Literal_1::rfbracket(SMCResolverContext& context)
+{
+    SMCResolver& ctxt = context.getOwner();
+
+    if (ctxt.check_bracket())
+    {
+        context.getState().Exit(context);
+        // No actions.
+        context.setState(Map1::OK);
+        context.getState().Entry(context);
+    }
+    else
+    {
+         Map1_Default::rfbracket(context);
+    }
+
+
+}
+
 void Map1_Literal_m::digit(SMCResolverContext& context)
 {
 
@@ -521,6 +555,83 @@ void Map1_OK::EOS(SMCResolverContext& context)
         context.setState(endState);
         throw;
     }
+
+
+}
+
+void Map1_False::EOS(SMCResolverContext& context)
+{
+
+
+
+}
+
+void Map1_False::comma(SMCResolverContext& context)
+{
+
+
+
+}
+
+void Map1_False::digit(SMCResolverContext& context)
+{
+
+
+
+}
+
+void Map1_False::eq(SMCResolverContext& context)
+{
+
+
+
+}
+
+void Map1_False::letter(SMCResolverContext& context)
+{
+
+
+
+}
+
+void Map1_False::lfbracket(SMCResolverContext& context)
+{
+
+
+
+}
+
+void Map1_False::lsbracket(SMCResolverContext& context)
+{
+
+
+
+}
+
+void Map1_False::minus(SMCResolverContext& context)
+{
+
+
+
+}
+
+void Map1_False::rfbracket(SMCResolverContext& context)
+{
+
+
+
+}
+
+void Map1_False::rsbracket(SMCResolverContext& context)
+{
+
+
+
+}
+
+void Map1_False::unknown(SMCResolverContext& context)
+{
+
 
 
 }
