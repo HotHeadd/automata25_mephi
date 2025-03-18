@@ -3,6 +3,7 @@
 #include "CorrectGenerator.hpp"
 #include "IncorrectGenerator.hpp"
 #include "RegexResolver.hpp"
+#include "SMCResolver.hpp"
 #include <fstream>
 #include <cmath>
 
@@ -37,6 +38,8 @@ int main(int argc, char* argv[]){ // TODO: выбор распознавател
                 filename = "regex";
                 break;
             case 2:
+                resolver = new SMCResolver();
+                filename = "SMC";
                 break;
             case 3:
                 break;

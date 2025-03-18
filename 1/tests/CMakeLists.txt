@@ -8,5 +8,5 @@ add_subdirectory(../resolvers build_source)
 add_subdirectory(generators)
 
 add_executable(timetest ${SOURCE_EXE})
-target_link_libraries(timetest PUBLIC Generators RegexResolver)
+target_link_libraries(timetest PUBLIC Generators RegexResolver SMCResolver)
 set_target_properties(timetest PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../bin)
