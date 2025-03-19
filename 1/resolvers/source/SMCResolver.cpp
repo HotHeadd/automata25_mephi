@@ -63,6 +63,7 @@ bool SMCResolver::is_suitable(const std::string& expression, std::unordered_map<
 	amount_length=0;
 	count_commas=0;
 	from_comma=false;
+	is_acceptable=true;
 	fsm.Reset();
 	for (char symbol : expression){
 		current_symbol = symbol;
@@ -95,6 +96,9 @@ bool SMCResolver::is_suitable(const std::string& expression, std::unordered_map<
 		}
 		else{
 			fsm.unknown();
+		}
+		if (!is_acceptable){
+			break;
 		}
 	}
 	fsm.EOS();

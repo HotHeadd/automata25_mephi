@@ -61,7 +61,10 @@ char CorrectGenerator::gen_digit(){
 }
 
 char CorrectGenerator::gen_letter(){
-    static std::uniform_int_distribution<unsigned> dist_letter(0, 25);
+    static std::uniform_int_distribution<unsigned> dist_letter(0, 25), coinflip(0, 1);
+    if (coinflip(rng)){
+        return 'A' + dist_letter(rng);
+    }
     return 'a' + dist_letter(rng);
 }
 

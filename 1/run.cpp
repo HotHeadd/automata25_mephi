@@ -17,15 +17,15 @@ void process_file(IResolver& resolver, std::vector<std::string> lines, const std
     std::unordered_map<std::string, std::string> tokens;
     for (auto line: lines){
         ++count;
-        // if (resolver.is_suitable(line, tokens)){
-        //     std::string& name = tokens["name"];
-        //     std::string& amount = tokens["amount"];
-        //     ++correct;
-        //     if (!amount.size()){
-        //         amount = std::to_string(std::count(line.begin(), line.end(),  ',')+1);
-        //     }
-        //     out << name << " - " << amount << "\n";
-        // }
+        if (resolver.is_suitable(line, tokens)){
+            std::string& name = tokens["name"];
+            std::string& amount = tokens["amount"];
+            ++correct;
+            if (!amount.size()){
+                amount = std::to_string(std::count(line.begin(), line.end(),  ',')+1);
+            }
+            out << name << " - " << amount << "\n";
+        }
     }
     out << "Correct: " << correct << "/" << count << "\n";
 }
@@ -49,12 +49,10 @@ std::vector<std::string> generate_strings(const std::string& filename){
         lines.push_back(line);
     }
     file.clear();  // Сбрасываем флаги потока (EOF)
-    unsigned right=100, min_wrong=30;
+    unsigned right=100, wrong=170;
     while (right>0){
-        if (right < min_wrong or coinflip(rng)){
-            if (min_wrong > 0){
-                --min_wrong;
-            }
+        if (coinflip(rng) and wrong > 0){
+            --wrong;
             line = inc_gen.gen_string();
         }
         else{
@@ -97,10 +95,34 @@ int main(int argc, char* argv[]){
     }
     std::string input_file = "z_files/in.txt";
     std::string output_file = "z_files/out.txt";
-    // std::vector<std::string> lines = generate_strings(input_file);
-    // process_file(*resolver, lines, output_file);
+    std::vector<std::string> lines = generate_strings(input_file);
+    process_file(*resolver, lines, output_file);
     std::unordered_map<std::string, std::string> tokens;
-    std::cout << resolver->is_suitable("ab1c[1]={A1,-3,-2}", tokens) << "\n";
+    CorrectGenerator corr_gen(1, 5);
+    IncorrectGenerator inc_gen(1, 5);
+    bool allright = true;
+    for (int i=0; i<10000; i++){
+        std::string str = corr_gen.gen_string();
+        if (!resolver->is_suitable(str, tokens)){
+            std::cout << "CORRECT\n";
+            std::cout << str << std::endl;
+            allright = false;
+        }
+    }
+    for (int i=0; i<17000; i++){
+        std::string str = inc_gen.gen_string();
+        if (resolver->is_suitable(str, tokens)){
+            std::cout << "INCORRECT\n";
+            std::cout << str << "\n";
+            allright = false;
+        }
+    }
+    if (allright){
+        std::cout << "ALL GOOD\n";
+    }
+    else{
+        std::cout << "NOT ALL GOOD\n";
+    }
     delete resolver;
     return 0;
 }

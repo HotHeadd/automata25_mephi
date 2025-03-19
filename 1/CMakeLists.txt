@@ -9,7 +9,8 @@ set(SOURCE_EXE run.cpp)
 add_subdirectory(resolvers)
 add_subdirectory(tests/generators)
 
-add_executable(run ${SOURCE_EXE})
+# add_executable(run ${SOURCE_EXE})
+add_executable(run 0_re2c/generated.cpp)
 
 set_target_properties(run PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 

@@ -1,5 +1,6 @@
 #include "IncorrectGenerator.hpp"
 #include <limits>
+#include <assert.h>
 
 std::string IncorrectGenerator::gen_string(){
     static std::uniform_int_distribution<unsigned> dist_defect(0, 2);
@@ -135,15 +136,21 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
 }
 
 std::string IncorrectGenerator::gen_literal(){
-    static std::uniform_int_distribution<unsigned> dist_defect(0, 1);
+    static std::uniform_int_distribution<unsigned> dist_defect(0, 30);
     std::string res=corr_gen.gen_literal();
-    switch (dist_defect(rng)){
-        case 0:
-            res.push_back(gen_forbidden());
-            break;
-        case 1:
-            res.insert(res.begin(), gen_letter());
-            break;
+    assert(res.size() != 0);
+    unsigned roll;
+    if (roll == 0){
+        res.push_back(gen_forbidden());
+    }
+    else if (roll < 10){
+        res.push_back(gen_forbidden());
+    }
+    else if (roll < 20){
+        res.insert(res.end(), gen_letter());
+    }
+    else{
+        res[res.size()/2] = gen_letter();
     }
     return res;
 }
@@ -161,6 +168,9 @@ char IncorrectGenerator::gen_forbidden(){
 
 char IncorrectGenerator::gen_letter(){
     static std::uniform_int_distribution<unsigned> dist_letter(0, 25);
+    if (coinflip(rng)){
+        return 'A' + dist_letter(rng);
+    }
     return 'a' + dist_letter(rng);
 }
 
