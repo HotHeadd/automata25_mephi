@@ -1,2 +1,0 @@
-target:
-	flex FlexResolver.l
