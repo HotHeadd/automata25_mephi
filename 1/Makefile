@@ -9,10 +9,10 @@ TARGET = run
 final: ${TARGET}
 
 run: build
-	./bin/run 1
+	./bin/run 3
 
 build:
-	make -C 0_re2c
+	make -C re2c_files
 	make -C smc_files
 
 	mkdir -p ${BUILD_DIR}
