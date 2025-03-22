@@ -7,10 +7,10 @@ set(SOURCE_EXE run.cpp)
 #find_package()
 
 add_subdirectory(resolvers)
-add_subdirectory(tests/generators)
+add_subdirectory(tests/generator)
 
 add_executable(run ${SOURCE_EXE})
 
 set_target_properties(run PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
-target_link_libraries(run RegexResolver Generators SMCResolver FlexResolver)
+target_link_libraries(run RegexResolver Generator SMCResolver FlexResolver)

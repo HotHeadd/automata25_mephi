@@ -1,19 +1,73 @@
-#include "IncorrectGenerator.hpp"
+#include "Generator.hpp"
 #include <limits>
 #include <assert.h>
 
-std::string IncorrectGenerator::gen_string(){
+std::string Generator::gen_corr_string(){
+    unsigned amount;
+    std::string str_amount = gen_corr_amount(amount);
+    return gen_corr_name() + str_amount + gen_corr_arr(amount, str_amount);
+}
+
+std::string Generator::gen_corr_arr(unsigned amount, const std::string& str_amount){
+    static std::uniform_int_distribution<unsigned> dist_empty(0, 9);
+    if (!(str_amount == "[0]" or str_amount == "[]") and dist_empty(rng) == 0){
+        return "={}";
+    }
+    std::string result = "={";
+    for (int i=0; i<amount; ++i){
+        if (i!=0){
+            result += ",";
+        }
+        result += gen_corr_literal();
+    }
+    result += "}";
+    return result;
+}
+
+std::string Generator::gen_corr_name(){
+    static std::uniform_int_distribution<unsigned> dist_amount(0, 15);
+    static std::uniform_int_distribution<char> dist_letter(0, 25);
+    std::string name;
+    unsigned amount = dist_amount(rng);
+    name += gen_letter();
+    for (int i=0; i<amount; ++i){
+        name += gen_symbol();
+    }
+    return name;
+}
+
+std::string Generator::gen_corr_amount(unsigned& amount){
+    static std::uniform_int_distribution<unsigned> dist_amount(amount_min, std::min(amount_max, 999999999u)), dist_empty(0, 6);
+    amount = dist_amount(rng);
+    if (dist_empty(rng) == 0){
+        if (dist_empty(rng)%2 == 0){
+            return "[]";
+        }
+        return "[0]";
+    }
+    else{
+        return "[" + std::to_string(amount) + "]";
+    }
+
+}
+
+std::string Generator::gen_corr_literal(){
+    static std::uniform_int_distribution<int> dist_literal(-999999999, 999999999);
+    return std::to_string(dist_literal(rng));
+}
+
+std::string Generator::gen_inc_string(){
     static std::uniform_int_distribution<unsigned> dist_defect(0, 2);
     defect_type = dist_defect(rng);
     unsigned amount;
-    std::string str_amount = gen_amount(amount);
-    return gen_name() + str_amount + gen_arr(amount, str_amount);
+    std::string str_amount = gen_inc_amount(amount);
+    return gen_inc_name() + str_amount + gen_inc_arr(amount, str_amount);
 }
 
-std::string IncorrectGenerator::gen_name(){
+std::string Generator::gen_inc_name(){
     static std::uniform_int_distribution<unsigned> dist_defect(0, 2), dist_char(0, 255), dist_additional(2 ,8);
     if (defect_type != 0){
-        return corr_gen.gen_name();
+        return gen_corr_name();
     }
     std::string name;
     switch (dist_defect(rng)){
@@ -36,9 +90,9 @@ std::string IncorrectGenerator::gen_name(){
     return name;
 }
 
-std::string IncorrectGenerator::gen_amount(unsigned& amount){
+std::string Generator::gen_inc_amount(unsigned& amount){
     if (defect_type != 1){
-        return corr_gen.gen_amount(amount);
+        return gen_corr_amount(amount);
     }
     static std::uniform_int_distribution<unsigned> dist_amount(amount_min, amount_max), dist_defect(0, 2);
     amount = dist_amount(rng);
@@ -66,10 +120,10 @@ std::string IncorrectGenerator::gen_amount(unsigned& amount){
     return "[" + res + "]";
 }
 
-std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_amount){
+std::string Generator::gen_inc_arr(unsigned amount, const std::string& str_amount){
     std::uniform_int_distribution<unsigned> dist_defect(0, 3), dist_index(0, amount-1);
     if (defect_type != 2){
-        return corr_gen.gen_arr(amount, str_amount);
+        return gen_corr_arr(amount, str_amount);
     }
     unsigned arr_defect = dist_defect(rng);
     if (str_amount == "[]" or str_amount == "[0]"){
@@ -88,9 +142,9 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
     std::string result="={";
     switch (arr_defect){
         case 0:
-            result = corr_gen.gen_arr(amount+1, str_amount);
+            result = gen_corr_arr(amount+1, str_amount);
             while (result == "={}"){
-                result = corr_gen.gen_arr(amount+1, str_amount);
+                result = gen_corr_arr(amount+1, str_amount);
             }
             break;
         case 1:
@@ -108,14 +162,14 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
                     }
                 }
                 if (arr_defect == 2 and i == bad_ind){
-                    result += gen_literal();
+                    result += gen_inc_literal();
                 }
-                result += corr_gen.gen_literal();
+                result += gen_corr_literal();
             }
             result += "}";
             break;
         case 3:
-            result = corr_gen.gen_arr(amount, str_amount);
+            result = gen_corr_arr(amount, str_amount);
             switch (dist_defect(rng)){
                 case 0:
                     result[0] = gen_symbol();
@@ -135,11 +189,11 @@ std::string IncorrectGenerator::gen_arr(unsigned amount, const std::string& str_
     return result;
 }
 
-std::string IncorrectGenerator::gen_literal(){
+std::string Generator::gen_inc_literal(){
     static std::uniform_int_distribution<unsigned> dist_defect(0, 30);
-    std::string res=corr_gen.gen_literal();
+    std::string res=gen_corr_literal();
     assert(res.size() != 0);
-    unsigned roll;
+    unsigned roll=dist_defect(rng);
     if (roll == 0){
         res.push_back(gen_forbidden());
     }
@@ -155,18 +209,18 @@ std::string IncorrectGenerator::gen_literal(){
     return res;
 }
 
-char IncorrectGenerator::gen_digit(){
+char Generator::gen_digit(){
     static std::uniform_int_distribution<unsigned> dist_digit(0, 9);
     return '0' + dist_digit(rng);
 }
 
-char IncorrectGenerator::gen_forbidden(){
+char Generator::gen_forbidden(){
     static std::string forbidden = "_+=;:'][`~!@#$%^&*()";
     static std::uniform_int_distribution<unsigned> dist_forbidden(0, forbidden.size()-1);
     return forbidden[dist_forbidden(rng)];
 }
 
-char IncorrectGenerator::gen_letter(){
+char Generator::gen_letter(){
     static std::uniform_int_distribution<unsigned> dist_letter(0, 25);
     if (coinflip(rng)){
         return 'A' + dist_letter(rng);
@@ -174,10 +228,18 @@ char IncorrectGenerator::gen_letter(){
     return 'a' + dist_letter(rng);
 }
 
-char IncorrectGenerator::gen_symbol(){
+char Generator::gen_symbol(){
     static std::uniform_int_distribution<unsigned> dist_letter(0, 25), coinflip(0, 1);
     if (coinflip(rng)){
         return gen_digit();
     }
     return gen_letter();
+}
+
+void Generator::switch_bounds(unsigned lower, unsigned upper){
+    if (lower > upper){
+        std::swap(lower, upper);
+    }
+    amount_min = lower;
+    amount_max = upper;
 }

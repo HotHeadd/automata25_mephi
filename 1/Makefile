@@ -22,4 +22,4 @@ timetest:
 	mkdir -p ${BUILD_TEST_DIR}
 	cmake -B${BUILD_TEST_DIR} -Stests
 	cmake --build ${BUILD_TEST_DIR}
-	./bin/timetest 2
+	./bin/timetest 1 1
