@@ -1,0 +1,6 @@
+bin
+build
+buildtests
+.vscode
+z_files
+tests/results

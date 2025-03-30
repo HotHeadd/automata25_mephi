@@ -1,0 +1,83 @@
+// java -jar smc_files/Smc.jar -c++ smc_files/SMCResolver.sm  
+
+%start Map1::Start
+%class SMCResolver
+%header SMCResolver.hpp
+
+%map Map1
+%%
+// State    Transition  End State   Action(s)
+Start {
+    letter      Name        {}
+}
+
+Name {
+    letter [ctxt.not_too_big_name()]    Name        {}
+    digit [ctxt.not_too_big_name()]     Name        {}
+    lsbracket                           Amount      {}
+}
+
+Amount {
+    digit [ctxt.not_too_big_amount()]    Amount      {}
+    rsbracket                            WF_EQ       {load_amount();}
+}
+
+WF_EQ {
+    eq          WF_BR       {}
+}
+
+WF_BR {
+    lfbracket   Literal_1   {}
+}
+
+Literal_1 {
+    digit                            Literal_2   {}
+    minus                            Literal_m   {}
+    rfbracket [ctxt.check_bracket()] OK          {}
+}
+
+Literal_m{
+    digit       Literal_2   {}
+}
+
+Literal_2{
+    digit                            Literal_2   {}
+    comma [ctxt.count_amount()]      Literal_1   {}
+    rfbracket                        OK          {}
+}
+
+OK {
+    EOS         nil         {Acceptable();}
+}
+
+False
+{
+    letter         nil       {}
+    digit          nil       {}
+    lsbracket      nil       {}
+    rsbracket      nil       {}
+    lfbracket      nil       {}
+    rfbracket      nil       {}
+    eq             nil       {}
+    minus          nil       {}
+    comma          nil       {}
+    unknown        nil       {}
+    EOS            nil       {}
+}
+
+Default
+{
+    letter         False       {Unacceptable();}
+    digit          False       {Unacceptable();}
+    lsbracket      False       {Unacceptable();}
+    rsbracket      False       {Unacceptable();}
+    lfbracket      False       {Unacceptable();}
+    rfbracket      False       {Unacceptable();}
+    eq             False       {Unacceptable();}
+    minus          False       {Unacceptable();}
+    comma          False       {Unacceptable();}
+    unknown        False       {Unacceptable();}
+    EOS            False       {Unacceptable();}
+    Reset          Start       {}
+}
+%%
