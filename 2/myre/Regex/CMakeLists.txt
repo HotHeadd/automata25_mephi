@@ -3,4 +3,4 @@ add_library(RegexLib)
 target_include_directories(RegexLib PUBLIC include)
 
 target_sources(RegexLib PRIVATE src/regex.cpp
-							 src/smatch.cpp)
+							 src/parser.cpp)

@@ -1,16 +1,18 @@
 #include <iostream>
 #include "myre.hpp"
 
+using namespace myre;
+
 int main(){
-	std::string regex_str = "a*bc";
-	std::string test = "aaaabc";
-	myre::Regex regex(regex_str);
-	bool res = myre::search(test, regex);
-	if (res){
-		std::cout << "String \"" << test << "\" matched regex \"" << regex_str << "\"\n";
-	}
-	else{
-		std::cout << "ALL BAD GUYS\n";
+	RegexParser parser;
+	std::list<std::shared_ptr<Token>> tokens = parser.tokenize("aa*b{1}");
+	for (auto token : tokens){
+		if (token->type == TokenType::CHAR){
+			std::cout << token->value << "\n";
+		}
+		if (token->type == TokenType::RANGE){
+			std::cout << "RANGE " << token->start << " " << token->finish << "\n";
+		}
 	}
 	return 0;
 }
