@@ -5,65 +5,61 @@ namespace myre
 {
 
 std::shared_ptr<SyntaxNode> RegexParser::parse(const std::string& regex){
-	std::list<std::shared_ptr<Token>> pol_notation = tokenize(regex);
-	// алгоритм разбиения в дерево
-	return nullptr;
+	tokens = tokenize(regex);
+	return parse_expression();
 }
 
-std::shared_ptr<Token> RegexParser::parse_range(const std::string& regex, int& i){
-	std::string lower, upper;
-	bool is_upper = false;
-	unsigned i_lower=0, i_upper=0;
-	while (i < regex.size()){
-		++i;
-		char sym = regex[i];
-		if (sym == '}'){
-			break;
-		}
-		else if (sym == ',' and is_upper == false){
-			is_upper = true;
-		}
-		else if (std::isdigit(sym)){
-			if (is_upper){
-				upper += sym;
-			}
-			else{
-				lower += sym;
-			}
-		}
-		else {
+std::shared_ptr<SyntaxNode> RegexParser::parse_expression(){
+	std::shared_ptr<SyntaxNode> node = parse_term();
+	while (!tokens.empty() and tokens.front()->type == TokenType::OR){
+		consume();
+		std::shared_ptr<SyntaxNode> right = parse_term();
+		node = std::make_shared<SyntaxNode>(NodeType::OR, node, right);
+	}
+	return node;
+}
+
+std::shared_ptr<SyntaxNode> RegexParser::parse_term(){
+	std::shared_ptr<SyntaxNode> node = parse_atom();
+	while (!tokens.empty() and tokens.front()->type == TokenType::CONCAT){
+		consume();
+		std::shared_ptr<SyntaxNode> right = parse_atom();
+		node = std::make_shared<SyntaxNode>(NodeType::CONCAT, node, right);
+	}
+	return node;
+}
+
+std::shared_ptr<SyntaxNode> RegexParser::parse_atom(){
+	std::shared_ptr<SyntaxNode> node;
+	std::shared_ptr<Token> token = consume();
+	if (token->type == TokenType::LPAR){
+		std::shared_ptr<SyntaxNode> node = parse_expression();
+		if (consume()->type != TokenType::RPAR){
 			throw SyntaxError(regex);
 		}
 	}
-	if (i>=regex.size()){
-		throw ParenthesesError(regex);
-	}
-	if (lower.empty()){
+	else if (token->type != TokenType::CHAR){
 		throw SyntaxError(regex);
 	}
-	if (upper.empty()){
-		if (is_upper == true){
-			i_upper = INF;
-		}
-		else{
-			upper = lower;
-		}
+	else{
+		node = token->to_node();
 	}
-	try{
-		i_lower = std::stoi(lower);
-		if (!upper.empty()){
-			i_upper = std::stoi(upper);
-		}
+	if (!tokens.empty() and tokens.front()->type == TokenType::RANGE){
+		std::shared_ptr<SyntaxNode> prev_node = node;
+		node = consume()->to_node();
+		node->left = prev_node;
 	}
-	catch (std::invalid_argument& e){
-		throw SyntaxError(regex);
-	}
-	if (i_lower > i_upper){
-		throw RangeError(i_lower, i_upper);
-	}
-	return std::make_shared<Token>(TokenType::RANGE, i_lower, i_upper);
+	return node;
 }
 
+std::shared_ptr<Token> RegexParser::consume(){
+	if (tokens.empty()){
+		return nullptr;
+	}
+	std::shared_ptr<Token> elem = tokens.front();
+	tokens.pop_front();
+	return elem;
+}
 
 std::list<std::shared_ptr<Token>> RegexParser::tokenize(const std::string& regex){
 	std::list<std::shared_ptr<Token>> nodes;
@@ -124,6 +120,59 @@ std::list<std::shared_ptr<Token>> RegexParser::tokenize(const std::string& regex
 	return nodes;
 }
 
+std::shared_ptr<Token> RegexParser::parse_range(const std::string& regex, int& i){
+	std::string lower, upper;
+	bool is_upper = false;
+	unsigned i_lower=0, i_upper=0;
+	while (i < regex.size()){
+		++i;
+		char sym = regex[i];
+		if (sym == '}'){
+			break;
+		}
+		else if (sym == ',' and is_upper == false){
+			is_upper = true;
+		}
+		else if (std::isdigit(sym)){
+			if (is_upper){
+				upper += sym;
+			}
+			else{
+				lower += sym;
+			}
+		}
+		else {
+			throw SyntaxError(regex);
+		}
+	}
+	if (i>=regex.size()){
+		throw ParenthesesError(regex);
+	}
+	if (lower.empty()){
+		throw SyntaxError(regex);
+	}
+	if (upper.empty()){
+		if (is_upper == true){
+			i_upper = INF;
+		}
+		else{
+			upper = lower;
+		}
+	}
+	try{
+		i_lower = std::stoi(lower);
+		if (!upper.empty()){
+			i_upper = std::stoi(upper);
+		}
+	}
+	catch (std::invalid_argument& e){
+		throw SyntaxError(regex);
+	}
+	if (i_lower > i_upper){
+		throw RangeError(i_lower, i_upper);
+	}
+	return std::make_shared<Token>(TokenType::RANGE, i_lower, i_upper);
+}
 
 std::shared_ptr<SyntaxNode> Token::to_node(){
 	if (type == TokenType::RANGE){

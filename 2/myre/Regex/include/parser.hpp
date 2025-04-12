@@ -27,11 +27,12 @@ struct SyntaxNode {
 	NodeType type;
 	char value='\0';
 	unsigned start, finish;
-	std::shared_ptr<SyntaxNode> left, right;
+	std::shared_ptr<SyntaxNode> left=nullptr, right=nullptr;
 
-	SyntaxNode(NodeType type_i, char value_i='\0', 
-				std::shared_ptr<SyntaxNode> left_kid = nullptr, std::shared_ptr<SyntaxNode> right_kid = nullptr)
-		: type(type_i), value(value_i), left(left_kid), right(right_kid) {}
+	SyntaxNode(NodeType type_i, std::shared_ptr<SyntaxNode> left_kid = nullptr, std::shared_ptr<SyntaxNode> right_kid = nullptr)
+	: type(type_i), left(left_kid), right(right_kid)  {}
+	SyntaxNode(NodeType type_i, char value_i)
+		: type(type_i), value(value_i){}
 	SyntaxNode(NodeType type_i, unsigned value_left, unsigned value_right, 
 				std::shared_ptr<SyntaxNode> left_kid = nullptr, std::shared_ptr<SyntaxNode> right_kid = nullptr) 
 		: type(type_i), start(value_left), finish(value_right), left(left_kid), right(right_kid) {}
@@ -50,14 +51,23 @@ struct Token{
 	std::shared_ptr<SyntaxNode> to_node();
 };
 
+
 class RegexParser {
 public:
-	std::shared_ptr<SyntaxNode> parse(const std::string& regex); // возвращает корень дерева разбора 
-// private:
-	const unsigned INF = -1; 
+	std::shared_ptr<SyntaxNode> parse(const std::string& regex); // возвращает корень дерева разбора
 	std::list<std::shared_ptr<Token>> tokenize(const std::string& regex);
+private:
+	std::string regex;
+	const unsigned INF = -1;
+	std::list<std::shared_ptr<Token>> tokens;
 	std::shared_ptr<Token> parse_range(const std::string& regex, int& i);
+
+	std::shared_ptr<SyntaxNode> parse_expression();
+	std::shared_ptr<SyntaxNode> parse_term();
+	std::shared_ptr<SyntaxNode> parse_atom();
+	std::shared_ptr<Token> consume();
 };
+
 
 class RegexError : public std::runtime_error {
 public:
