@@ -1,0 +1,20 @@
+digraph AST {
+  node [shape=box, fontname="Courier"];
+  edge [arrowhead=none];
+
+  0 [label="CONCAT"];
+  1 [label="RANGE: 1-4294967295"];
+  2 [label="CONCAT"];
+  3 [label="CONCAT"];
+  4 [label="CHAR: 'a'"];
+  3 -> 4 [label="L"];
+  5 [label="CHAR: 'b'"];
+  3 -> 5 [label="R"];
+  2 -> 3 [label="L"];
+  6 [label="CHAR: 'c'"];
+  2 -> 6 [label="R"];
+  1 -> 2 [label="L"];
+  0 -> 1 [label="L"];
+  7 [label="CHAR: 'd'"];
+  0 -> 7 [label="R"];
+}

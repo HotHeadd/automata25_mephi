@@ -33,7 +33,7 @@ std::shared_ptr<SyntaxNode> RegexParser::parse_atom(){
 	std::shared_ptr<SyntaxNode> node;
 	std::shared_ptr<Token> token = consume();
 	if (token->type == TokenType::LPAR){
-		std::shared_ptr<SyntaxNode> node = parse_expression();
+		node = parse_expression();
 		if (consume()->type != TokenType::RPAR){
 			throw SyntaxError(regex);
 		}
