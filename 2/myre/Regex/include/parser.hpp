@@ -6,13 +6,6 @@
 namespace myre
 {
 
-enum class NodeType{
-	RANGE,
-	OR,
-	CONCAT,
-	CHAR
-};
-
 enum class TokenType{
 	LPAR,
 	RPAR,
@@ -21,6 +14,14 @@ enum class TokenType{
 	CONCAT,
 	CHAR,
 	NONE
+};
+
+enum class NodeType{
+	RANGE,
+	OR,
+	CONCAT,
+	CHAR,
+	EOS
 };
 
 struct SyntaxNode {
@@ -57,7 +58,7 @@ public:
 	std::shared_ptr<SyntaxNode> parse(const std::string& regex); // возвращает корень дерева разбора
 	std::list<std::shared_ptr<Token>> tokenize(const std::string& regex);
 private:
-	std::string regex;
+	std::string regex_;
 	const unsigned INF = -1;
 	std::list<std::shared_ptr<Token>> tokens;
 	std::shared_ptr<Token> parse_range(const std::string& regex, int& i);

@@ -25,6 +25,9 @@ int generateDot(const std::shared_ptr<SyntaxNode>& node, std::ofstream& dotFile,
 				   (node->finish == 0 ? "+" : 
 				   ("-" + std::to_string(node->finish)));
 			break;
+		case NodeType::EOS:
+			label = "$EOS$";
+			break;
 	}
 
 	dotFile << "  " << currentId << " [label=\"" << label << "\"];\n";
@@ -61,7 +64,7 @@ void visualize(const std::shared_ptr<SyntaxNode>& root, const std::string& filen
 
 int main(){
 	RegexParser parser;
-	std::shared_ptr<SyntaxNode> node = parser.parse("(abc)+d");
+	std::shared_ptr<SyntaxNode> node = parser.parse("a|b");
 	visualize(node, "ast.dot");
 	return 0;
 }

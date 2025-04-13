@@ -6,7 +6,13 @@ namespace myre
 
 std::shared_ptr<SyntaxNode> RegexParser::parse(const std::string& regex){
 	tokens = tokenize(regex);
-	return parse_expression();
+	regex_ = regex;
+	std::shared_ptr<SyntaxNode> node = parse_expression();
+	return std::make_shared<SyntaxNode>(
+				NodeType::CONCAT, 
+				node, 
+				std::make_shared<SyntaxNode>(NodeType::EOS)
+	);
 }
 
 std::shared_ptr<SyntaxNode> RegexParser::parse_expression(){
@@ -35,11 +41,11 @@ std::shared_ptr<SyntaxNode> RegexParser::parse_atom(){
 	if (token->type == TokenType::LPAR){
 		node = parse_expression();
 		if (consume()->type != TokenType::RPAR){
-			throw SyntaxError(regex);
+			throw SyntaxError(regex_);
 		}
 	}
 	else if (token->type != TokenType::CHAR){
-		throw SyntaxError(regex);
+		throw SyntaxError(regex_);
 	}
 	else{
 		node = token->to_node();
@@ -48,6 +54,9 @@ std::shared_ptr<SyntaxNode> RegexParser::parse_atom(){
 		std::shared_ptr<SyntaxNode> prev_node = node;
 		node = consume()->to_node();
 		node->left = prev_node;
+	}
+	if (!tokens.empty() and tokens.front()->type == TokenType::RANGE){
+		throw SyntaxError(regex_);
 	}
 	return node;
 }
@@ -96,11 +105,10 @@ std::list<std::shared_ptr<Token>> RegexParser::tokenize(const std::string& regex
 		}
 		else if (sym == '#'){
 			++i;
-			if (i < regex.size()){
+			if (i >= regex.size()){
 				throw SyntaxError(regex);
 			}
-			token = std::make_shared<Token>(TokenType::CHAR, sym);
-
+			token = std::make_shared<Token>(TokenType::CHAR, regex[i]);
 		}
 		else {
 			token = std::make_shared<Token>(TokenType::CHAR, sym);
@@ -179,6 +187,9 @@ std::shared_ptr<SyntaxNode> Token::to_node(){
 		return std::make_shared<SyntaxNode>(NodeType::RANGE, start, finish);
 	}
 	if (type == TokenType::CHAR){
+		if (value == '$'){
+			return std::make_shared<SyntaxNode>(NodeType::EOS);
+		}
 		return std::make_shared<SyntaxNode>(NodeType::CHAR, value);
 	}
 	if (type == TokenType::OR){

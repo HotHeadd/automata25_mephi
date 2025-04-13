@@ -1,13 +1,10 @@
 #pragma once
 
 #include "parser.hpp"
+#include "dfa.hpp"
 
 namespace myre
 {
-
-struct DFAState {
-
-};
 
 class Regex {
 public:
@@ -17,9 +14,5 @@ private:
 	std::string expr_;
 };
 
-class DFABuilder {
-public:
-	std::shared_ptr<DFAState> buildDFA(std::shared_ptr<SyntaxNode> tree);
-};
 
 } // namespace myre
