@@ -1,12 +1,13 @@
 #include "parser.hpp"
 #include <cctype>
+#include <iostream>
 
 namespace myre
 {
 
 std::shared_ptr<SyntaxNode> RegexParser::parse(const std::string& regex){
-	tokens = tokenize(regex);
 	regex_ = regex;
+	tokens = tokenize(regex);
 	std::shared_ptr<SyntaxNode> node = parse_expression();
 	return std::make_shared<SyntaxNode>(
 				NodeType::CONCAT, 
@@ -61,12 +62,12 @@ std::shared_ptr<SyntaxNode> RegexParser::parse_atom(){
 	else{
 		node = token->to_node();
 	}
-	if (!tokens.empty() and tokens.front()->type == TokenType::RANGE){
+	if (!tokens.empty() and tokens.front()->type == TokenType::KLEENE){
 		std::shared_ptr<SyntaxNode> prev_node = node;
 		node = consume()->to_node();
 		node->left = prev_node;
 	}
-	if (!tokens.empty() and tokens.front()->type == TokenType::RANGE){
+	if (!tokens.empty() and tokens.front()->type == TokenType::KLEENE){
 		throw SyntaxError(regex_);
 	}
 	return node;
@@ -84,13 +85,14 @@ std::shared_ptr<Token> RegexParser::consume(){
 std::list<std::shared_ptr<Token>> RegexParser::tokenize(const std::string& regex){
 	std::list<std::shared_ptr<Token>> tokens;
 	TokenType prev_type = TokenType::NONE;
-	std::shared_ptr<Token> token;
+	std::list<std::shared_ptr<Token>> new_tokens;
 	int i = 0, par_count=0;
 	while (i < regex.size()){
+		new_tokens.clear();
 		char sym = regex[i];
 		if (sym == '('){
 			++par_count;
-			token = std::make_shared<Token>(TokenType::LPAR);
+			new_tokens.push_back(std::make_shared<Token>(TokenType::LPAR));
 		}
 		else if (sym == ')'){
 			--par_count;
@@ -98,44 +100,43 @@ std::list<std::shared_ptr<Token>> RegexParser::tokenize(const std::string& regex
 				throw ParenthesesError(regex);
 			}
 			if (tokens.back()->type == TokenType::LPAR){
-				tokens.pop_back();
-				++i;
-				continue;
+				new_tokens.push_back(std::make_shared<Token>(TokenType::EPSYLON));
 			}
-			token = std::make_shared<Token>(TokenType::RPAR);
+			new_tokens.push_back(std::make_shared<Token>(TokenType::RPAR));
 		}
 		else if (sym == '|'){
-			token = std::make_shared<Token>(TokenType::OR);
+			new_tokens.push_back(std::make_shared<Token>(TokenType::OR));
 		}
 		else if (sym == '*'){
-			token = std::make_shared<Token>(TokenType::RANGE, 0, INF);
+			new_tokens.push_back(std::make_shared<Token>(TokenType::KLEENE));
 		}
 		else if (sym == '+'){
-			token = std::make_shared<Token>(TokenType::RANGE, 1, INF);
+			new_tokens = transform_range(1, INF, tokens, prev_type);
 		}
 		else if (sym == '?'){
-			token = std::make_shared<Token>(TokenType::RANGE, 0, 1);
+			new_tokens = transform_range(0, 1, tokens, prev_type);
 		}
 		else if (sym == '{'){
-			token = parse_range(regex, i);
+			std::pair<unsigned, unsigned> pair = parse_range(regex, i, tokens);
+			new_tokens = transform_range(pair.first, pair.second, tokens, prev_type);
 		}
 		else if (sym == '#'){
 			++i;
 			if (i >= regex.size()){
 				throw SyntaxError(regex);
 			}
-			token = std::make_shared<Token>(TokenType::CHAR, regex[i]);
+			new_tokens.push_back(std::make_shared<Token>(TokenType::CHAR, regex[i]));
 		}
 		else {
-			token = std::make_shared<Token>(TokenType::CHAR, sym);
+			new_tokens.push_back(std::make_shared<Token>(TokenType::CHAR, sym));
 		}
-		if (prev_type == TokenType::CHAR or prev_type == TokenType::RPAR or prev_type == TokenType::RANGE){
-			if (token->type == TokenType::CHAR or token->type == TokenType::LPAR){
+		if (prev_type == TokenType::CHAR or prev_type == TokenType::RPAR or prev_type == TokenType::KLEENE){
+			if (new_tokens.front()->type == TokenType::CHAR or new_tokens.front()->type == TokenType::LPAR){
 				tokens.push_back(std::make_shared<Token>(TokenType::CONCAT));
 			}
 		}
-		tokens.push_back(token);
-		prev_type = token->type;
+		tokens.insert(tokens.end(), new_tokens.begin(), new_tokens.end());
+		prev_type = new_tokens.back()->type;
 		++i;
 	}
 	if (par_count != 0){
@@ -144,7 +145,68 @@ std::list<std::shared_ptr<Token>> RegexParser::tokenize(const std::string& regex
 	return tokens;
 }
 
-std::shared_ptr<Token> RegexParser::parse_range(const std::string& regex, int& i){
+std::list<std::shared_ptr<Token>> RegexParser::transform_range(unsigned lower, unsigned upper, 
+															   std::list<std::shared_ptr<Token>>& tokens,
+															   TokenType& prev_type){
+	std::list<std::shared_ptr<Token>> new_tokens;
+	std::list<std::shared_ptr<Token>> old_tokens;
+	if (tokens.empty()){
+		throw SyntaxError(regex_);
+	}
+	old_tokens.push_front(tokens.back());
+	tokens.pop_back();
+	if (old_tokens.back()->type == TokenType::RPAR){
+		int braces = 1;
+		while (old_tokens.front()->type != TokenType::LPAR or braces > 0){
+			if (tokens.back()->type == TokenType::LPAR){
+				--braces;
+			}
+			if (tokens.back()->type == TokenType::RPAR){
+				++braces;
+			}
+			old_tokens.push_front(tokens.back());
+			tokens.pop_back();
+		}
+
+	}
+	bool first_token = true;
+	for (int i=0; i<lower; ++i){
+		if (!first_token){
+			new_tokens.push_back(std::make_shared<Token>(TokenType::CONCAT));
+		}
+		if (old_tokens.back()->type != TokenType::RPAR){
+			new_tokens.push_back(std::make_shared<Token>(TokenType::LPAR));
+		}
+		new_tokens.insert(new_tokens.end(), old_tokens.begin(), old_tokens.end());
+		if (old_tokens.back()->type != TokenType::RPAR){
+			new_tokens.push_back(std::make_shared<Token>(TokenType::RPAR));
+		}
+		first_token = false;
+	}
+	if (upper == INF){
+		new_tokens.push_back(std::make_shared<Token>(TokenType::CONCAT));
+		new_tokens.push_back(std::make_shared<Token>(TokenType::LPAR));
+		new_tokens.insert(new_tokens.end(), old_tokens.begin(), old_tokens.end());
+		new_tokens.push_back(std::make_shared<Token>(TokenType::RPAR));
+		new_tokens.push_back(std::make_shared<Token>(TokenType::KLEENE));
+	}
+	else{
+		for (int i=lower; i<upper; ++i){
+			if (!first_token){
+				new_tokens.push_back(std::make_shared<Token>(TokenType::CONCAT));
+			}
+			new_tokens.push_back(std::make_shared<Token>(TokenType::LPAR));
+			new_tokens.insert(new_tokens.end(), old_tokens.begin(), old_tokens.end());
+			new_tokens.push_back(std::make_shared<Token>(TokenType::OR));
+			new_tokens.push_back(std::make_shared<Token>(TokenType::RPAR));
+			first_token = false;
+		}
+	}
+	prev_type = TokenType::NONE;
+	return new_tokens;
+}
+
+std::pair<unsigned, unsigned> RegexParser::parse_range(const std::string& regex, int& i, std::list<std::shared_ptr<Token>>& tokens){
 	std::string lower, upper;
 	bool is_upper = false;
 	unsigned i_lower=0, i_upper=0;
@@ -195,12 +257,12 @@ std::shared_ptr<Token> RegexParser::parse_range(const std::string& regex, int& i
 	if (i_lower > i_upper){
 		throw RangeError(i_lower, i_upper);
 	}
-	return std::make_shared<Token>(TokenType::RANGE, i_lower, i_upper);
+	return {i_lower, i_upper};
 }
 
 std::shared_ptr<SyntaxNode> Token::to_node(){
-	if (type == TokenType::RANGE){
-		return std::make_shared<SyntaxNode>(NodeType::RANGE, start, finish);
+	if (type == TokenType::KLEENE){
+		return std::make_shared<SyntaxNode>(NodeType::KLEENE);
 	}
 	if (type == TokenType::CHAR){
 		if (value == '$'){

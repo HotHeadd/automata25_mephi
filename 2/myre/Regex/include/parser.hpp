@@ -9,15 +9,16 @@ namespace myre
 enum class TokenType{
 	LPAR,
 	RPAR,
-	RANGE,
+	KLEENE,
 	OR,
 	CONCAT,
 	CHAR,
+	EPSYLON,
 	NONE
 };
 
 enum class NodeType{
-	RANGE,
+	KLEENE,
 	OR,
 	CONCAT,
 	CHAR,
@@ -62,7 +63,8 @@ private:
 	std::string regex_;
 	const unsigned INF = -1;
 	std::list<std::shared_ptr<Token>> tokens;
-	std::shared_ptr<Token> parse_range(const std::string& regex, int& i);
+	std::pair<unsigned, unsigned> parse_range(const std::string& regex, int& i, std::list<std::shared_ptr<Token>>& tokens);
+	std::list<std::shared_ptr<Token>> transform_range(unsigned lower, unsigned upper, std::list<std::shared_ptr<Token>>& tokens, TokenType& prev_type);
 
 	std::shared_ptr<SyntaxNode> parse_expression();
 	std::shared_ptr<SyntaxNode> parse_term();

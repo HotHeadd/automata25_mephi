@@ -20,10 +20,8 @@ int generateDot(const std::shared_ptr<SyntaxNode>& node, std::ofstream& dotFile,
 		case NodeType::OR:
 			label = "OR";
 			break;
-		case NodeType::RANGE:
-			label = "RANGE: " + std::to_string(node->start) + 
-				   (node->finish == 0 ? "+" : 
-				   ("-" + std::to_string(node->finish)));
+		case NodeType::KLEENE:
+			label = "KLEENE";
 			break;
 		case NodeType::EOS:
 			label = "$EOS$";
@@ -67,7 +65,33 @@ void visualize(const std::shared_ptr<SyntaxNode>& root, const std::string& filen
 
 int main(){
 	RegexParser parser;
-	std::shared_ptr<SyntaxNode> node = parser.parse("(a|)(|)");
+	std::string test = "(e|(a|b)){1,2}";
+	std::list<std::shared_ptr<Token>> tokens = parser.tokenize(test);
+	for (auto token : tokens){
+		if (token->type == TokenType::LPAR){
+			std::cout << "(\n";
+		}
+		if (token->type == TokenType::RPAR){
+			std::cout << ")\n";
+		}
+		if (token->type == TokenType::KLEENE){
+			std::cout << "*\n";
+		}
+		if (token->type == TokenType::OR){
+			std::cout << "|\n";
+		}
+		if (token->type == TokenType::CHAR){
+			std::cout << "char\n";
+		
+		}
+		if (token->type == TokenType::CONCAT){
+			std::cout << "concat\n";
+		}
+		if (token->type == TokenType::EPSYLON){
+			std::cout << "eps\n";
+		}
+	}
+	std::shared_ptr<SyntaxNode> node = parser.parse(test);
 	visualize(node, "ast.dot");
 	return 0;
 }
