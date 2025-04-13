@@ -65,7 +65,7 @@ void visualize(const std::shared_ptr<SyntaxNode>& root, const std::string& filen
 
 int main(){
 	RegexParser parser;
-	std::string test = "(e|(a|b)){1,2}";
+	std::string test = "()+";
 	std::list<std::shared_ptr<Token>> tokens = parser.tokenize(test);
 	for (auto token : tokens){
 		if (token->type == TokenType::LPAR){

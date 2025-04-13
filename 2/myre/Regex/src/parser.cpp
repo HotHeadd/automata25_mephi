@@ -56,7 +56,7 @@ std::shared_ptr<SyntaxNode> RegexParser::parse_atom(){
 			throw SyntaxError(regex_);
 		}
 	}
-	else if (token->type != TokenType::CHAR){
+	else if (token->type != TokenType::CHAR and token->type != TokenType::EPSYLON){
 		throw SyntaxError(regex_);
 	}
 	else{
@@ -265,10 +265,10 @@ std::shared_ptr<SyntaxNode> Token::to_node(){
 		return std::make_shared<SyntaxNode>(NodeType::KLEENE);
 	}
 	if (type == TokenType::CHAR){
-		if (value == '$'){
-			return std::make_shared<SyntaxNode>(NodeType::EOS);
-		}
 		return std::make_shared<SyntaxNode>(NodeType::CHAR, value);
+	}
+	if (type == TokenType::EPSYLON){
+		return std::make_shared<SyntaxNode>(NodeType::EPSYLON);
 	}
 	if (type == TokenType::OR){
 		return std::make_shared<SyntaxNode>(NodeType::OR);
