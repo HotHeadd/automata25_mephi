@@ -16,10 +16,21 @@ std::shared_ptr<SyntaxNode> RegexParser::parse(const std::string& regex){
 }
 
 std::shared_ptr<SyntaxNode> RegexParser::parse_expression(){
-	std::shared_ptr<SyntaxNode> node = parse_term();
+	std::shared_ptr<SyntaxNode> node, right;
+	if (tokens.empty() or tokens.front()->type == TokenType::OR){
+		node = std::make_shared<SyntaxNode>(NodeType::EPSYLON);
+	}
+	else{
+		node = parse_term();
+	}
 	while (!tokens.empty() and tokens.front()->type == TokenType::OR){
 		consume();
-		std::shared_ptr<SyntaxNode> right = parse_term();
+		if (tokens.empty() or tokens.front()->type == TokenType::OR or tokens.front()->type == TokenType::RPAR){
+			right = std::make_shared<SyntaxNode>(NodeType::EPSYLON);
+		}
+		else{
+			right = parse_term();
+		}
 		node = std::make_shared<SyntaxNode>(NodeType::OR, node, right);
 	}
 	return node;
@@ -71,7 +82,7 @@ std::shared_ptr<Token> RegexParser::consume(){
 }
 
 std::list<std::shared_ptr<Token>> RegexParser::tokenize(const std::string& regex){
-	std::list<std::shared_ptr<Token>> nodes;
+	std::list<std::shared_ptr<Token>> tokens;
 	TokenType prev_type = TokenType::NONE;
 	std::shared_ptr<Token> token;
 	int i = 0, par_count=0;
@@ -85,6 +96,11 @@ std::list<std::shared_ptr<Token>> RegexParser::tokenize(const std::string& regex
 			--par_count;
 			if (par_count < 0){
 				throw ParenthesesError(regex);
+			}
+			if (tokens.back()->type == TokenType::LPAR){
+				tokens.pop_back();
+				++i;
+				continue;
 			}
 			token = std::make_shared<Token>(TokenType::RPAR);
 		}
@@ -115,17 +131,17 @@ std::list<std::shared_ptr<Token>> RegexParser::tokenize(const std::string& regex
 		}
 		if (prev_type == TokenType::CHAR or prev_type == TokenType::RPAR or prev_type == TokenType::RANGE){
 			if (token->type == TokenType::CHAR or token->type == TokenType::LPAR){
-				nodes.push_back(std::make_shared<Token>(TokenType::CONCAT));
+				tokens.push_back(std::make_shared<Token>(TokenType::CONCAT));
 			}
 		}
-		nodes.push_back(token);
+		tokens.push_back(token);
 		prev_type = token->type;
 		++i;
 	}
 	if (par_count != 0){
 		throw ParenthesesError(regex);
 	}
-	return nodes;
+	return tokens;
 }
 
 std::shared_ptr<Token> RegexParser::parse_range(const std::string& regex, int& i){

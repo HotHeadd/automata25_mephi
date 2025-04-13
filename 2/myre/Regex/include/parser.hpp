@@ -21,7 +21,8 @@ enum class NodeType{
 	OR,
 	CONCAT,
 	CHAR,
-	EOS
+	EOS,
+	EPSYLON
 };
 
 struct SyntaxNode {
