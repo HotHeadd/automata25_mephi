@@ -4,7 +4,7 @@
 namespace myre
 {
 
-std::shared_ptr<DFAState> Regex::compile(){
+DFA Regex::compile(){
 	RegexParser parser;
 	DFABuilder builder;
 

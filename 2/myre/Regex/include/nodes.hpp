@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <unordered_set>
 #include <unordered_map>
+#include <set>
 #include <vector>
 
 namespace myre
@@ -32,10 +32,17 @@ struct SyntaxNode;
 
 class SetHandler {
 public:
-	static std::vector<char> symbols;
+	static std::unordered_map<char, std::set<unsigned>> symbols;
 	static unsigned number_count;
-	static std::unordered_map<unsigned, std::unordered_set<unsigned>> followpos;
+	static std::unordered_map<unsigned, std::set<unsigned>> followpos;
 	
+	static unsigned get_final_ind(){
+		if (!symbols.contains('\0')){
+			throw std::runtime_error("No EOS symbol in set handler");
+		}
+		return *(symbols['\0'].begin());
+	}
+
 	static void reset(){
 		number_count = 0;
 		symbols.clear();
@@ -54,8 +61,8 @@ struct SyntaxNode {
 
 	unsigned number;
 	bool is_nullable;
-	std::unordered_set<unsigned> first_pos;
-	std::unordered_set<unsigned> last_pos;
+	std::set<unsigned> first_pos;
+	std::set<unsigned> last_pos;
 
 	SyntaxNode(NodeType type_i, std::shared_ptr<SyntaxNode> left_kid = nullptr, std::shared_ptr<SyntaxNode> right_kid = nullptr)
 	: type(type_i), left(left_kid), right(right_kid) {

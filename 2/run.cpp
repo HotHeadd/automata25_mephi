@@ -98,7 +98,7 @@ int generateDotAdvanced(const std::shared_ptr<SyntaxNode>& node, std::ofstream& 
 	label += "\\nnullable: " + std::string(node->is_nullable ? "true" : "false");
 	label += "\\nnumber: " + std::to_string(node->number);
 
-	auto set_to_string = [](const std::unordered_set<unsigned>& s) {
+	auto set_to_string = [](const std::set<unsigned>& s) {
 		std::string str = "{";
 		for (auto it = s.begin(); it != s.end(); ++it) {
 			if (it != s.begin()) str += ",";
@@ -127,53 +127,114 @@ int generateDotAdvanced(const std::shared_ptr<SyntaxNode>& node, std::ofstream& 
 }
 
 void visualize_with_sets(const std::shared_ptr<SyntaxNode>& root, const std::string& filename) {
-	std::ofstream dotFile(filename);
-	dotFile << "digraph SyntaxTree {\n";
-	dotFile << "  node [shape=box, fontname=\"Courier\", fontsize=10];\n";
-	dotFile << "  edge [arrowhead=none];\n\n";
+    std::ofstream dotFile(filename);
+    dotFile << "digraph SyntaxTree {\n";
+    dotFile << "  node [shape=box, fontname=\"Courier\", fontsize=10];\n";
+    dotFile << "  edge [arrowhead=none];\n\n";
 
-	int nodeCounter = 0;
-	generateDotAdvanced(root, dotFile, nodeCounter);
+    int nodeCounter = 0;
+    generateDotAdvanced(root, dotFile, nodeCounter);
 
-	// Добавим таблицу followpos
-	dotFile << "\n  subgraph cluster_followpos {\n";
-	dotFile << "    label=\"Followpos Table\";\n";
-	dotFile << "    fontsize=12;\n";
-	dotFile << "    style=filled;\n";
-	dotFile << "    color=lightgrey;\n";
-	dotFile << "    node [shape=plaintext];\n";
+    // Добавим таблицу followpos
+    dotFile << "\n  subgraph cluster_followpos {\n";
+    dotFile << "    label=\"Followpos Table\";\n";
+    dotFile << "    fontsize=12;\n";
+    dotFile << "    style=filled;\n";
+    dotFile << "    color=lightgrey;\n";
+    dotFile << "    node [shape=plaintext];\n";
 
-	dotFile << "    follow_table [label=<\n";
-	dotFile << "      <table border=\"1\" cellborder=\"1\" cellspacing=\"0\" cellpadding=\"4\">\n";
-	dotFile << "        <tr><td><b>Node #</b></td><td><b>Followpos</b></td></tr>\n";
+    dotFile << "    follow_table [label=<\n";
+    dotFile << "      <table border=\"1\" cellborder=\"1\" cellspacing=\"0\" cellpadding=\"4\">\n";
+    dotFile << "        <tr><td><b>Node #</b></td><td><b>Followpos</b></td></tr>\n";
 
-	for (const auto& [num, follow] : SetHandler::followpos) {
-		dotFile << "        <tr><td>" << num << "</td><td>{";
-		bool first = true;
-		for (auto f : follow) {
-			if (!first) dotFile << ", ";
-			dotFile << f;
-			first = false;
+    for (const auto& [num, follow] : SetHandler::followpos) {
+        dotFile << "        <tr><td>" << num << "</td><td>{";
+        bool first = true;
+        for (auto f : follow) {
+            if (!first) dotFile << ", ";
+            dotFile << f;
+            first = false;
+        }
+        dotFile << "}</td></tr>\n";
+    }
+
+    dotFile << "      </table>\n";
+    dotFile << "    >];\n";
+    dotFile << "  }\n";
+
+    // Добавим таблицу symbols
+    dotFile << "\n  subgraph cluster_symbols {\n";
+    dotFile << "    label=\"Symbols Table\";\n";
+    dotFile << "    fontsize=12;\n";
+    dotFile << "    style=filled;\n";
+    dotFile << "    color=lightgrey;\n";
+    dotFile << "    node [shape=plaintext];\n";
+
+    dotFile << "    symbols_table [label=<\n";
+    dotFile << "      <table border=\"1\" cellborder=\"1\" cellspacing=\"0\" cellpadding=\"4\">\n";
+    dotFile << "        <tr><td><b>Symbol</b></td><td><b>Node #s</b></td></tr>\n";
+
+    for (const auto& [symbol, nodes] : SetHandler::symbols) {
+		char opt = symbol;
+		if (symbol == '\0'){
+			opt = '$';
 		}
-		dotFile << "}</td></tr>\n";
-	}
+        dotFile << "        <tr><td>" << opt << "</td><td>{";
+        bool first = true;
+        for (auto node : nodes) {
+            if (!first) dotFile << ", ";
+            dotFile << node;
+            first = false;
+        }
+        dotFile << "}</td></tr>\n";
+    }
 
-	dotFile << "      </table>\n";
-	dotFile << "    >];\n";
-	dotFile << "  }\n";
+    dotFile << "      </table>\n";
+    dotFile << "    >];\n";
+    dotFile << "  }\n";
 
-	dotFile << "}\n";
-	dotFile.close();
+    dotFile << "}\n";
+    dotFile.close();
 
-	std::string command = "dot -Tpng " + filename + " -o " + filename + ".png";
-	system(command.c_str());
+    std::string command = "dot -Tpng " + filename + " -o " + filename + ".png";
+    system(command.c_str());
 }
 
 
+void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
+    out << "digraph DFA {\n";
+    out << "  rankdir=LR;\n";
+    out << "  node [shape = doublecircle];\n";
+
+    // Отметить принимающие состояния
+    for (size_t i = 0; i < dfa.ind_to_state.size(); ++i) {
+        if (dfa.ind_to_state[i].is_accepting) {
+            out << "  " << i << ";\n";
+        }
+    }
+
+    out << "  node [shape = circle];\n";
+
+    // Стартовая стрелка (условно из "пустого" состояния)
+    out << "  start [shape=point];\n";
+    out << "  start -> 0;\n"; // предполагаем, что стартовое состояние — 0
+
+    // Все переходы
+    for (size_t i = 0; i < dfa.ind_to_state.size(); ++i) {
+        const auto& state = dfa.ind_to_state[i];
+        for (const auto& t : state.transitions) {
+            out << "  " << i << " -> " << t.to << " [label=\"" << t.symbol << "\"];\n";
+        }
+    }
+
+    out << "}\n";
+}
+
 
 int main(){
+	std::string test = "(a|b)cd";
+
 	RegexParser parser;
-	std::string test = "d(l|d)*";
 	std::list<std::shared_ptr<Token>> tokens = parser.tokenize(test);
 	for (auto token : tokens){
 		if (token->type == TokenType::LPAR){
@@ -202,5 +263,18 @@ int main(){
 	std::shared_ptr<SyntaxNode> node = parser.parse(test);
 	visualize(node, "ast.dot");
 	visualize_with_sets(node, "ast_plus.dot");
+
+	Regex rg(test);
+	DFA dfa = rg.compile();
+	std::ofstream dotFile("automaton.dot");
+	dump_dfa_dot(dfa, dotFile);
+	
+	std::string expr = "goladdgoida";
+	if (search(expr, rg)){
+		std::cout << "\nTRUE\n";
+	}
+	else{
+		std::cout << "\nFALSE\n";
+	}
 	return 0;
 }

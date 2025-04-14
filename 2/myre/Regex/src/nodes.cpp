@@ -3,8 +3,8 @@
 namespace myre
 {
 unsigned SetHandler::number_count = 0;
-std::vector<char> SetHandler::symbols = {};
-std::unordered_map<unsigned, std::unordered_set<unsigned>> SetHandler::followpos = {};
+std::unordered_map<char, std::set<unsigned>> SetHandler::symbols = {};
+std::unordered_map<unsigned, std::set<unsigned>> SetHandler::followpos = {};
 
 SyntaxNode::SyntaxNode(std::shared_ptr<Token> token, std::shared_ptr<SyntaxNode> left_kid, std::shared_ptr<SyntaxNode> right_kid) 
 						: left(left_kid), right(right_kid){
@@ -37,10 +37,10 @@ void SetHandler::deduce_sets(SyntaxNode* node){
 	else if (node->type == NodeType::CHAR or node->type == NodeType::EOS){
 		node->number = number_count++;
 		if (node->type == NodeType::EOS){
-			symbols.push_back('\0');
+			symbols['\0'].insert(node->number);
 		}
 		else{
-			symbols.push_back(node->value);
+			symbols[node->value].insert(node->number);
 		}
 		node->is_nullable = false;
 		node->first_pos.insert(node->number);

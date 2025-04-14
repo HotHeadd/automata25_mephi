@@ -9,7 +9,7 @@ namespace myre
 class Regex {
 public:
 	Regex(std::string expr) : expr_(expr) {}
-	std::shared_ptr<DFAState> compile(); // parse + toDFA
+	DFA compile(); // parse + toDFA
 private:
 	std::string expr_;
 };
