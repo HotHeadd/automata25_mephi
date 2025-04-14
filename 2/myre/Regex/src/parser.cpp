@@ -60,11 +60,11 @@ std::shared_ptr<SyntaxNode> RegexParser::parse_atom(){
 		throw SyntaxError(regex_);
 	}
 	else{
-		node = token->to_node();
+		node = std::make_shared<SyntaxNode>(token);
 	}
 	if (!tokens.empty() and tokens.front()->type == TokenType::KLEENE){
 		std::shared_ptr<SyntaxNode> prev_node = node;
-		node = consume()->to_node();
+		node = std::make_shared<SyntaxNode>(consume());
 		node->left = prev_node;
 	}
 	if (!tokens.empty() and tokens.front()->type == TokenType::KLEENE){
@@ -260,23 +260,26 @@ std::pair<unsigned, unsigned> RegexParser::parse_range(const std::string& regex,
 	return {i_lower, i_upper};
 }
 
-std::shared_ptr<SyntaxNode> Token::to_node(){
-	if (type == TokenType::KLEENE){
-		return std::make_shared<SyntaxNode>(NodeType::KLEENE);
+SyntaxNode::SyntaxNode(std::shared_ptr<Token> token){
+	if (token->type == TokenType::KLEENE){
+		type = NodeType::KLEENE;
 	}
-	if (type == TokenType::CHAR){
-		return std::make_shared<SyntaxNode>(NodeType::CHAR, value);
+	else if (token->type == TokenType::CHAR){
+		type = NodeType::CHAR;
+		value = token->value;
 	}
-	if (type == TokenType::EPSYLON){
-		return std::make_shared<SyntaxNode>(NodeType::EPSYLON);
+	else if (token->type == TokenType::EPSYLON){
+		type = NodeType::EPSYLON;
 	}
-	if (type == TokenType::OR){
-		return std::make_shared<SyntaxNode>(NodeType::OR);
+	else if (token->type == TokenType::OR){
+		type = NodeType::OR;
 	}
-	if (type == TokenType::CONCAT){
-		return std::make_shared<SyntaxNode>(NodeType::CONCAT);
+	else if (token->type == TokenType::CONCAT){
+		type = NodeType::CONCAT;
 	}
-	throw std::runtime_error("Unable to transform token");
+	else{
+		throw std::runtime_error("Unable to transform token");
+	}
 }
 
 } // namespace myre

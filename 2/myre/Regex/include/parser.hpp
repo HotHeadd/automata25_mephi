@@ -39,6 +39,7 @@ struct SyntaxNode {
 	SyntaxNode(NodeType type_i, unsigned value_left, unsigned value_right, 
 				std::shared_ptr<SyntaxNode> left_kid = nullptr, std::shared_ptr<SyntaxNode> right_kid = nullptr) 
 		: type(type_i), start(value_left), finish(value_right), left(left_kid), right(right_kid) {}
+	SyntaxNode(std::shared_ptr<Token> token);
 };
 
 struct Token{
