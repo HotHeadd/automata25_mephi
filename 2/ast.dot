@@ -4,13 +4,17 @@ digraph AST {
 
   0 [label="CONCAT"];
   1 [label="CONCAT"];
-  2 [label="EPSYLON"];
+  2 [label="CHAR: 'd'"];
   1 -> 2 [label="L"];
   3 [label="KLEENE"];
-  4 [label="EPSYLON"];
+  4 [label="OR"];
+  5 [label="CHAR: 'l'"];
+  4 -> 5 [label="L"];
+  6 [label="CHAR: 'd'"];
+  4 -> 6 [label="R"];
   3 -> 4 [label="L"];
   1 -> 3 [label="R"];
   0 -> 1 [label="L"];
-  5 [label="$EOS$"];
-  0 -> 5 [label="R"];
+  7 [label="$EOS$"];
+  0 -> 7 [label="R"];
 }

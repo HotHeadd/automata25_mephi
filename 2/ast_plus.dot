@@ -1,0 +1,36 @@
+digraph SyntaxTree {
+  node [shape=box, fontname="Courier", fontsize=10];
+  edge [arrowhead=none];
+
+  0 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {3}"];
+  1 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {0,2,1}"];
+  2 [label="CHAR: 'd'\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {0}"];
+  1 -> 2 [label="L"];
+  3 [label="KLEENE\nnullable: true\nnumber: 0\nfirst: {2,1}\nlast: {2,1}"];
+  4 [label="OR\nnullable: false\nnumber: 0\nfirst: {2,1}\nlast: {2,1}"];
+  5 [label="CHAR: 'l'\nnullable: false\nnumber: 1\nfirst: {1}\nlast: {1}"];
+  4 -> 5 [label="L"];
+  6 [label="CHAR: 'd'\nnullable: false\nnumber: 2\nfirst: {2}\nlast: {2}"];
+  4 -> 6 [label="R"];
+  3 -> 4 [label="L"];
+  1 -> 3 [label="R"];
+  0 -> 1 [label="L"];
+  7 [label="$EOS$\nnullable: false\nnumber: 3\nfirst: {3}\nlast: {3}"];
+  0 -> 7 [label="R"];
+
+  subgraph cluster_followpos {
+    label="Followpos Table";
+    fontsize=12;
+    style=filled;
+    color=lightgrey;
+    node [shape=plaintext];
+    follow_table [label=<
+      <table border="1" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr><td><b>Node #</b></td><td><b>Followpos</b></td></tr>
+        <tr><td>0</td><td>{3, 1, 2}</td></tr>
+        <tr><td>1</td><td>{3, 1, 2}</td></tr>
+        <tr><td>2</td><td>{3, 1, 2}</td></tr>
+      </table>
+    >];
+  }
+}

@@ -1,6 +1,5 @@
 #include "parser.hpp"
 #include <cctype>
-#include <iostream>
 
 namespace myre
 {
@@ -8,6 +7,7 @@ namespace myre
 std::shared_ptr<SyntaxNode> RegexParser::parse(const std::string& regex){
 	regex_ = regex;
 	tokens = tokenize(regex);
+	SetHandler::reset();
 	std::shared_ptr<SyntaxNode> node = parse_expression();
 	return std::make_shared<SyntaxNode>(
 				NodeType::CONCAT, 
@@ -64,8 +64,7 @@ std::shared_ptr<SyntaxNode> RegexParser::parse_atom(){
 	}
 	if (!tokens.empty() and tokens.front()->type == TokenType::KLEENE){
 		std::shared_ptr<SyntaxNode> prev_node = node;
-		node = std::make_shared<SyntaxNode>(consume());
-		node->left = prev_node;
+		node = std::make_shared<SyntaxNode>(consume(), prev_node);
 	}
 	if (!tokens.empty() and tokens.front()->type == TokenType::KLEENE){
 		throw SyntaxError(regex_);
@@ -174,13 +173,7 @@ std::list<std::shared_ptr<Token>> RegexParser::transform_range(unsigned lower, u
 		if (!first_token){
 			new_tokens.push_back(std::make_shared<Token>(TokenType::CONCAT));
 		}
-		if (old_tokens.back()->type != TokenType::RPAR){
-			new_tokens.push_back(std::make_shared<Token>(TokenType::LPAR));
-		}
 		new_tokens.insert(new_tokens.end(), old_tokens.begin(), old_tokens.end());
-		if (old_tokens.back()->type != TokenType::RPAR){
-			new_tokens.push_back(std::make_shared<Token>(TokenType::RPAR));
-		}
 		first_token = false;
 	}
 	if (upper == INF){
@@ -211,7 +204,6 @@ std::pair<unsigned, unsigned> RegexParser::parse_range(const std::string& regex,
 	bool is_upper = false;
 	unsigned i_lower=0, i_upper=0;
 	while (i < regex.size()){
-		++i;
 		char sym = regex[i];
 		if (sym == '}'){
 			break;
@@ -227,9 +219,10 @@ std::pair<unsigned, unsigned> RegexParser::parse_range(const std::string& regex,
 				lower += sym;
 			}
 		}
-		else {
+		else if (sym != '{'){
 			throw SyntaxError(regex);
 		}
+		++i;
 	}
 	if (i>=regex.size()){
 		throw ParenthesesError(regex);
@@ -246,9 +239,9 @@ std::pair<unsigned, unsigned> RegexParser::parse_range(const std::string& regex,
 		}
 	}
 	try{
-		i_lower = std::stoi(lower);
+		i_lower = std::stoull(lower);
 		if (!upper.empty()){
-			i_upper = std::stoi(upper);
+			i_upper = std::stoull(upper);
 		}
 	}
 	catch (std::invalid_argument& e){
@@ -258,28 +251,6 @@ std::pair<unsigned, unsigned> RegexParser::parse_range(const std::string& regex,
 		throw RangeError(i_lower, i_upper);
 	}
 	return {i_lower, i_upper};
-}
-
-SyntaxNode::SyntaxNode(std::shared_ptr<Token> token){
-	if (token->type == TokenType::KLEENE){
-		type = NodeType::KLEENE;
-	}
-	else if (token->type == TokenType::CHAR){
-		type = NodeType::CHAR;
-		value = token->value;
-	}
-	else if (token->type == TokenType::EPSYLON){
-		type = NodeType::EPSYLON;
-	}
-	else if (token->type == TokenType::OR){
-		type = NodeType::OR;
-	}
-	else if (token->type == TokenType::CONCAT){
-		type = NodeType::CONCAT;
-	}
-	else{
-		throw std::runtime_error("Unable to transform token");
-	}
 }
 
 } // namespace myre

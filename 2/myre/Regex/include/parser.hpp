@@ -1,59 +1,10 @@
 #pragma once
 
-#include <memory>
 #include <list>
+#include "nodes.hpp"
 
 namespace myre
 {
-
-enum class TokenType{
-	LPAR,
-	RPAR,
-	KLEENE,
-	OR,
-	CONCAT,
-	CHAR,
-	EPSYLON,
-	NONE
-};
-
-enum class NodeType{
-	KLEENE,
-	OR,
-	CONCAT,
-	CHAR,
-	EOS,
-	EPSYLON
-};
-
-struct SyntaxNode {
-	NodeType type;
-	char value='\0';
-	unsigned start, finish;
-	std::shared_ptr<SyntaxNode> left=nullptr, right=nullptr;
-
-	SyntaxNode(NodeType type_i, std::shared_ptr<SyntaxNode> left_kid = nullptr, std::shared_ptr<SyntaxNode> right_kid = nullptr)
-	: type(type_i), left(left_kid), right(right_kid)  {}
-	SyntaxNode(NodeType type_i, char value_i)
-		: type(type_i), value(value_i){}
-	SyntaxNode(NodeType type_i, unsigned value_left, unsigned value_right, 
-				std::shared_ptr<SyntaxNode> left_kid = nullptr, std::shared_ptr<SyntaxNode> right_kid = nullptr) 
-		: type(type_i), start(value_left), finish(value_right), left(left_kid), right(right_kid) {}
-	SyntaxNode(std::shared_ptr<Token> token);
-};
-
-struct Token{
-	TokenType type;
-	char value='\0';
-	unsigned start, finish;
-
-	Token(TokenType type_i, char value_i='\0')
-		: type(type_i), value(value_i) {}
-	Token(TokenType type_i, unsigned value_left, unsigned value_right) 
-		: type(type_i), start(value_left), finish(value_right) {}
-
-	std::shared_ptr<SyntaxNode> to_node();
-};
 
 
 class RegexParser {
