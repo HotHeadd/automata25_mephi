@@ -230,46 +230,55 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
     out << "}\n";
 }
 
+void export_tokens_dot(const std::list<std::shared_ptr<Token>>& tokens, const std::string& filename) {
+    std::ofstream out(filename);
+	out << "digraph Tokens {\n";
+    out << "  node [shape=none, fontname=\"monospace\"];\n";
+    out << "  tokens [label=<\n";
+    out << "    <TABLE BORDER=\"1\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n";
+    out << "      <TR><TD><B>Index</B></TD><TD><B>Type</B></TD><TD><B>Value</B></TD></TR>\n";
+
+    int index = 0;
+    for (const auto& token : tokens) {
+        std::string type_str;
+        switch (token->type) {
+            case TokenType::LPAR:    type_str = "("; break;
+            case TokenType::RPAR:    type_str = ")"; break;
+            case TokenType::KLEENE:  type_str = "*"; break;
+            case TokenType::OR:      type_str = "OR"; break;
+            case TokenType::CONCAT:  type_str = "CONCAT"; break;
+            case TokenType::CHAR:    type_str = "CHAR"; break;
+            case TokenType::EPSYLON: type_str = "EPSYLON"; break;
+            default:                 type_str = "UNKNOWN"; break;
+        }
+
+        std::string value_str = (token->type == TokenType::CHAR) ? std::string(1, token->value) : "";
+        out << "      <TR><TD>" << index++ << "</TD><TD>" << type_str << "</TD><TD>" << value_str << "</TD></TR>\n";
+    }
+
+    out << "    </TABLE>\n";
+    out << "  >];\n";
+    out << "}\n";
+}
+
 
 int main(){
-	std::string test = "(a|b)cd";
+	std::string test = "(a|b){1,3}c*";
 
 	RegexParser parser;
 	std::list<std::shared_ptr<Token>> tokens = parser.tokenize(test);
-	for (auto token : tokens){
-		if (token->type == TokenType::LPAR){
-			std::cout << "(\n";
-		}
-		if (token->type == TokenType::RPAR){
-			std::cout << ")\n";
-		}
-		if (token->type == TokenType::KLEENE){
-			std::cout << "*\n";
-		}
-		if (token->type == TokenType::OR){
-			std::cout << "|\n";
-		}
-		if (token->type == TokenType::CHAR){
-			std::cout << "char\n";
-		
-		}
-		if (token->type == TokenType::CONCAT){
-			std::cout << "concat\n";
-		}
-		if (token->type == TokenType::EPSYLON){
-			std::cout << "eps\n";
-		}
-	}
+	export_tokens_dot(tokens, "visuals/tokens.dot");
+	
 	std::shared_ptr<SyntaxNode> node = parser.parse(test);
-	visualize(node, "ast.dot");
-	visualize_with_sets(node, "ast_plus.dot");
+	visualize(node, "visuals/ast.dot");
+	visualize_with_sets(node, "visuals/ast_plus.dot");
 
 	Regex rg(test);
 	DFA dfa = rg.compile();
-	std::ofstream dotFile("automaton.dot");
+	std::ofstream dotFile("visuals/automaton.dot");
 	dump_dfa_dot(dfa, dotFile);
 	
-	std::string expr = "goladdgoida";
+	std::string expr = "zzzzzzacdzzzzzzz";
 	if (search(expr, rg)){
 		std::cout << "\nTRUE\n";
 	}

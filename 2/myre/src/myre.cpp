@@ -8,6 +8,9 @@ bool search(const std::string& expr, Regex& regex){
 	for (int ind=0; ind<expr.size(); ++ind){
 		int curr_ind = ind;
 		State curr_state = dfa.ind_to_state[0];
+		if (curr_state.is_accepting){
+			return true;
+		}
 		while (curr_ind < expr.size()){
 			bool no_tranz = false;
 			for (auto& tranz : curr_state.transitions){

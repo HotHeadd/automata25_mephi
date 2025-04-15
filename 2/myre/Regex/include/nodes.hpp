@@ -80,14 +80,9 @@ struct SyntaxNode {
 struct Token{
 	TokenType type;
 	char value='\0';
-	unsigned start, finish;
 
 	Token(TokenType type_i, char value_i='\0')
 		: type(type_i), value(value_i) {}
-	Token(TokenType type_i, unsigned value_left, unsigned value_right) 
-		: type(type_i), start(value_left), finish(value_right) {}
-
-	std::shared_ptr<SyntaxNode> to_node();
 };
 
 } // namespace myre
