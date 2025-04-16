@@ -2,6 +2,7 @@
 #include "myre.hpp"
 #include <fstream>
 #include <set>
+#include <cstdlib>
 
 using namespace myre;
 

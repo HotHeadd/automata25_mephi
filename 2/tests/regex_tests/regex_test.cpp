@@ -3,7 +3,7 @@
 
 using namespace myre;
 
-TEST(search, basic_1){
+TEST(search, basic_plus){
     Regex regex("v+");
 	DFA dfa = regex.compile();
 
@@ -62,6 +62,7 @@ TEST(search, basic_concat){
 
 	ASSERT_FALSE(search("", dfa));
 	ASSERT_FALSE(search("ab", dfa));
+	ASSERT_FALSE(search("ab c", dfa));
 	ASSERT_FALSE(search("bc", dfa));
 	ASSERT_FALSE(search("ac", dfa));
 }
@@ -78,5 +79,49 @@ TEST(search, basic_range){
 	ASSERT_FALSE(search("ba", dfa));
 	ASSERT_FALSE(search("b", dfa));
 	ASSERT_FALSE(search("baAa", dfa));
+	ASSERT_FALSE(search("", dfa));
+}
+
+TEST(search, basic_parenthesis){
+    Regex regex("(ab)");
+	DFA dfa = regex.compile();
+
+	ASSERT_TRUE(search("ab", dfa));
+	ASSERT_TRUE(search("abc", dfa));
+	ASSERT_TRUE(search("dab", dfa));
+	ASSERT_TRUE(search("(ab)", dfa));
+
+	ASSERT_FALSE(search("ba", dfa));
+	ASSERT_FALSE(search("b", dfa));
+	ASSERT_FALSE(search("a b Aa", dfa));
+	ASSERT_FALSE(search("", dfa));
+}
+
+TEST(search, pars_range){
+    Regex regex("hll(abcd){2,3}");
+	DFA dfa = regex.compile();
+
+	ASSERT_TRUE(search("hllabcdabcd", dfa));
+	ASSERT_TRUE(search("man hllabcdabcdabcd dude", dfa));
+	ASSERT_TRUE(search("hllabcdabcdabcd", dfa));
+	ASSERT_TRUE(search("(hllabcdabcda)", dfa));
+
+	ASSERT_FALSE(search("hllabcd man abcd", dfa));
+	ASSERT_FALSE(search("hll abcdabcd", dfa));
+	ASSERT_FALSE(search("hllabcd", dfa));
+	ASSERT_FALSE(search("", dfa));
+}
+
+TEST(search, pars_or){
+    Regex regex("(abcd|edfh){2}");
+	DFA dfa = regex.compile();
+
+	ASSERT_TRUE(search("abcdedfh", dfa));
+	ASSERT_TRUE(search("abcdabcd", dfa));
+	ASSERT_TRUE(search("edfhedfh", dfa));
+	ASSERT_TRUE(search("asd abcdedfh adfs", dfa));
+
+	ASSERT_FALSE(search("edfh edfh", dfa));
+	ASSERT_FALSE(search("edfhdsfabcd ", dfa));
 	ASSERT_FALSE(search("", dfa));
 }
