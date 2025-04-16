@@ -263,7 +263,7 @@ void export_tokens_dot(const std::list<std::shared_ptr<Token>>& tokens, const st
 
 
 int main(){
-	std::string test = "(a|b){1,3}c*";
+	std::string test = "a{2,3}";
 
 	RegexParser parser;
 	std::list<std::shared_ptr<Token>> tokens = parser.tokenize(test);
