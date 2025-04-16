@@ -23,7 +23,6 @@ struct State {
 };
 
 struct DFA {
-	std::map<std::set<unsigned>, int> set_to_ind;
 	std::vector<State> ind_to_state;
 };
 

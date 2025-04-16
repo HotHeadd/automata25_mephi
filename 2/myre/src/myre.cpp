@@ -5,6 +5,10 @@ namespace myre
 
 bool search(const std::string& expr, Regex& regex){
 	DFA dfa = regex.compile();
+	return search(expr, dfa);
+}
+
+bool search(const std::string& expr, DFA& dfa){
 	for (int ind=0; ind<expr.size(); ++ind){
 		int curr_ind = ind;
 		State curr_state = dfa.ind_to_state[0];
@@ -31,5 +35,5 @@ bool search(const std::string& expr, Regex& regex){
 	}
 	return false;
 }
-
+	
 } // namespace myre
