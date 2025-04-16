@@ -51,3 +51,32 @@ TEST(search, basic_or){
 	ASSERT_TRUE(search("hhjkb", dfa));
 	ASSERT_TRUE(search("poiaujq", dfa));
 }
+
+TEST(search, basic_concat){
+    Regex regex("abc");
+	DFA dfa = regex.compile();
+
+	ASSERT_TRUE(search("abc", dfa));
+	ASSERT_TRUE(search("abcde", dfa));
+	ASSERT_TRUE(search("asdfabcde", dfa));
+
+	ASSERT_FALSE(search("", dfa));
+	ASSERT_FALSE(search("ab", dfa));
+	ASSERT_FALSE(search("bc", dfa));
+	ASSERT_FALSE(search("ac", dfa));
+}
+
+TEST(search, basic_range){
+    Regex regex("ba{2,4}");
+	DFA dfa = regex.compile();
+
+	ASSERT_TRUE(search("baa", dfa));
+	ASSERT_TRUE(search("baaa", dfa));
+	ASSERT_TRUE(search("baaaa", dfa));
+	ASSERT_TRUE(search("qwerbaaaaaaa", dfa));
+
+	ASSERT_FALSE(search("ba", dfa));
+	ASSERT_FALSE(search("b", dfa));
+	ASSERT_FALSE(search("baAa", dfa));
+	ASSERT_FALSE(search("", dfa));
+}

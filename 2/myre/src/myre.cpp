@@ -1,4 +1,5 @@
 #include "myre.hpp"
+#include <iostream>
 
 namespace myre
 {
@@ -15,12 +16,9 @@ bool search(const std::string& expr, DFA& dfa){
 	}
 	for (int ind=0; ind<expr.size(); ++ind){
 		int curr_ind = ind;
-		State curr_state = start_state;
-		if (curr_state.is_accepting){
-			return true;
-		}
+		State curr_state = dfa.ind_to_state[0];
 		while (curr_ind < expr.size()){
-			bool no_tranz = false;
+			bool no_tranz = true;
 			for (auto& tranz : curr_state.transitions){
 				if (tranz.symbol == expr[curr_ind]){
 					curr_state = dfa.ind_to_state[tranz.to];
