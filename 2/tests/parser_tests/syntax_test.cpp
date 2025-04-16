@@ -30,9 +30,17 @@ TEST(tokenize, shielding){
 
 	std::list<std::shared_ptr<Token>> expected = {
 		std::make_shared<Token>(TokenType::CHAR, 'a'),
+		std::make_shared<Token>(TokenType::CONCAT),
 		std::make_shared<Token>(TokenType::CHAR, '('),
+		std::make_shared<Token>(TokenType::CONCAT),
 		std::make_shared<Token>(TokenType::CHAR, ')')
 	};
-
-	ASSERT_EQ(parser.tokenize("a#(#)"), expected);
+	auto curr = expected.begin();
+	for (auto& elem : parser.tokenize("a#(#)")){
+		ASSERT_EQ((*curr)->type, elem->type);
+		if ((*curr)->type == TokenType::CHAR){
+			ASSERT_EQ((*curr)->value, elem->value);
+		}
+		++curr;
+	}
 }
