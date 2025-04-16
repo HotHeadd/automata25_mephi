@@ -9,9 +9,13 @@ bool search(const std::string& expr, Regex& regex){
 }
 
 bool search(const std::string& expr, DFA& dfa){
+	State start_state = dfa.ind_to_state[0];
+	if (start_state.is_accepting){
+		return true;
+	}
 	for (int ind=0; ind<expr.size(); ++ind){
 		int curr_ind = ind;
-		State curr_state = dfa.ind_to_state[0];
+		State curr_state = start_state;
 		if (curr_state.is_accepting){
 			return true;
 		}
