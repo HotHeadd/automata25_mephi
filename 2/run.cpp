@@ -263,7 +263,7 @@ void export_tokens_dot(const std::list<std::shared_ptr<Token>>& tokens, const st
 
 
 int main(){
-	std::string test = "a{2,3}";
+	std::string test = "Gosha";
 
 	RegexParser parser;
 	std::list<std::shared_ptr<Token>> tokens = parser.tokenize(test);
@@ -278,7 +278,7 @@ int main(){
 	std::ofstream dotFile("visuals/automaton.dot");
 	dump_dfa_dot(dfa, dotFile);
 	
-	std::string expr = "zzzzzzacdzzzzzzz";
+	std::string expr = "jasdhf;asGoshaas;dlfh";
 	if (search(expr, rg)){
 		std::cout << "\nTRUE\n";
 	}

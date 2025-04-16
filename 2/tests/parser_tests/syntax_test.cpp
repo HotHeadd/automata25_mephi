@@ -133,3 +133,29 @@ TEST(tokenize, range_with_brackets){
 	}
 	ASSERT_EQ(curr, expected.end());
 }
+
+TEST(tokenize, range_kleenestar){
+	RegexParser parser;
+	std::string expr = "a{2,}";
+
+	std::list<std::shared_ptr<Token>> expected = {
+		std::make_shared<Token>(TokenType::CHAR, 'a'),
+		std::make_shared<Token>(TokenType::CONCAT),
+		std::make_shared<Token>(TokenType::CHAR, 'a'),
+		std::make_shared<Token>(TokenType::CONCAT),
+		std::make_shared<Token>(TokenType::LPAR),
+		std::make_shared<Token>(TokenType::CHAR, 'a'),
+		std::make_shared<Token>(TokenType::RPAR),
+		std::make_shared<Token>(TokenType::KLEENE),
+	};
+
+	auto curr = expected.begin();
+	for (auto& elem : parser.tokenize(expr)){
+		ASSERT_EQ((*curr)->type, elem->type);
+		if ((*curr)->type == TokenType::CHAR){
+			ASSERT_EQ((*curr)->value, elem->value);
+		}
+		++curr;
+	}
+	ASSERT_EQ(curr, expected.end());
+}

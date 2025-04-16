@@ -22,6 +22,9 @@ test_parser: setup_test_dirs
 	cmake --build ${BUILD_TEST_DIR} --target parser_exec
 	ctest --test-dir ${BUILD_TEST_DIR} --target -R parser --output-on-failure
 
+test_search: setup_test_dirs
+	cmake --build ${BUILD_TEST_DIR} --target search_exec
+	ctest --test-dir ${BUILD_TEST_DIR} --target -R search --output-on-failure
 
 setup_test_dirs:
 	mkdir -p ${BUILD_TEST_DIR}
