@@ -264,7 +264,31 @@ void export_tokens_dot(const std::list<std::shared_ptr<Token>>& tokens, const st
 
 
 int main(){
-	std::string test = "ba{2,4}";
+	std::string test = "a{7,10}";
+	// "a{2,3}{1,2}"
+	// "(((((((a))))))){2,3}"
+	// a{2,3}{1,2}{3,4}
+	// a{2,3}{0,2}{3,4}
+	// a{2,3}{4,4}{0,4}
+	// a{2,3}{3,4}{0,4}
+	// a{2,3}{4,4}
+	// a{2,3}{4,4}{0,2}
+	// a{1,1}
+	// a{1,1}{1,1}{1,1}{1,1}
+	// a{7,} 
+	// a{7,}* TODO: UNDERSTAND DFA
+	// a{7,8}*
+	// множества мандельброта
+
+	// lazy evaluation
+	// for compile("aba").finditer("abababa") {
+
+	// }
+
+	// TODO: fullmatch for tests
+	// TODO: remove state and benchmark
+	// TODO: optional: LIST->VECTOR
+	// TODO: better multiple range management {0,4}{1,4} (via tree)
 
 	RegexParser parser;
 	std::list<std::shared_ptr<Token>> tokens = parser.tokenize(test);
@@ -279,7 +303,7 @@ int main(){
 	std::ofstream dotFile("visuals/automaton.dot");
 	dump_dfa_dot(dfa, dotFile);
 	
-	std::string expr = "baa";
+	std::string expr = "aaaaaaaaaaaaaaa";
 	if (search(expr, rg)){
 		std::cout << "\nTRUE\n";
 	}

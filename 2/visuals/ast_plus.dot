@@ -2,35 +2,59 @@ digraph SyntaxTree {
   node [shape=box, fontname="Courier", fontsize=10];
   edge [arrowhead=none];
 
-  0 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {5}"];
-  1 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {2,3,4}"];
-  2 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {2,3}"];
-  3 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {2}"];
-  4 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {1}"];
-  5 [label="CHAR: 'b'\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {0}"];
-  4 -> 5 [label="L"];
-  6 [label="CHAR: 'a'\nnullable: false\nnumber: 1\nfirst: {1}\nlast: {1}"];
-  4 -> 6 [label="R"];
-  3 -> 4 [label="L"];
-  7 [label="CHAR: 'a'\nnullable: false\nnumber: 2\nfirst: {2}\nlast: {2}"];
-  3 -> 7 [label="R"];
-  2 -> 3 [label="L"];
-  8 [label="OR\nnullable: true\nnumber: 0\nfirst: {3}\nlast: {3}"];
-  9 [label="CHAR: 'a'\nnullable: false\nnumber: 3\nfirst: {3}\nlast: {3}"];
+  0 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {10}"];
+  1 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {6,7,8,9}"];
+  2 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {6,7,8}"];
+  3 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {6,7}"];
+  4 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {6}"];
+  5 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {5}"];
+  6 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {4}"];
+  7 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {3}"];
+  8 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {2}"];
+  9 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {1}"];
+  10 [label="CHAR: 'a'\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {0}"];
+  9 -> 10 [label="L"];
+  11 [label="CHAR: 'a'\nnullable: false\nnumber: 1\nfirst: {1}\nlast: {1}"];
+  9 -> 11 [label="R"];
   8 -> 9 [label="L"];
-  10 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
-  8 -> 10 [label="R"];
-  2 -> 8 [label="R"];
+  12 [label="CHAR: 'a'\nnullable: false\nnumber: 2\nfirst: {2}\nlast: {2}"];
+  8 -> 12 [label="R"];
+  7 -> 8 [label="L"];
+  13 [label="CHAR: 'a'\nnullable: false\nnumber: 3\nfirst: {3}\nlast: {3}"];
+  7 -> 13 [label="R"];
+  6 -> 7 [label="L"];
+  14 [label="CHAR: 'a'\nnullable: false\nnumber: 4\nfirst: {4}\nlast: {4}"];
+  6 -> 14 [label="R"];
+  5 -> 6 [label="L"];
+  15 [label="CHAR: 'a'\nnullable: false\nnumber: 5\nfirst: {5}\nlast: {5}"];
+  5 -> 15 [label="R"];
+  4 -> 5 [label="L"];
+  16 [label="CHAR: 'a'\nnullable: false\nnumber: 6\nfirst: {6}\nlast: {6}"];
+  4 -> 16 [label="R"];
+  3 -> 4 [label="L"];
+  17 [label="OR\nnullable: true\nnumber: 0\nfirst: {7}\nlast: {7}"];
+  18 [label="CHAR: 'a'\nnullable: false\nnumber: 7\nfirst: {7}\nlast: {7}"];
+  17 -> 18 [label="L"];
+  19 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  17 -> 19 [label="R"];
+  3 -> 17 [label="R"];
+  2 -> 3 [label="L"];
+  20 [label="OR\nnullable: true\nnumber: 0\nfirst: {8}\nlast: {8}"];
+  21 [label="CHAR: 'a'\nnullable: false\nnumber: 8\nfirst: {8}\nlast: {8}"];
+  20 -> 21 [label="L"];
+  22 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  20 -> 22 [label="R"];
+  2 -> 20 [label="R"];
   1 -> 2 [label="L"];
-  11 [label="OR\nnullable: true\nnumber: 0\nfirst: {4}\nlast: {4}"];
-  12 [label="CHAR: 'a'\nnullable: false\nnumber: 4\nfirst: {4}\nlast: {4}"];
-  11 -> 12 [label="L"];
-  13 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
-  11 -> 13 [label="R"];
-  1 -> 11 [label="R"];
+  23 [label="OR\nnullable: true\nnumber: 0\nfirst: {9}\nlast: {9}"];
+  24 [label="CHAR: 'a'\nnullable: false\nnumber: 9\nfirst: {9}\nlast: {9}"];
+  23 -> 24 [label="L"];
+  25 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  23 -> 25 [label="R"];
+  1 -> 23 [label="R"];
   0 -> 1 [label="L"];
-  14 [label="$EOS$\nnullable: false\nnumber: 5\nfirst: {5}\nlast: {5}"];
-  0 -> 14 [label="R"];
+  26 [label="$EOS$\nnullable: false\nnumber: 10\nfirst: {10}\nlast: {10}"];
+  0 -> 26 [label="R"];
 
   subgraph cluster_followpos {
     label="Followpos Table";
@@ -41,9 +65,14 @@ digraph SyntaxTree {
     follow_table [label=<
       <table border="1" cellborder="1" cellspacing="0" cellpadding="4">
         <tr><td><b>Node #</b></td><td><b>Followpos</b></td></tr>
+        <tr><td>9</td><td>{10}</td></tr>
+        <tr><td>8</td><td>{9, 10}</td></tr>
+        <tr><td>7</td><td>{8, 9, 10}</td></tr>
+        <tr><td>6</td><td>{7, 8, 9, 10}</td></tr>
+        <tr><td>5</td><td>{6}</td></tr>
         <tr><td>4</td><td>{5}</td></tr>
-        <tr><td>3</td><td>{4, 5}</td></tr>
-        <tr><td>2</td><td>{3, 4, 5}</td></tr>
+        <tr><td>3</td><td>{4}</td></tr>
+        <tr><td>2</td><td>{3}</td></tr>
         <tr><td>1</td><td>{2}</td></tr>
         <tr><td>0</td><td>{1}</td></tr>
       </table>
@@ -59,9 +88,8 @@ digraph SyntaxTree {
     symbols_table [label=<
       <table border="1" cellborder="1" cellspacing="0" cellpadding="4">
         <tr><td><b>Symbol</b></td><td><b>Node #s</b></td></tr>
-        <tr><td>$</td><td>{5}</td></tr>
-        <tr><td>a</td><td>{1, 2, 3, 4}</td></tr>
-        <tr><td>b</td><td>{0}</td></tr>
+        <tr><td>$</td><td>{10}</td></tr>
+        <tr><td>a</td><td>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}</td></tr>
       </table>
     >];
   }

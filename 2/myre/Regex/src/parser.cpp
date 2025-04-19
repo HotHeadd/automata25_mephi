@@ -144,7 +144,7 @@ std::list<std::shared_ptr<Token>> RegexParser::tokenize(const std::string& regex
 	return tokens;
 }
 
-std::list<std::shared_ptr<Token>> RegexParser::transform_range(unsigned lower, unsigned upper, 
+std::list<std::shared_ptr<Token>> RegexParser::	transform_range(unsigned lower, unsigned upper, 
 															   std::list<std::shared_ptr<Token>>& tokens,
 															   TokenType& prev_type){
 	std::list<std::shared_ptr<Token>> new_tokens;
@@ -196,6 +196,8 @@ std::list<std::shared_ptr<Token>> RegexParser::transform_range(unsigned lower, u
 		}
 	}
 	prev_type = TokenType::NONE;
+	new_tokens.push_front(std::make_shared<Token>(TokenType::LPAR));
+	new_tokens.push_back(std::make_shared<Token>(TokenType::RPAR));
 	return new_tokens;
 }
 
