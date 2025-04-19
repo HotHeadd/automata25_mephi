@@ -269,7 +269,6 @@ int main(){
 	// for compile("aba").finditer("abababa") {
 	// }
 
-	// a{7,}* TODO: UNDERSTAND DFA
 	// TODO: remove state and benchmark
 	// TODO: optional: LIST->VECTOR
 	// TODO: better multiple range management {0,4}{1,4} (via tree)

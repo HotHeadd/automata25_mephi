@@ -277,7 +277,7 @@ digraph SyntaxTree {
   139 [label="OR\nnullable: true\nnumber: 0\nfirst: {47}\nlast: {47}"];
   140 [label="CHAR: 'a'\nnullable: false\nnumber: 47\nfirst: {47}\nlast: {47}"];
   139 -> 140 [label="L"];
-  141 [label="EPSYLON\nnullable: true\nnumber: 306531104\nfirst: {}\nlast: {}"];
+  141 [label="EPSYLON\nnullable: true\nnumber: 3206298400\nfirst: {}\nlast: {}"];
   139 -> 141 [label="R"];
   135 -> 139 [label="R"];
   134 -> 135 [label="L"];

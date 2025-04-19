@@ -30,3 +30,12 @@ setup_test_dirs:
 	mkdir -p ${BUILD_TEST_DIR}
 	mkdir -p ${BUILD_TEST_DIR}/build_source
 	cmake -B${BUILD_TEST_DIR} -Stests
+
+benchmark:
+	mkdir -p build_bm
+	mkdir -p build_bm/build_source
+
+	cmake -Bbuild_bm -Scompile_benchmark
+	cmake --build build_bm
+	./bin/run_bm 
+	
