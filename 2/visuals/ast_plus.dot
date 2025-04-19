@@ -2,59 +2,295 @@ digraph SyntaxTree {
   node [shape=box, fontname="Courier", fontsize=10];
   edge [arrowhead=none];
 
-  0 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {10}"];
-  1 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {6,7,8,9}"];
-  2 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {6,7,8}"];
-  3 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {6,7}"];
-  4 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {6}"];
-  5 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {5}"];
-  6 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {4}"];
-  7 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {3}"];
-  8 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {2}"];
+  0 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0,12,24,36,48}\nlast: {48}"];
+  1 [label="CONCAT\nnullable: true\nnumber: 0\nfirst: {0,12,24,36}\nlast: {7,8,10,11,19,20,22,23,31,32,34,35,43,44,46,47}"];
+  2 [label="CONCAT\nnullable: true\nnumber: 0\nfirst: {0,12,24}\nlast: {7,8,10,11,19,20,22,23,31,32,34,35}"];
+  3 [label="CONCAT\nnullable: true\nnumber: 0\nfirst: {0,12}\nlast: {7,8,10,11,19,20,22,23}"];
+  4 [label="OR\nnullable: true\nnumber: 0\nfirst: {0}\nlast: {7,8,10,11}"];
+  5 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {7,8,10,11}"];
+  6 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {7,8}"];
+  7 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {4,5}"];
+  8 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {1,2}"];
   9 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {1}"];
   10 [label="CHAR: 'a'\nnullable: false\nnumber: 0\nfirst: {0}\nlast: {0}"];
   9 -> 10 [label="L"];
   11 [label="CHAR: 'a'\nnullable: false\nnumber: 1\nfirst: {1}\nlast: {1}"];
   9 -> 11 [label="R"];
   8 -> 9 [label="L"];
-  12 [label="CHAR: 'a'\nnullable: false\nnumber: 2\nfirst: {2}\nlast: {2}"];
+  12 [label="OR\nnullable: true\nnumber: 0\nfirst: {2}\nlast: {2}"];
+  13 [label="CHAR: 'a'\nnullable: false\nnumber: 2\nfirst: {2}\nlast: {2}"];
+  12 -> 13 [label="L"];
+  14 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  12 -> 14 [label="R"];
   8 -> 12 [label="R"];
   7 -> 8 [label="L"];
-  13 [label="CHAR: 'a'\nnullable: false\nnumber: 3\nfirst: {3}\nlast: {3}"];
-  7 -> 13 [label="R"];
+  15 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {3}\nlast: {4,5}"];
+  16 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {3}\nlast: {4}"];
+  17 [label="CHAR: 'a'\nnullable: false\nnumber: 3\nfirst: {3}\nlast: {3}"];
+  16 -> 17 [label="L"];
+  18 [label="CHAR: 'a'\nnullable: false\nnumber: 4\nfirst: {4}\nlast: {4}"];
+  16 -> 18 [label="R"];
+  15 -> 16 [label="L"];
+  19 [label="OR\nnullable: true\nnumber: 0\nfirst: {5}\nlast: {5}"];
+  20 [label="CHAR: 'a'\nnullable: false\nnumber: 5\nfirst: {5}\nlast: {5}"];
+  19 -> 20 [label="L"];
+  21 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  19 -> 21 [label="R"];
+  15 -> 19 [label="R"];
+  7 -> 15 [label="R"];
   6 -> 7 [label="L"];
-  14 [label="CHAR: 'a'\nnullable: false\nnumber: 4\nfirst: {4}\nlast: {4}"];
-  6 -> 14 [label="R"];
-  5 -> 6 [label="L"];
-  15 [label="CHAR: 'a'\nnullable: false\nnumber: 5\nfirst: {5}\nlast: {5}"];
-  5 -> 15 [label="R"];
-  4 -> 5 [label="L"];
-  16 [label="CHAR: 'a'\nnullable: false\nnumber: 6\nfirst: {6}\nlast: {6}"];
-  4 -> 16 [label="R"];
-  3 -> 4 [label="L"];
-  17 [label="OR\nnullable: true\nnumber: 0\nfirst: {7}\nlast: {7}"];
-  18 [label="CHAR: 'a'\nnullable: false\nnumber: 7\nfirst: {7}\nlast: {7}"];
-  17 -> 18 [label="L"];
-  19 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
-  17 -> 19 [label="R"];
-  3 -> 17 [label="R"];
-  2 -> 3 [label="L"];
-  20 [label="OR\nnullable: true\nnumber: 0\nfirst: {8}\nlast: {8}"];
-  21 [label="CHAR: 'a'\nnullable: false\nnumber: 8\nfirst: {8}\nlast: {8}"];
-  20 -> 21 [label="L"];
-  22 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
-  20 -> 22 [label="R"];
-  2 -> 20 [label="R"];
-  1 -> 2 [label="L"];
-  23 [label="OR\nnullable: true\nnumber: 0\nfirst: {9}\nlast: {9}"];
-  24 [label="CHAR: 'a'\nnullable: false\nnumber: 9\nfirst: {9}\nlast: {9}"];
+  22 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {6}\nlast: {7,8}"];
+  23 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {6}\nlast: {7}"];
+  24 [label="CHAR: 'a'\nnullable: false\nnumber: 6\nfirst: {6}\nlast: {6}"];
   23 -> 24 [label="L"];
-  25 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  25 [label="CHAR: 'a'\nnullable: false\nnumber: 7\nfirst: {7}\nlast: {7}"];
   23 -> 25 [label="R"];
-  1 -> 23 [label="R"];
+  22 -> 23 [label="L"];
+  26 [label="OR\nnullable: true\nnumber: 0\nfirst: {8}\nlast: {8}"];
+  27 [label="CHAR: 'a'\nnullable: false\nnumber: 8\nfirst: {8}\nlast: {8}"];
+  26 -> 27 [label="L"];
+  28 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  26 -> 28 [label="R"];
+  22 -> 26 [label="R"];
+  6 -> 22 [label="R"];
+  5 -> 6 [label="L"];
+  29 [label="OR\nnullable: true\nnumber: 0\nfirst: {9}\nlast: {10,11}"];
+  30 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {9}\nlast: {10,11}"];
+  31 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {9}\nlast: {10}"];
+  32 [label="CHAR: 'a'\nnullable: false\nnumber: 9\nfirst: {9}\nlast: {9}"];
+  31 -> 32 [label="L"];
+  33 [label="CHAR: 'a'\nnullable: false\nnumber: 10\nfirst: {10}\nlast: {10}"];
+  31 -> 33 [label="R"];
+  30 -> 31 [label="L"];
+  34 [label="OR\nnullable: true\nnumber: 0\nfirst: {11}\nlast: {11}"];
+  35 [label="CHAR: 'a'\nnullable: false\nnumber: 11\nfirst: {11}\nlast: {11}"];
+  34 -> 35 [label="L"];
+  36 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  34 -> 36 [label="R"];
+  30 -> 34 [label="R"];
+  29 -> 30 [label="L"];
+  37 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  29 -> 37 [label="R"];
+  5 -> 29 [label="R"];
+  4 -> 5 [label="L"];
+  38 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  4 -> 38 [label="R"];
+  3 -> 4 [label="L"];
+  39 [label="OR\nnullable: true\nnumber: 0\nfirst: {12}\nlast: {19,20,22,23}"];
+  40 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {12}\nlast: {19,20,22,23}"];
+  41 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {12}\nlast: {19,20}"];
+  42 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {12}\nlast: {16,17}"];
+  43 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {12}\nlast: {13,14}"];
+  44 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {12}\nlast: {13}"];
+  45 [label="CHAR: 'a'\nnullable: false\nnumber: 12\nfirst: {12}\nlast: {12}"];
+  44 -> 45 [label="L"];
+  46 [label="CHAR: 'a'\nnullable: false\nnumber: 13\nfirst: {13}\nlast: {13}"];
+  44 -> 46 [label="R"];
+  43 -> 44 [label="L"];
+  47 [label="OR\nnullable: true\nnumber: 0\nfirst: {14}\nlast: {14}"];
+  48 [label="CHAR: 'a'\nnullable: false\nnumber: 14\nfirst: {14}\nlast: {14}"];
+  47 -> 48 [label="L"];
+  49 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  47 -> 49 [label="R"];
+  43 -> 47 [label="R"];
+  42 -> 43 [label="L"];
+  50 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {15}\nlast: {16,17}"];
+  51 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {15}\nlast: {16}"];
+  52 [label="CHAR: 'a'\nnullable: false\nnumber: 15\nfirst: {15}\nlast: {15}"];
+  51 -> 52 [label="L"];
+  53 [label="CHAR: 'a'\nnullable: false\nnumber: 16\nfirst: {16}\nlast: {16}"];
+  51 -> 53 [label="R"];
+  50 -> 51 [label="L"];
+  54 [label="OR\nnullable: true\nnumber: 0\nfirst: {17}\nlast: {17}"];
+  55 [label="CHAR: 'a'\nnullable: false\nnumber: 17\nfirst: {17}\nlast: {17}"];
+  54 -> 55 [label="L"];
+  56 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  54 -> 56 [label="R"];
+  50 -> 54 [label="R"];
+  42 -> 50 [label="R"];
+  41 -> 42 [label="L"];
+  57 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {18}\nlast: {19,20}"];
+  58 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {18}\nlast: {19}"];
+  59 [label="CHAR: 'a'\nnullable: false\nnumber: 18\nfirst: {18}\nlast: {18}"];
+  58 -> 59 [label="L"];
+  60 [label="CHAR: 'a'\nnullable: false\nnumber: 19\nfirst: {19}\nlast: {19}"];
+  58 -> 60 [label="R"];
+  57 -> 58 [label="L"];
+  61 [label="OR\nnullable: true\nnumber: 0\nfirst: {20}\nlast: {20}"];
+  62 [label="CHAR: 'a'\nnullable: false\nnumber: 20\nfirst: {20}\nlast: {20}"];
+  61 -> 62 [label="L"];
+  63 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  61 -> 63 [label="R"];
+  57 -> 61 [label="R"];
+  41 -> 57 [label="R"];
+  40 -> 41 [label="L"];
+  64 [label="OR\nnullable: true\nnumber: 0\nfirst: {21}\nlast: {22,23}"];
+  65 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {21}\nlast: {22,23}"];
+  66 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {21}\nlast: {22}"];
+  67 [label="CHAR: 'a'\nnullable: false\nnumber: 21\nfirst: {21}\nlast: {21}"];
+  66 -> 67 [label="L"];
+  68 [label="CHAR: 'a'\nnullable: false\nnumber: 22\nfirst: {22}\nlast: {22}"];
+  66 -> 68 [label="R"];
+  65 -> 66 [label="L"];
+  69 [label="OR\nnullable: true\nnumber: 0\nfirst: {23}\nlast: {23}"];
+  70 [label="CHAR: 'a'\nnullable: false\nnumber: 23\nfirst: {23}\nlast: {23}"];
+  69 -> 70 [label="L"];
+  71 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  69 -> 71 [label="R"];
+  65 -> 69 [label="R"];
+  64 -> 65 [label="L"];
+  72 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  64 -> 72 [label="R"];
+  40 -> 64 [label="R"];
+  39 -> 40 [label="L"];
+  73 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  39 -> 73 [label="R"];
+  3 -> 39 [label="R"];
+  2 -> 3 [label="L"];
+  74 [label="OR\nnullable: true\nnumber: 0\nfirst: {24}\nlast: {31,32,34,35}"];
+  75 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {24}\nlast: {31,32,34,35}"];
+  76 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {24}\nlast: {31,32}"];
+  77 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {24}\nlast: {28,29}"];
+  78 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {24}\nlast: {25,26}"];
+  79 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {24}\nlast: {25}"];
+  80 [label="CHAR: 'a'\nnullable: false\nnumber: 24\nfirst: {24}\nlast: {24}"];
+  79 -> 80 [label="L"];
+  81 [label="CHAR: 'a'\nnullable: false\nnumber: 25\nfirst: {25}\nlast: {25}"];
+  79 -> 81 [label="R"];
+  78 -> 79 [label="L"];
+  82 [label="OR\nnullable: true\nnumber: 0\nfirst: {26}\nlast: {26}"];
+  83 [label="CHAR: 'a'\nnullable: false\nnumber: 26\nfirst: {26}\nlast: {26}"];
+  82 -> 83 [label="L"];
+  84 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  82 -> 84 [label="R"];
+  78 -> 82 [label="R"];
+  77 -> 78 [label="L"];
+  85 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {27}\nlast: {28,29}"];
+  86 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {27}\nlast: {28}"];
+  87 [label="CHAR: 'a'\nnullable: false\nnumber: 27\nfirst: {27}\nlast: {27}"];
+  86 -> 87 [label="L"];
+  88 [label="CHAR: 'a'\nnullable: false\nnumber: 28\nfirst: {28}\nlast: {28}"];
+  86 -> 88 [label="R"];
+  85 -> 86 [label="L"];
+  89 [label="OR\nnullable: true\nnumber: 0\nfirst: {29}\nlast: {29}"];
+  90 [label="CHAR: 'a'\nnullable: false\nnumber: 29\nfirst: {29}\nlast: {29}"];
+  89 -> 90 [label="L"];
+  91 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  89 -> 91 [label="R"];
+  85 -> 89 [label="R"];
+  77 -> 85 [label="R"];
+  76 -> 77 [label="L"];
+  92 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {30}\nlast: {31,32}"];
+  93 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {30}\nlast: {31}"];
+  94 [label="CHAR: 'a'\nnullable: false\nnumber: 30\nfirst: {30}\nlast: {30}"];
+  93 -> 94 [label="L"];
+  95 [label="CHAR: 'a'\nnullable: false\nnumber: 31\nfirst: {31}\nlast: {31}"];
+  93 -> 95 [label="R"];
+  92 -> 93 [label="L"];
+  96 [label="OR\nnullable: true\nnumber: 0\nfirst: {32}\nlast: {32}"];
+  97 [label="CHAR: 'a'\nnullable: false\nnumber: 32\nfirst: {32}\nlast: {32}"];
+  96 -> 97 [label="L"];
+  98 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  96 -> 98 [label="R"];
+  92 -> 96 [label="R"];
+  76 -> 92 [label="R"];
+  75 -> 76 [label="L"];
+  99 [label="OR\nnullable: true\nnumber: 0\nfirst: {33}\nlast: {34,35}"];
+  100 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {33}\nlast: {34,35}"];
+  101 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {33}\nlast: {34}"];
+  102 [label="CHAR: 'a'\nnullable: false\nnumber: 33\nfirst: {33}\nlast: {33}"];
+  101 -> 102 [label="L"];
+  103 [label="CHAR: 'a'\nnullable: false\nnumber: 34\nfirst: {34}\nlast: {34}"];
+  101 -> 103 [label="R"];
+  100 -> 101 [label="L"];
+  104 [label="OR\nnullable: true\nnumber: 0\nfirst: {35}\nlast: {35}"];
+  105 [label="CHAR: 'a'\nnullable: false\nnumber: 35\nfirst: {35}\nlast: {35}"];
+  104 -> 105 [label="L"];
+  106 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  104 -> 106 [label="R"];
+  100 -> 104 [label="R"];
+  99 -> 100 [label="L"];
+  107 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  99 -> 107 [label="R"];
+  75 -> 99 [label="R"];
+  74 -> 75 [label="L"];
+  108 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  74 -> 108 [label="R"];
+  2 -> 74 [label="R"];
+  1 -> 2 [label="L"];
+  109 [label="OR\nnullable: true\nnumber: 0\nfirst: {36}\nlast: {43,44,46,47}"];
+  110 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {36}\nlast: {43,44,46,47}"];
+  111 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {36}\nlast: {43,44}"];
+  112 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {36}\nlast: {40,41}"];
+  113 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {36}\nlast: {37,38}"];
+  114 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {36}\nlast: {37}"];
+  115 [label="CHAR: 'a'\nnullable: false\nnumber: 36\nfirst: {36}\nlast: {36}"];
+  114 -> 115 [label="L"];
+  116 [label="CHAR: 'a'\nnullable: false\nnumber: 37\nfirst: {37}\nlast: {37}"];
+  114 -> 116 [label="R"];
+  113 -> 114 [label="L"];
+  117 [label="OR\nnullable: true\nnumber: 0\nfirst: {38}\nlast: {38}"];
+  118 [label="CHAR: 'a'\nnullable: false\nnumber: 38\nfirst: {38}\nlast: {38}"];
+  117 -> 118 [label="L"];
+  119 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  117 -> 119 [label="R"];
+  113 -> 117 [label="R"];
+  112 -> 113 [label="L"];
+  120 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {39}\nlast: {40,41}"];
+  121 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {39}\nlast: {40}"];
+  122 [label="CHAR: 'a'\nnullable: false\nnumber: 39\nfirst: {39}\nlast: {39}"];
+  121 -> 122 [label="L"];
+  123 [label="CHAR: 'a'\nnullable: false\nnumber: 40\nfirst: {40}\nlast: {40}"];
+  121 -> 123 [label="R"];
+  120 -> 121 [label="L"];
+  124 [label="OR\nnullable: true\nnumber: 0\nfirst: {41}\nlast: {41}"];
+  125 [label="CHAR: 'a'\nnullable: false\nnumber: 41\nfirst: {41}\nlast: {41}"];
+  124 -> 125 [label="L"];
+  126 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  124 -> 126 [label="R"];
+  120 -> 124 [label="R"];
+  112 -> 120 [label="R"];
+  111 -> 112 [label="L"];
+  127 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {42}\nlast: {43,44}"];
+  128 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {42}\nlast: {43}"];
+  129 [label="CHAR: 'a'\nnullable: false\nnumber: 42\nfirst: {42}\nlast: {42}"];
+  128 -> 129 [label="L"];
+  130 [label="CHAR: 'a'\nnullable: false\nnumber: 43\nfirst: {43}\nlast: {43}"];
+  128 -> 130 [label="R"];
+  127 -> 128 [label="L"];
+  131 [label="OR\nnullable: true\nnumber: 0\nfirst: {44}\nlast: {44}"];
+  132 [label="CHAR: 'a'\nnullable: false\nnumber: 44\nfirst: {44}\nlast: {44}"];
+  131 -> 132 [label="L"];
+  133 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  131 -> 133 [label="R"];
+  127 -> 131 [label="R"];
+  111 -> 127 [label="R"];
+  110 -> 111 [label="L"];
+  134 [label="OR\nnullable: true\nnumber: 0\nfirst: {45}\nlast: {46,47}"];
+  135 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {45}\nlast: {46,47}"];
+  136 [label="CONCAT\nnullable: false\nnumber: 0\nfirst: {45}\nlast: {46}"];
+  137 [label="CHAR: 'a'\nnullable: false\nnumber: 45\nfirst: {45}\nlast: {45}"];
+  136 -> 137 [label="L"];
+  138 [label="CHAR: 'a'\nnullable: false\nnumber: 46\nfirst: {46}\nlast: {46}"];
+  136 -> 138 [label="R"];
+  135 -> 136 [label="L"];
+  139 [label="OR\nnullable: true\nnumber: 0\nfirst: {47}\nlast: {47}"];
+  140 [label="CHAR: 'a'\nnullable: false\nnumber: 47\nfirst: {47}\nlast: {47}"];
+  139 -> 140 [label="L"];
+  141 [label="EPSYLON\nnullable: true\nnumber: 306531104\nfirst: {}\nlast: {}"];
+  139 -> 141 [label="R"];
+  135 -> 139 [label="R"];
+  134 -> 135 [label="L"];
+  142 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  134 -> 142 [label="R"];
+  110 -> 134 [label="R"];
+  109 -> 110 [label="L"];
+  143 [label="EPSYLON\nnullable: true\nnumber: 0\nfirst: {}\nlast: {}"];
+  109 -> 143 [label="R"];
+  1 -> 109 [label="R"];
   0 -> 1 [label="L"];
-  26 [label="$EOS$\nnullable: false\nnumber: 10\nfirst: {10}\nlast: {10}"];
-  0 -> 26 [label="R"];
+  144 [label="$EOS$\nnullable: false\nnumber: 48\nfirst: {48}\nlast: {48}"];
+  0 -> 144 [label="R"];
 
   subgraph cluster_followpos {
     label="Followpos Table";
@@ -65,16 +301,54 @@ digraph SyntaxTree {
     follow_table [label=<
       <table border="1" cellborder="1" cellspacing="0" cellpadding="4">
         <tr><td><b>Node #</b></td><td><b>Followpos</b></td></tr>
+        <tr><td>47</td><td>{48}</td></tr>
+        <tr><td>35</td><td>{36, 48}</td></tr>
+        <tr><td>44</td><td>{45, 48}</td></tr>
+        <tr><td>46</td><td>{47, 48}</td></tr>
+        <tr><td>45</td><td>{46}</td></tr>
+        <tr><td>41</td><td>{42}</td></tr>
+        <tr><td>43</td><td>{44, 45, 48}</td></tr>
+        <tr><td>42</td><td>{43}</td></tr>
+        <tr><td>38</td><td>{39}</td></tr>
+        <tr><td>40</td><td>{41, 42}</td></tr>
+        <tr><td>39</td><td>{40}</td></tr>
+        <tr><td>37</td><td>{38, 39}</td></tr>
+        <tr><td>36</td><td>{37}</td></tr>
+        <tr><td>23</td><td>{24, 36, 48}</td></tr>
+        <tr><td>32</td><td>{33, 36, 48}</td></tr>
+        <tr><td>34</td><td>{35, 36, 48}</td></tr>
+        <tr><td>33</td><td>{34}</td></tr>
+        <tr><td>29</td><td>{30}</td></tr>
+        <tr><td>31</td><td>{32, 33, 36, 48}</td></tr>
+        <tr><td>12</td><td>{13}</td></tr>
+        <tr><td>8</td><td>{9, 12, 24, 36, 48}</td></tr>
+        <tr><td>10</td><td>{11, 12, 24, 36, 48}</td></tr>
         <tr><td>9</td><td>{10}</td></tr>
-        <tr><td>8</td><td>{9, 10}</td></tr>
-        <tr><td>7</td><td>{8, 9, 10}</td></tr>
-        <tr><td>6</td><td>{7, 8, 9, 10}</td></tr>
         <tr><td>5</td><td>{6}</td></tr>
-        <tr><td>4</td><td>{5}</td></tr>
-        <tr><td>3</td><td>{4}</td></tr>
+        <tr><td>7</td><td>{8, 9, 12, 24, 36, 48}</td></tr>
+        <tr><td>6</td><td>{7}</td></tr>
         <tr><td>2</td><td>{3}</td></tr>
-        <tr><td>1</td><td>{2}</td></tr>
+        <tr><td>4</td><td>{5, 6}</td></tr>
+        <tr><td>3</td><td>{4}</td></tr>
+        <tr><td>1</td><td>{2, 3}</td></tr>
+        <tr><td>30</td><td>{31}</td></tr>
+        <tr><td>13</td><td>{14, 15}</td></tr>
         <tr><td>0</td><td>{1}</td></tr>
+        <tr><td>15</td><td>{16}</td></tr>
+        <tr><td>16</td><td>{17, 18}</td></tr>
+        <tr><td>14</td><td>{15}</td></tr>
+        <tr><td>18</td><td>{19}</td></tr>
+        <tr><td>19</td><td>{20, 21, 24, 36, 48}</td></tr>
+        <tr><td>17</td><td>{18}</td></tr>
+        <tr><td>21</td><td>{22}</td></tr>
+        <tr><td>22</td><td>{23, 24, 36, 48}</td></tr>
+        <tr><td>20</td><td>{21, 24, 36, 48}</td></tr>
+        <tr><td>11</td><td>{12, 24, 36, 48}</td></tr>
+        <tr><td>24</td><td>{25}</td></tr>
+        <tr><td>25</td><td>{26, 27}</td></tr>
+        <tr><td>27</td><td>{28}</td></tr>
+        <tr><td>28</td><td>{29, 30}</td></tr>
+        <tr><td>26</td><td>{27}</td></tr>
       </table>
     >];
   }
@@ -88,8 +362,8 @@ digraph SyntaxTree {
     symbols_table [label=<
       <table border="1" cellborder="1" cellspacing="0" cellpadding="4">
         <tr><td><b>Symbol</b></td><td><b>Node #s</b></td></tr>
-        <tr><td>$</td><td>{10}</td></tr>
-        <tr><td>a</td><td>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}</td></tr>
+        <tr><td>$</td><td>{48}</td></tr>
+        <tr><td>a</td><td>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47}</td></tr>
       </table>
     >];
   }

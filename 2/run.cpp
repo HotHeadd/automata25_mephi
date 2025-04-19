@@ -264,13 +264,12 @@ void export_tokens_dot(const std::list<std::shared_ptr<Token>>& tokens, const st
 
 
 int main(){
-	std::string test = "a{7,10}";
+	std::string test = "a{2,3}{3,4}{0,4}";
 	// lazy evaluation
 	// for compile("aba").finditer("abababa") {
-
 	// }
 
-	// TODO: fullmatch for tests
+	// a{7,}* TODO: UNDERSTAND DFA
 	// TODO: remove state and benchmark
 	// TODO: optional: LIST->VECTOR
 	// TODO: better multiple range management {0,4}{1,4} (via tree)
