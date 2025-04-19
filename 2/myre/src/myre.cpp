@@ -4,8 +4,16 @@
 namespace myre
 {
 
-bool search(const std::string& expr, Regex& regex){
-	DFA dfa = regex.compile();
+DFA compile(const std::string& regex){
+	RegexParser parser;
+	DFABuilder builder;
+	
+	std::shared_ptr<SyntaxNode> tree = parser.parse(regex);
+	return builder.buildDFA(tree);
+}
+
+bool search(const std::string& expr, const std::string& regex){
+	DFA dfa = compile(regex);
 	return search(expr, dfa);
 }
 

@@ -265,21 +265,6 @@ void export_tokens_dot(const std::list<std::shared_ptr<Token>>& tokens, const st
 
 int main(){
 	std::string test = "a{7,10}";
-	// "a{2,3}{1,2}"
-	// "(((((((a))))))){2,3}"
-	// a{2,3}{1,2}{3,4}
-	// a{2,3}{0,2}{3,4}
-	// a{2,3}{4,4}{0,4}
-	// a{2,3}{3,4}{0,4}
-	// a{2,3}{4,4}
-	// a{2,3}{4,4}{0,2}
-	// a{1,1}
-	// a{1,1}{1,1}{1,1}{1,1}
-	// a{7,} 
-	// a{7,}* TODO: UNDERSTAND DFA
-	// a{7,8}*
-	// множества мандельброта
-
 	// lazy evaluation
 	// for compile("aba").finditer("abababa") {
 
@@ -298,13 +283,12 @@ int main(){
 	visualize(node, "visuals/ast.dot");
 	visualize_with_sets(node, "visuals/ast_plus.dot");
 
-	Regex rg(test);
-	DFA dfa = rg.compile();
+	DFA dfa = compile(test);
 	std::ofstream dotFile("visuals/automaton.dot");
 	dump_dfa_dot(dfa, dotFile);
 	
 	std::string expr = "aaaaaaaaaaaaaaa";
-	if (search(expr, rg)){
+	if (search(expr, dfa)){
 		std::cout << "\nTRUE\n";
 	}
 	else{

@@ -4,8 +4,8 @@
 using namespace myre;
 
 TEST(search, basic_plus){
-    Regex regex("v+");
-	DFA dfa = regex.compile();
+	std::string test = "v+";
+	DFA dfa = compile(test);
 
 	ASSERT_TRUE(search("v", dfa));
 	ASSERT_TRUE(search("vvv", dfa));
@@ -20,8 +20,8 @@ TEST(search, basic_plus){
 }
 
 TEST(search, basic_empty){
-    Regex regex("");
-	DFA dfa = regex.compile();
+    std::string test = "";
+	DFA dfa = compile(test);
 
 	ASSERT_TRUE(search("v", dfa));
 	ASSERT_TRUE(search("vvv", dfa));
@@ -31,8 +31,8 @@ TEST(search, basic_empty){
 }
 
 TEST(search, basic_or_empty){
-    Regex regex("aadf|");
-	DFA dfa = regex.compile();
+    std::string test = "aadf|";
+	DFA dfa = compile(test);
 
 	ASSERT_TRUE(search("aadf", dfa));
 	ASSERT_TRUE(search("", dfa));
@@ -42,8 +42,8 @@ TEST(search, basic_or_empty){
 }
 
 TEST(search, basic_or){
-    Regex regex("a|b");
-	DFA dfa = regex.compile();
+    std::string test = "a|b";
+	DFA dfa = compile(test);
 
 	ASSERT_TRUE(search("a", dfa));
 	ASSERT_TRUE(search("b", dfa));
@@ -53,8 +53,8 @@ TEST(search, basic_or){
 }
 
 TEST(search, basic_concat){
-    Regex regex("abc");
-	DFA dfa = regex.compile();
+    std::string test = 	"abc";	;
+	DFA dfa = compile(test);
 
 	ASSERT_TRUE(search("abc", dfa));
 	ASSERT_TRUE(search("abcde", dfa));
@@ -68,8 +68,8 @@ TEST(search, basic_concat){
 }
 
 TEST(search, basic_range){
-    Regex regex("ba{2,4}");
-	DFA dfa = regex.compile();
+    std::string test = "ba{2,4}";
+	DFA dfa = compile(test);
 
 	ASSERT_TRUE(search("baa", dfa));
 	ASSERT_TRUE(search("baaa", dfa));
@@ -83,8 +83,8 @@ TEST(search, basic_range){
 }
 
 TEST(search, basic_parenthesis){
-    Regex regex("(ab)");
-	DFA dfa = regex.compile();
+    std::string test = "(ab)";
+	DFA dfa = compile(test);
 
 	ASSERT_TRUE(search("ab", dfa));
 	ASSERT_TRUE(search("abc", dfa));
@@ -98,8 +98,8 @@ TEST(search, basic_parenthesis){
 }
 
 TEST(search, pars_range){
-    Regex regex("hll(abcd){2,3}");
-	DFA dfa = regex.compile();
+    std::string test = "hll(abcd){2,3}";
+	DFA dfa = compile(test);
 
 	ASSERT_TRUE(search("hllabcdabcd", dfa));
 	ASSERT_TRUE(search("man hllabcdabcdabcd dude", dfa));
@@ -113,8 +113,8 @@ TEST(search, pars_range){
 }
 
 TEST(search, pars_or){
-    Regex regex("(abcd|edfh){2}");
-	DFA dfa = regex.compile();
+    std::string test = "(abcd|edfh){2}";
+	DFA dfa = compile(test);
 
 	ASSERT_TRUE(search("abcdedfh", dfa));
 	ASSERT_TRUE(search("abcdabcd", dfa));

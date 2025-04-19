@@ -1,11 +1,15 @@
 #pragma once
 
-#include "regex.hpp"
+#include "dfa.hpp"
+#include "nodes.hpp"
+#include "parser.hpp"
 
 namespace myre
 {
 
-bool search(const std::string& expr, Regex& regex);
+DFA compile(const std::string& regex); // parse + toDFA
+
+bool search(const std::string& expr, const std::string& regex);
 bool search(const std::string& expr, DFA& dfa);
 	
 } // namespace myre
