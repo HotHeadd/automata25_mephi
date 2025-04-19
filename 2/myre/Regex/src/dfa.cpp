@@ -41,13 +41,13 @@ DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root){
 		}
 		++i;
 	}
-	for (auto& pair : set_to_ind){
-		 std::cout << pair.second << ":{";
-		 for (auto elem : pair.first){
-			std::cout << elem << ", ";
-		 }
-		 std::cout << "}\n";
-	}
+	// for (auto& pair : set_to_ind){
+	// 	 std::cout << pair.second << ":{";
+	// 	 for (auto elem : pair.first){
+	// 		std::cout << elem << ", ";
+	// 	 }
+	// 	 std::cout << "}\n";
+	// }
 	return automaton;
 }
 

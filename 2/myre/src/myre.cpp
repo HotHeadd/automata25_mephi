@@ -17,6 +17,32 @@ bool search(const std::string& expr, const std::string& regex){
 	return search(expr, dfa);
 }
 
+bool fullmatch(const std::string& expr, const std::string& regex){
+	DFA dfa = compile(regex);
+	return fullmatch(expr, dfa);
+}
+
+bool fullmatch(const std::string& expr, DFA& dfa){
+	State curr_state = dfa.ind_to_state[0];
+	for (auto ch: expr){
+		bool no_tranz = true;
+		for (auto& tranz : curr_state.transitions){
+			if (tranz.symbol == ch){
+				curr_state = dfa.ind_to_state[tranz.to];
+				no_tranz = false;
+				break;
+			}
+		}
+		if (no_tranz){
+			return false;
+		}
+	}
+	if (curr_state.is_accepting){
+		return true;
+	}
+	return false;
+}
+
 bool search(const std::string& expr, DFA& dfa){
 	State start_state = dfa.ind_to_state[0];
 	if (start_state.is_accepting){
