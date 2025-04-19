@@ -1,4 +1,5 @@
 #include "dfa.hpp"
+#include <queue>
 #include <iostream>
 
 namespace myre
@@ -17,37 +18,36 @@ std::set<unsigned> form_intersection(std::set<unsigned>& a, std::set<unsigned>& 
 }
 
 DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root){
+	std::queue<std::set<unsigned>> sets_q;
 	std::map<std::set<unsigned>, int> set_to_ind;
 	std::unordered_map<unsigned, std::set<unsigned>>& followpos = SetHandler::followpos;
 	DFA automaton;
-	automaton.ind_to_state.emplace_back(root->first_pos);
+	sets_q.push(root->first_pos);
 	set_to_ind.emplace(root->first_pos, 0);
-	int i=0;
-	while (i < automaton.ind_to_state.size()){
+	unsigned state_counter = 0;
+	while (sets_q.empty() == false){
+		std::set<unsigned> current_state = std::move(sets_q.front());
+		sets_q.pop();
+		if (current_state.contains(SetHandler::get_final_ind())){
+			automaton.accepting_states.insert(state_counter);
+		}
 		for (auto sym_pair : SetHandler::symbols){
 			std::set<unsigned> new_pos_set;
-			std::set<unsigned> intersection = form_intersection(automaton.ind_to_state[i].set_pos, sym_pair.second);
+			std::set<unsigned> intersection = form_intersection(current_state, sym_pair.second);
 			for (auto pos : intersection){
 				new_pos_set.insert(followpos[pos].begin(), followpos[pos].end());
 			}
 			if (!new_pos_set.empty() and set_to_ind.contains(new_pos_set) == false){
-				set_to_ind.emplace(new_pos_set, automaton.ind_to_state.size());
-				automaton.ind_to_state.emplace_back(new_pos_set);
+				++state_counter;
+				set_to_ind.emplace(new_pos_set, state_counter);
+				sets_q.push(new_pos_set);
 			}
 			if (set_to_ind.contains(new_pos_set)){
-				int index = set_to_ind[new_pos_set];
-				automaton.ind_to_state[i].transitions.emplace_back(sym_pair.first, index);
+				unsigned index = set_to_ind[new_pos_set];
+				automaton.transitions[set_to_ind[current_state]].push_back({sym_pair.first, index});
 			}
 		}
-		++i;
 	}
-	// for (auto& pair : set_to_ind){
-	// 	 std::cout << pair.second << ":{";
-	// 	 for (auto elem : pair.first){
-	// 		std::cout << elem << ", ";
-	// 	 }
-	// 	 std::cout << "}\n";
-	// }
 	return automaton;
 }
 

@@ -205,31 +205,29 @@ void visualize_with_sets(const std::shared_ptr<SyntaxNode>& root, const std::str
 void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
     out << "digraph DFA {\n";
     out << "  rankdir=LR;\n";
-    out << "  node [shape = doublecircle];\n";
 
-    // Отметить принимающие состояния
-    for (size_t i = 0; i < dfa.ind_to_state.size(); ++i) {
-        if (dfa.ind_to_state[i].is_accepting) {
-            out << "  " << i << ";\n";
-        }
+    // Принмающие состояния
+    out << "  node [shape = doublecircle];\n";
+    for (unsigned state : dfa.accepting_states) {
+        out << "  " << state << ";\n";
     }
 
     out << "  node [shape = circle];\n";
 
-    // Стартовая стрелка (условно из "пустого" состояния)
+    // Стартовая стрелка
     out << "  start [shape=point];\n";
-    out << "  start -> 0;\n"; // предполагаем, что стартовое состояние — 0
+    out << "  start -> " << DFA::start_state << ";\n";
 
-    // Все переходы
-    for (size_t i = 0; i < dfa.ind_to_state.size(); ++i) {
-        const auto& state = dfa.ind_to_state[i];
-        for (const auto& t : state.transitions) {
-            out << "  " << i << " -> " << t.to << " [label=\"" << t.symbol << "\"];\n";
+    // Переходы
+    for (const auto& [from, transitions] : dfa.transitions) {
+        for (const auto& t : transitions) {
+            out << "  " << from << " -> " << t.to << " [label=\"" << t.symbol << "\"];\n";
         }
     }
 
     out << "}\n";
 }
+
 
 void export_tokens_dot(const std::list<std::shared_ptr<Token>>& tokens, const std::string& filename) {
     std::ofstream out(filename);
@@ -264,7 +262,7 @@ void export_tokens_dot(const std::list<std::shared_ptr<Token>>& tokens, const st
 
 
 int main(){
-	std::string test = "a{2,3}{3,4}{0,4}";
+	std::string test = "v+";
 	// lazy evaluation
 	// for compile("aba").finditer("abababa") {
 	// }

@@ -2,7 +2,7 @@ MAKEFLAGS += --no-print-directory
 BUILD_DIR = build
 BUILD_TEST_DIR = buildtests
 
-TARGET = test_parser
+TARGET = test_search
 
 .PHONY : build run tests runtests
 
