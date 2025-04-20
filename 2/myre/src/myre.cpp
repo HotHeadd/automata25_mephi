@@ -37,7 +37,7 @@ bool search_first(const std::string& expr, DFA& dfa, Match& match){
 	unsigned start_state = DFA::start_state;
 	if (dfa.accepting_states.contains(start_state)){
 		match.begin = expr.begin();
-		match.end = expr.begin();
+		match.end = expr.begin()+1;
 		return true;
 	}
 	for (int start_ind=0; start_ind<expr.size(); ++start_ind){
@@ -51,7 +51,7 @@ bool search_first(const std::string& expr, DFA& dfa, Match& match){
 					no_tranz = false;
 					if (dfa.accepting_states.contains(curr_state)){
 						match.begin = expr.begin()+start_ind;
-						match.end = expr.begin()+curr_ind;
+						match.end = expr.begin()+curr_ind+1;
 						return true;
 					}
 					break;

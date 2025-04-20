@@ -25,6 +25,6 @@ int main(){
 		sum += duration.count();
 	}
 	std::cout << "Average time is " << sum/10 << " ms\n";
-	// 53 ms average
+	// 130 ms average
 	return 0;
 }
