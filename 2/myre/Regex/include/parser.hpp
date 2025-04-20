@@ -10,18 +10,22 @@ namespace myre
 class RegexParser {
 public:
 	std::shared_ptr<SyntaxNode> parse(const std::string& regex); // возвращает корень дерева разбора
-	std::list<std::shared_ptr<Token>> tokenize(const std::string& regex);
 private:
 	std::string regex_;
+	unsigned pos=0;
 	const unsigned INF = -1;
 	std::list<std::shared_ptr<Token>> tokens;
+
+	char peek() const;
+	char next();
+	bool consume_if_match(char c);
+
 	std::pair<unsigned, unsigned> parse_range(const std::string& regex, int& i, std::list<std::shared_ptr<Token>>& tokens);
 	std::list<std::shared_ptr<Token>> transform_range(unsigned lower, unsigned upper, std::list<std::shared_ptr<Token>>& tokens, TokenType& prev_type);
 
 	std::shared_ptr<SyntaxNode> parse_expression();
 	std::shared_ptr<SyntaxNode> parse_term();
 	std::shared_ptr<SyntaxNode> parse_atom();
-	std::shared_ptr<Token> consume();
 };
 
 
