@@ -124,3 +124,25 @@ TEST(fullmatch, pars_or){
 	ASSERT_FALSE(fullmatch("edfhdsfabcd ", dfa));
 	ASSERT_FALSE(fullmatch("", dfa));
 }
+
+TEST(fullmatch, pars_empty){
+    std::string test = "()";
+	DFA dfa = compile(test);
+
+	ASSERT_TRUE(fullmatch("", dfa));
+
+	ASSERT_FALSE(fullmatch("asd abcdedfh adfs", dfa));
+	ASSERT_FALSE(fullmatch("edfh edfh", dfa));
+	ASSERT_FALSE(fullmatch("edfhdsfabcd ", dfa));
+}
+
+TEST(fullmatch, pars_empty_range){
+    std::string test = "(){2,3}";
+	DFA dfa = compile(test);
+
+	ASSERT_TRUE(fullmatch("", dfa));
+
+	ASSERT_FALSE(fullmatch("asd abcdedfh adfs", dfa));
+	ASSERT_FALSE(fullmatch("edfh edfh", dfa));
+	ASSERT_FALSE(fullmatch("edfhdsfabcd ", dfa));
+}
