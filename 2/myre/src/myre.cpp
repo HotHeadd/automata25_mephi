@@ -12,16 +12,6 @@ DFA compile(const std::string& regex){
 	return builder.buildDFA(tree);
 }
 
-bool search(const std::string& expr, const std::string& regex){
-	DFA dfa = compile(regex);
-	return search(expr, dfa);
-}
-
-bool fullmatch(const std::string& expr, const std::string& regex){
-	DFA dfa = compile(regex);
-	return fullmatch(expr, dfa);
-}
-
 bool fullmatch(const std::string& expr, DFA& dfa){
 	unsigned curr_state = DFA::start_state;
 	for (auto ch: expr){
@@ -43,13 +33,15 @@ bool fullmatch(const std::string& expr, DFA& dfa){
 	return false;
 }
 
-bool search(const std::string& expr, DFA& dfa){
+bool search_first(const std::string& expr, DFA& dfa, Match& match){
 	unsigned start_state = DFA::start_state;
 	if (dfa.accepting_states.contains(start_state)){
+		match.begin = expr.begin();
+		match.end = expr.begin();
 		return true;
 	}
-	for (int ind=0; ind<expr.size(); ++ind){
-		int curr_ind = ind;
+	for (int start_ind=0; start_ind<expr.size(); ++start_ind){
+		int curr_ind = start_ind;
 		unsigned curr_state = start_state;
 		while (curr_ind < expr.size()){
 			bool no_tranz = true;
@@ -58,6 +50,8 @@ bool search(const std::string& expr, DFA& dfa){
 					curr_state = tranz.to;
 					no_tranz = false;
 					if (dfa.accepting_states.contains(curr_state)){
+						match.begin = expr.begin()+start_ind;
+						match.end = expr.begin()+curr_ind;
 						return true;
 					}
 					break;
@@ -71,5 +65,35 @@ bool search(const std::string& expr, DFA& dfa){
 	}
 	return false;
 }
+
+bool search_next(const std::string& expr, DFA& dfa, Match& match){
 	
+}
+
+
+bool search(const std::string& expr, const std::string& regex){
+	DFA dfa = compile(regex);
+	Match match;
+	return search_first(expr, dfa, match);
+}
+
+bool search(const std::string& expr, DFA& dfa){
+	Match match;
+	return search_first(expr, dfa, match);
+}
+
+bool fullmatch(const std::string& expr, const std::string& regex){
+	DFA dfa = compile(regex);
+	return fullmatch(expr, dfa);
+}
+
+bool search_first(const std::string& expr, const std::string& regex, Match& match){
+	DFA dfa = compile(regex);
+	return search_first(expr, dfa, match);
+}
+
+bool search_next(const std::string& expr, const std::string& regex, Match& match){
+	DFA dfa = compile(regex);
+	return search_next(expr, dfa, match);
+}
 } // namespace myre

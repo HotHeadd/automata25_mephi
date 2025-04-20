@@ -41,6 +41,7 @@ DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root){
 				++state_counter;
 				set_to_ind.emplace(new_pos_set, state_counter);
 				sets_q.push(new_pos_set);
+				automaton.transitions.push_back({});
 			}
 			if (set_to_ind.contains(new_pos_set)){
 				unsigned index = set_to_ind[new_pos_set];

@@ -16,7 +16,7 @@ struct Transition{
 
 struct DFA {
 	static constexpr unsigned start_state = 0;
-	std::unordered_map<unsigned, std::vector<Transition>> transitions;
+	std::vector<std::vector<Transition>> transitions;
 	std::set<unsigned> accepting_states;
 };
 

@@ -7,10 +7,37 @@
 namespace myre
 {
 
+struct Match {
+	std::string::const_iterator begin;
+	std::string::const_iterator end;
+
+	Match(std::string::const_iterator b, std::string::const_iterator e)
+        : begin(b), end(e) {}
+	Match() {}
+
+	std::string str() const {
+		return std::string(begin, end);
+	}
+
+	bool empty() const {
+		return begin == end;
+	}
+
+	size_t size() const {
+		return std::distance(begin, end);
+	}
+};
+
 DFA compile(const std::string& regex); // parse + toDFA
 
 bool search(const std::string& expr, const std::string& regex);
 bool search(const std::string& expr, DFA& dfa);
+
+bool search_first(const std::string& expr, const std::string& regex, Match& match);
+bool search_first(const std::string& expr, DFA& dfa, Match& match);
+
+bool search_next(const std::string& expr, const std::string& regex, Match& match);
+bool search_next(const std::string& expr, DFA& dfa, Match& match);
 
 bool fullmatch(const std::string& expr, const std::string& regex);
 bool fullmatch(const std::string& expr, DFA& dfa);

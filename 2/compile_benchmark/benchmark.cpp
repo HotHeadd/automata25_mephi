@@ -21,7 +21,7 @@ int main(){
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
 		sum += duration.count();
 	}
-	std::cout << "Average time is " << sum/10 << "\n";
-	// 167 ms average
+	std::cout << "Average time is " << sum/10 << "ms\n";
+	// 142 ms average
 	return 0;
 }

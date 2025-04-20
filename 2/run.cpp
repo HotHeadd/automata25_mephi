@@ -267,7 +267,6 @@ int main(){
 	// for compile("aba").finditer("abababa") {
 	// }
 
-	// TODO: remove state and benchmark
 	// TODO: optional: LIST->VECTOR
 	// TODO: better multiple range management {0,4}{1,4} (via tree)
 
