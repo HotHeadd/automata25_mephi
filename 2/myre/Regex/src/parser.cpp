@@ -200,12 +200,13 @@ std::pair<unsigned, unsigned> RegexParser::parse_range(){
 		throw ParenthesesError(regex_);
 	}
 	if (lower.empty() and upper.empty()){
-		throw SyntaxError(regex_);
+		lower = "0";
+		i_upper = INF;
 	}
-	if (lower.empty()){
+	else if (lower.empty()){
 		lower = "0";
 	}
-	if (upper.empty()){
+	else if (upper.empty()){
 		if (is_upper == true){
 			i_upper = INF;
 		}

@@ -18,13 +18,9 @@ build:
 	cmake -B${BUILD_DIR} -S.
 	cmake --build ${BUILD_DIR}
 
-test_parser: setup_test_dirs
-	cmake --build ${BUILD_TEST_DIR} --target parser_exec
-	ctest --test-dir ${BUILD_TEST_DIR} --target -R parser --output-on-failure
-
-test_search: setup_test_dirs
-	cmake --build ${BUILD_TEST_DIR} --target search_exec
-	ctest --test-dir ${BUILD_TEST_DIR} --target -R search --output-on-failure
+tests: setup_test_dirs
+	cmake --build ${BUILD_TEST_DIR}
+	ctest --test-dir ${BUILD_TEST_DIR} --output-on-failure
 
 setup_test_dirs:
 	mkdir -p ${BUILD_TEST_DIR}

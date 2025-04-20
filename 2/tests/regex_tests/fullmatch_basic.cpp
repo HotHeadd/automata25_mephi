@@ -146,3 +146,47 @@ TEST(fullmatch, pars_empty_range){
 	ASSERT_FALSE(fullmatch("edfh edfh", dfa));
 	ASSERT_FALSE(fullmatch("edfhdsfabcd ", dfa));
 }
+
+
+TEST(fullmatch, ragne_empty_border1){
+    std::string test = "(abc){2,}";
+	DFA dfa = compile(test);
+
+	ASSERT_TRUE(fullmatch("abcabc", dfa));
+	ASSERT_TRUE(fullmatch("abcabcabc", dfa));
+	ASSERT_TRUE(fullmatch("abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc", dfa));
+
+	ASSERT_FALSE(fullmatch("abc", dfa));
+	ASSERT_FALSE(fullmatch("abcab", dfa));
+	ASSERT_FALSE(fullmatch("bcabc ", dfa));
+	ASSERT_FALSE(fullmatch("", dfa));
+}
+
+TEST(fullmatch, ragne_empty_border2){
+    std::string test = "(abc){,3}";
+	DFA dfa = compile(test);
+
+	ASSERT_TRUE(fullmatch("", dfa));
+	ASSERT_TRUE(fullmatch("abc", dfa));
+	ASSERT_TRUE(fullmatch("abcabc", dfa));
+	ASSERT_TRUE(fullmatch("abcabcabc", dfa));
+
+	ASSERT_FALSE(fullmatch("abcabcabcabc", dfa));
+	ASSERT_FALSE(fullmatch("abcab", dfa));
+	ASSERT_FALSE(fullmatch("bcabc ", dfa));
+}
+
+TEST(fullmatch, ragne_empty_border3){
+    std::string test = "(abc){,}";
+	DFA dfa = compile(test);
+
+	ASSERT_TRUE(fullmatch("", dfa));
+	ASSERT_TRUE(fullmatch("abc", dfa));
+	ASSERT_TRUE(fullmatch("abcabc", dfa));
+	ASSERT_TRUE(fullmatch("abcabcabc", dfa));
+	ASSERT_TRUE(fullmatch("abcabcabcabcabcabcabcabcabcabcabcabcabcabcabc", dfa));
+
+	ASSERT_FALSE(fullmatch("abcabcab", dfa));
+	ASSERT_FALSE(fullmatch("abcab", dfa));
+	ASSERT_FALSE(fullmatch("bcabc ", dfa));
+}
