@@ -206,7 +206,7 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
     out << "digraph DFA {\n";
     out << "  rankdir=LR;\n";
 
-    // Принмающие состояния
+    // Принимающие состояния
     out << "  node [shape = doublecircle];\n";
     for (unsigned state : dfa.accepting_states) {
         out << "  " << state << ";\n";
@@ -219,8 +219,8 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
     out << "  start -> " << DFA::start_state << ";\n";
 
     // Переходы
-    for (const auto& [from, transitions] : dfa.transitions) {
-        for (const auto& t : transitions) {
+    for (size_t from = 0; from < dfa.transitions.size(); ++from) {
+        for (const auto& t : dfa.transitions[from]) {
             out << "  " << from << " -> " << t.to << " [label=\"" << t.symbol << "\"];\n";
         }
     }
@@ -263,12 +263,10 @@ void export_tokens_dot(const std::list<std::shared_ptr<Token>>& tokens, const st
 
 int main(){
 	std::string test = "v+";
-	// lazy evaluation
-	// for compile("aba").finditer("abababa") {
-	// }
 
 	// TODO: optional: LIST->VECTOR
 	// TODO: better multiple range management {0,4}{1,4} (via tree)
+	// TODO: test new searches
 
 	RegexParser parser;
 	std::list<std::shared_ptr<Token>> tokens = parser.tokenize(test);

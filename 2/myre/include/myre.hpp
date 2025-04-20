@@ -36,8 +36,8 @@ bool search(const std::string& expr, DFA& dfa);
 bool search_first(const std::string& expr, const std::string& regex, Match& match);
 bool search_first(const std::string& expr, DFA& dfa, Match& match);
 
-bool search_next(const std::string& expr, const std::string& regex, Match& match);
-bool search_next(const std::string& expr, DFA& dfa, Match& match);
+auto make_lazy_search(const std::string& expr, const std::string& regex);
+auto make_lazy_search(const std::string& expr, DFA& dfa);
 
 bool fullmatch(const std::string& expr, const std::string& regex);
 bool fullmatch(const std::string& expr, DFA& dfa);

@@ -24,6 +24,7 @@ DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root){
 	DFA automaton;
 	sets_q.push(root->first_pos);
 	set_to_ind.emplace(root->first_pos, 0);
+	automaton.transitions.push_back({});
 	unsigned state_counter = 0;
 	while (sets_q.empty() == false){
 		std::set<unsigned> current_state = std::move(sets_q.front());
