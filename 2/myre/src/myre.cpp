@@ -7,9 +7,9 @@ namespace myre
 DFA compile(const std::string& regex){
 	RegexParser parser;
 	DFABuilder builder;
-	
-	std::shared_ptr<SyntaxNode> tree = parser.parse(regex);
-	return builder.buildDFA(tree);
+	Context context;
+	std::shared_ptr<SyntaxNode> tree = parser.parse(regex, context);
+	return builder.buildDFA(tree, context);
 }
 
 bool fullmatch(const std::string& expr, DFA& dfa){

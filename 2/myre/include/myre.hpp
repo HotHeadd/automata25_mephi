@@ -1,7 +1,6 @@
 #pragma once
 
 #include "dfa.hpp"
-#include "nodes.hpp"
 #include "parser.hpp"
 
 namespace myre

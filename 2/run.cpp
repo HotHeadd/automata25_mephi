@@ -127,7 +127,7 @@ int generateDotAdvanced(const std::shared_ptr<SyntaxNode>& node, std::ofstream& 
 	return currentId;
 }
 
-void visualize_with_sets(const std::shared_ptr<SyntaxNode>& root, const std::string& filename) {
+void visualize_with_sets(const std::shared_ptr<SyntaxNode>& root, const std::string& filename, Context& context) {
     std::ofstream dotFile(filename);
     dotFile << "digraph SyntaxTree {\n";
     dotFile << "  node [shape=box, fontname=\"Courier\", fontsize=10];\n";
@@ -148,7 +148,7 @@ void visualize_with_sets(const std::shared_ptr<SyntaxNode>& root, const std::str
     dotFile << "      <table border=\"1\" cellborder=\"1\" cellspacing=\"0\" cellpadding=\"4\">\n";
     dotFile << "        <tr><td><b>Node #</b></td><td><b>Followpos</b></td></tr>\n";
 
-    for (const auto& [num, follow] : SetHandler::followpos) {
+    for (const auto& [num, follow] : context.followpos) {
         dotFile << "        <tr><td>" << num << "</td><td>{";
         bool first = true;
         for (auto f : follow) {
@@ -175,7 +175,7 @@ void visualize_with_sets(const std::shared_ptr<SyntaxNode>& root, const std::str
     dotFile << "      <table border=\"1\" cellborder=\"1\" cellspacing=\"0\" cellpadding=\"4\">\n";
     dotFile << "        <tr><td><b>Symbol</b></td><td><b>Node #s</b></td></tr>\n";
 
-    for (const auto& [symbol, nodes] : SetHandler::symbols) {
+    for (const auto& [symbol, nodes] : context.symbols) {
 		char opt = symbol;
 		if (symbol == '\0'){
 			opt = '$';
@@ -235,10 +235,11 @@ int main(){
 	// TODO: test new searches
 
 	RegexParser parser;
-	
-	std::shared_ptr<SyntaxNode> node = parser.parse(test);
+	Context context;
+
+	std::shared_ptr<SyntaxNode> node = parser.parse(test, context);
 	visualize(node, "visuals/ast.dot");
-	visualize_with_sets(node, "visuals/ast_plus.dot");
+	visualize_with_sets(node, "visuals/ast_plus.dot", context);
 
 	DFA dfa = compile(test);
 	std::ofstream dotFile("visuals/automaton.dot");

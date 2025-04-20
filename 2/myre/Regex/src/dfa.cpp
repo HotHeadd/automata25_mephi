@@ -17,10 +17,10 @@ std::set<unsigned> form_intersection(std::set<unsigned>& a, std::set<unsigned>& 
 	return result;
 }
 
-DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root){
+DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root, Context& context){
 	std::queue<std::set<unsigned>> sets_q;
 	std::map<std::set<unsigned>, int> set_to_ind;
-	std::unordered_map<unsigned, std::set<unsigned>>& followpos = SetHandler::followpos;
+	std::unordered_map<unsigned, std::set<unsigned>>& followpos = context.followpos;
 	DFA automaton;
 	sets_q.push(root->first_pos);
 	set_to_ind.emplace(root->first_pos, 0);
@@ -29,10 +29,10 @@ DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root){
 	while (sets_q.empty() == false){
 		std::set<unsigned> current_state = std::move(sets_q.front());
 		sets_q.pop();
-		if (current_state.contains(SetHandler::get_final_ind())){
+		if (current_state.contains(context.get_final_ind())){
 			automaton.accepting_states.insert(state_counter);
 		}
-		for (auto sym_pair : SetHandler::symbols){
+		for (auto sym_pair : context.symbols){
 			std::set<unsigned> new_pos_set;
 			std::set<unsigned> intersection = form_intersection(current_state, sym_pair.second);
 			for (auto pos : intersection){

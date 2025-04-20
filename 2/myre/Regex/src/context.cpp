@@ -1,12 +1,10 @@
-#include "nodes.hpp"
+#include "context.hpp"
+#include "syntax_node.hpp"
 
 namespace myre
 {
-unsigned SetHandler::number_count = 0;
-std::unordered_map<char, std::set<unsigned>> SetHandler::symbols = {};
-std::unordered_map<unsigned, std::set<unsigned>> SetHandler::followpos = {};
 
-void SetHandler::deduce_sets(SyntaxNode* node){
+void Context::deduce_sets(SyntaxNode* node){
 	if (node->type == NodeType::EPSYLON){
 		node->is_nullable = true;
 	}
@@ -26,7 +24,7 @@ void SetHandler::deduce_sets(SyntaxNode* node){
 		node->is_nullable = true;
 		node->first_pos = node->left->first_pos;
 		node->last_pos = node->left->last_pos;
-		SetHandler::handle_kleene_followpos(node);
+		handle_kleene_followpos(node);
 	}
 	else if (node->type == NodeType::OR){
 		node->is_nullable = node->left->is_nullable or node->right->is_nullable;
@@ -45,16 +43,16 @@ void SetHandler::deduce_sets(SyntaxNode* node){
 		if (node->right->is_nullable){
 			node->last_pos.insert(node->left->last_pos.begin(), node->left->last_pos.end());
 		}
-		SetHandler::handle_concat_followpos(node);
+		handle_concat_followpos(node);
 	}
 }
 
-void SetHandler::handle_kleene_followpos(SyntaxNode* node){
+void Context::handle_kleene_followpos(SyntaxNode* node){
 	for (unsigned pos : node->last_pos){
 		followpos[pos].insert(node->first_pos.begin(), node->first_pos.end());
 	}
 }
-void SetHandler::handle_concat_followpos(SyntaxNode* node){
+void Context::handle_concat_followpos(SyntaxNode* node){
 	for (unsigned pos : node->left->last_pos){
 		followpos[pos].insert(node->right->first_pos.begin(), node->right->first_pos.end());
 	}

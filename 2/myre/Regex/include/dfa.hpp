@@ -3,6 +3,7 @@
 #include "parser.hpp"
 #include <set>
 #include <map>
+#include "context.hpp"
 
 namespace myre
 {
@@ -22,7 +23,7 @@ struct DFA {
 
 class DFABuilder {
 public:
-	DFA buildDFA(std::shared_ptr<SyntaxNode> tree);
+	DFA buildDFA(std::shared_ptr<SyntaxNode> tree, Context& context);
 };
 
 } // namespace myre
