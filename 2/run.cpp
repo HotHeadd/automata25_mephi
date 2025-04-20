@@ -233,8 +233,6 @@ int main(){
 	std::string test = "v+";
 
 	// TODO: test new searches
-	// TODO: add tests for {,3}
-	// TODO: TESTS FOR SHIELDING
 
 	RegexParser parser;
 	

@@ -15,7 +15,8 @@ SET(GTEST_LIBS gtest gtest_main gmock gmock_main)
 add_subdirectory(../myre ./build_source)
 
 add_subdirectory(syntax_tests)
-add_subdirectory(regex_tests)
+add_subdirectory(basic_tests)
+add_subdirectory(match_tests)
 
 add_custom_target(coverage
 	COMMAND lcov --capture --directory . --output-file coverage.info

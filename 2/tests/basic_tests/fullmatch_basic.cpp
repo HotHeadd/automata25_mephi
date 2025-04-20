@@ -190,3 +190,17 @@ TEST(fullmatch, ragne_empty_border3){
 	ASSERT_FALSE(fullmatch("abcab", dfa));
 	ASSERT_FALSE(fullmatch("bcabc ", dfa));
 }
+
+TEST(fullmatch, shielding){
+	std::string test = "(a#)#(){2,3}";
+	DFA dfa = compile(test);
+
+	ASSERT_TRUE(fullmatch("a)(a)(", dfa));
+	ASSERT_TRUE(fullmatch("a)(a)(a)(", dfa));
+
+	ASSERT_FALSE(fullmatch("a)(", dfa));
+	ASSERT_FALSE(fullmatch("a)(a)", dfa));
+	ASSERT_FALSE(fullmatch("a)(a(", dfa));
+	ASSERT_FALSE(fullmatch("a)(a)(a)(a)(a)(", dfa));
+	
+}
