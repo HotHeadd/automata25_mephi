@@ -229,48 +229,14 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
 }
 
 
-void export_tokens_dot(const std::list<std::shared_ptr<Token>>& tokens, const std::string& filename) {
-    std::ofstream out(filename);
-	out << "digraph Tokens {\n";
-    out << "  node [shape=none, fontname=\"monospace\"];\n";
-    out << "  tokens [label=<\n";
-    out << "    <TABLE BORDER=\"1\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n";
-    out << "      <TR><TD><B>Index</B></TD><TD><B>Type</B></TD><TD><B>Value</B></TD></TR>\n";
-
-    int index = 0;
-    for (const auto& token : tokens) {
-        std::string type_str;
-        switch (token->type) {
-            case TokenType::LPAR:    type_str = "("; break;
-            case TokenType::RPAR:    type_str = ")"; break;
-            case TokenType::KLEENE:  type_str = "*"; break;
-            case TokenType::OR:      type_str = "OR"; break;
-            case TokenType::CONCAT:  type_str = "CONCAT"; break;
-            case TokenType::CHAR:    type_str = "CHAR"; break;
-            case TokenType::EPSYLON: type_str = "EPSYLON"; break;
-            default:                 type_str = "UNKNOWN"; break;
-        }
-
-        std::string value_str = (token->type == TokenType::CHAR) ? std::string(1, token->value) : "";
-        out << "      <TR><TD>" << index++ << "</TD><TD>" << type_str << "</TD><TD>" << value_str << "</TD></TR>\n";
-    }
-
-    out << "    </TABLE>\n";
-    out << "  >];\n";
-    out << "}\n";
-}
-
-
 int main(){
 	std::string test = "v+";
 
-	// TODO: optional: LIST->VECTOR
-	// TODO: better multiple range management {0,4}{1,4} (via tree)
 	// TODO: test new searches
+	// TODO: add tests for {,3}
+	// TODO: TESTS FOR SHIELDING
 
 	RegexParser parser;
-	std::list<std::shared_ptr<Token>> tokens = parser.tokenize(test);
-	export_tokens_dot(tokens, "visuals/tokens.dot");
 	
 	std::shared_ptr<SyntaxNode> node = parser.parse(test);
 	visualize(node, "visuals/ast.dot");
@@ -280,7 +246,7 @@ int main(){
 	std::ofstream dotFile("visuals/automaton.dot");
 	dump_dfa_dot(dfa, dotFile);
 	
-	std::string expr = "aaaaaaaaaaaaaaa";
+	std::string expr = "vvv";
 	if (search(expr, dfa)){
 		std::cout << "\nTRUE\n";
 	}

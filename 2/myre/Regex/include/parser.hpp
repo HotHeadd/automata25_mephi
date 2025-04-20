@@ -12,16 +12,16 @@ public:
 	std::shared_ptr<SyntaxNode> parse(const std::string& regex); // возвращает корень дерева разбора
 private:
 	std::string regex_;
-	unsigned pos=0;
+	unsigned pos=0, paren_balance = 0;
 	const unsigned INF = -1;
-	std::list<std::shared_ptr<Token>> tokens;
 
 	char peek() const;
 	char next();
 	bool consume_if_match(char c);
 
-	std::pair<unsigned, unsigned> parse_range(const std::string& regex, int& i, std::list<std::shared_ptr<Token>>& tokens);
-	std::list<std::shared_ptr<Token>> transform_range(unsigned lower, unsigned upper, std::list<std::shared_ptr<Token>>& tokens, TokenType& prev_type);
+	std::pair<unsigned, unsigned> parse_range();
+	std::shared_ptr<SyntaxNode> transform_range(unsigned lower, unsigned upper, std::shared_ptr<SyntaxNode> node);
+	std::shared_ptr<SyntaxNode> clone(const std::shared_ptr<SyntaxNode>& node);
 
 	std::shared_ptr<SyntaxNode> parse_expression();
 	std::shared_ptr<SyntaxNode> parse_term();

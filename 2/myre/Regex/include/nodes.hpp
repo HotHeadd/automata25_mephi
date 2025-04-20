@@ -7,16 +7,6 @@
 
 namespace myre
 {
-enum class TokenType{
-	LPAR,
-	RPAR,
-	KLEENE,
-	OR,
-	CONCAT,
-	CHAR,
-	EPSYLON,
-	NONE
-};
 
 enum class NodeType{
 	KLEENE,
@@ -27,7 +17,6 @@ enum class NodeType{
 	EPSYLON
 };
 
-struct Token;
 struct SyntaxNode;
 
 class SetHandler {
@@ -72,17 +61,7 @@ struct SyntaxNode {
 		: type(type_i), value(value_i) {
 			SetHandler::deduce_sets(this);
 	}
-	SyntaxNode(std::shared_ptr<Token> token, std::shared_ptr<SyntaxNode> left_kid = nullptr, std::shared_ptr<SyntaxNode> right_kid = nullptr);
-
 	
-};
-
-struct Token{
-	TokenType type;
-	char value='\0';
-
-	Token(TokenType type_i, char value_i='\0')
-		: type(type_i), value(value_i) {}
 };
 
 } // namespace myre

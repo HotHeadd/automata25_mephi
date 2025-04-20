@@ -6,30 +6,6 @@ unsigned SetHandler::number_count = 0;
 std::unordered_map<char, std::set<unsigned>> SetHandler::symbols = {};
 std::unordered_map<unsigned, std::set<unsigned>> SetHandler::followpos = {};
 
-SyntaxNode::SyntaxNode(std::shared_ptr<Token> token, std::shared_ptr<SyntaxNode> left_kid, std::shared_ptr<SyntaxNode> right_kid) 
-						: left(left_kid), right(right_kid){
-	if (token->type == TokenType::KLEENE){
-		type = NodeType::KLEENE;
-	}
-	else if (token->type == TokenType::CHAR){
-		type = NodeType::CHAR;
-		value = token->value;
-	}
-	else if (token->type == TokenType::EPSYLON){
-		type = NodeType::EPSYLON;
-	}
-	else if (token->type == TokenType::OR){
-		type = NodeType::OR;
-	}
-	else if (token->type == TokenType::CONCAT){
-		type = NodeType::CONCAT;
-	}
-	else{
-		throw std::runtime_error("Unable to transform token");
-	}
-	SetHandler::deduce_sets(this);
-}
-
 void SetHandler::deduce_sets(SyntaxNode* node){
 	if (node->type == NodeType::EPSYLON){
 		node->is_nullable = true;

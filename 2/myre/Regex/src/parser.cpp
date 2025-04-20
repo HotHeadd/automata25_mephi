@@ -9,7 +9,10 @@ std::shared_ptr<SyntaxNode> RegexParser::parse(const std::string& regex){
 	SetHandler::reset();
 	pos = 0;
 	std::shared_ptr<SyntaxNode> node = parse_expression();
-	if (pos != regex.size()) throw SyntaxError(regex);
+	if (pos != regex.size()) {
+		if (regex[pos] == ')') throw ParenthesesError(regex_);
+		throw SyntaxError(regex_);
+	}
 	return std::make_shared<SyntaxNode>(
 				NodeType::CONCAT, 
 				node, 
@@ -35,106 +38,147 @@ std::shared_ptr<SyntaxNode> RegexParser::parse_expression(){
 
 std::shared_ptr<SyntaxNode> RegexParser::parse_term(){
 	std::shared_ptr<SyntaxNode> node = nullptr, right;
-	while (!tokens.empty() and tokens.front()->type == TokenType::CONCAT){
+	while (true){
 		char next_char = peek();
 		if (next_char == '\0' or next_char == ')' or next_char == '|'){
 			break;
 		}
 		right = parse_atom();
-		node = std::make_shared<SyntaxNode>(NodeType::CONCAT, node, right);
+		if (!right){
+			break;
+		}
+		if (!node) {
+			node = right;
+		} 
+		else {
+			node = std::make_shared<SyntaxNode>(NodeType::CONCAT, node, right);
+		}
 	}
 	return node;
 }
 
 std::shared_ptr<SyntaxNode> RegexParser::parse_atom(){
 	std::shared_ptr<SyntaxNode> node;
-	std::shared_ptr<Token> token = consume();
-	if (token->type == TokenType::LPAR){
-		node = parse_expression();
-		if (consume()->type != TokenType::RPAR){
-			throw SyntaxError(regex_);
+	if (consume_if_match('(')) {
+        ++paren_balance;
+        // пустые скобки ()
+        if (peek() == ')') {
+            ++pos;            // пропускаем ')'
+            --paren_balance;  // баланс вернулся
+            node = std::make_shared<SyntaxNode>(NodeType::EPSYLON);
+        }
+        else {
+            node = parse_expression();
+            if (!consume_if_match(')')) {
+                throw ParenthesesError(regex_);
+            }
+            --paren_balance;
+            if (paren_balance < 0) {
+                throw ParenthesesError(regex_);
+            }
+        }
+    }
+	else if (consume_if_match(')')){
+		throw ParenthesesError(regex_);
+	}
+	else {
+        char c = next();
+        if (c == '#') {
+            if (pos >= regex_.size()) throw SyntaxError(regex_);
+            c = next();
+        }
+        node = std::make_shared<SyntaxNode>(NodeType::CHAR, c);
+    }
+	while (true) {
+        if (consume_if_match('*')) {
+            node = std::make_shared<SyntaxNode>(NodeType::KLEENE, node);
+        }
+        else if (consume_if_match('+')) {
+            node = transform_range(1, INF, node);
+        }
+        else if (consume_if_match('?')) {
+            node = transform_range(0, 1, node);
+        }
+        else if (peek() == '{') {
+            auto [lower, upper] = parse_range();
+            node = transform_range(lower, upper, node);
+        }
+        else {
+            break;
+        }
+    }
+	return node;
+}
+
+std::shared_ptr<SyntaxNode> RegexParser::transform_range(unsigned lower, unsigned upper, std::shared_ptr<SyntaxNode> base){
+	std::shared_ptr<SyntaxNode> node = nullptr;
+	for (int i=0; i<lower; ++i){
+		if (i==0){
+			node = base;
+		}
+		else{
+			node = std::make_shared<SyntaxNode>(NodeType::CONCAT, node, clone(base));
 		}
 	}
-	else if (token->type != TokenType::CHAR and token->type != TokenType::EPSYLON){
-		throw SyntaxError(regex_);
+	if (upper == INF){
+		if (node == nullptr){
+			node = std::make_shared<SyntaxNode>(NodeType::KLEENE, base);
+		}
+		else{
+			node = std::make_shared<SyntaxNode>(
+				NodeType::CONCAT, 
+				node, 
+				std::make_shared<SyntaxNode>(NodeType::KLEENE, clone(base))
+			);
+		}
 	}
 	else{
-		node = std::make_shared<SyntaxNode>(token);
-	}
-	if (!tokens.empty() and tokens.front()->type == TokenType::KLEENE){
-		std::shared_ptr<SyntaxNode> prev_node = node;
-		node = std::make_shared<SyntaxNode>(consume(), prev_node);
-	}
-	if (!tokens.empty() and tokens.front()->type == TokenType::KLEENE){
-		throw SyntaxError(regex_);
+		for (int i=lower; i<upper; ++i){
+			if (node == nullptr){
+				node = std::make_shared<SyntaxNode>(
+					NodeType::OR, 
+					base,
+					std::make_shared<SyntaxNode>(NodeType::EPSYLON));
+			}
+			else{
+				node = std::make_shared<SyntaxNode>(
+					NodeType::CONCAT, 
+					node,
+					std::make_shared<SyntaxNode>(
+						NodeType::OR, 
+						clone(base),
+						std::make_shared<SyntaxNode>(NodeType::EPSYLON)));
+			}
+		}
 	}
 	return node;
 }
 
-std::list<std::shared_ptr<Token>> RegexParser::	transform_range(unsigned lower, unsigned upper, 
-															   std::list<std::shared_ptr<Token>>& tokens,
-															   TokenType& prev_type){
-	std::list<std::shared_ptr<Token>> new_tokens;
-	std::list<std::shared_ptr<Token>> old_tokens;
-	if (tokens.empty()){
-		throw SyntaxError(regex_);
+std::shared_ptr<SyntaxNode> RegexParser::clone(const std::shared_ptr<SyntaxNode>& node){
+	std::shared_ptr<SyntaxNode> new_left, new_right, new_node;
+	if (node->type == NodeType::CONCAT or node->type == NodeType::OR){
+		new_left = clone(node->left);
+		new_right = clone(node->right);
+		new_node = std::make_shared<SyntaxNode>(node->type, new_left, new_right);
 	}
-	old_tokens.push_front(tokens.back());
-	tokens.pop_back();
-	if (old_tokens.back()->type == TokenType::RPAR){
-		int braces = 1;
-		while (old_tokens.front()->type != TokenType::LPAR or braces > 0){
-			if (tokens.back()->type == TokenType::LPAR){
-				--braces;
-			}
-			if (tokens.back()->type == TokenType::RPAR){
-				++braces;
-			}
-			old_tokens.push_front(tokens.back());
-			tokens.pop_back();
-		}
-
-	}
-	bool first_token = true;
-	for (int i=0; i<lower; ++i){
-		if (!first_token){
-			new_tokens.push_back(std::make_shared<Token>(TokenType::CONCAT));
-		}
-		new_tokens.insert(new_tokens.end(), old_tokens.begin(), old_tokens.end());
-		first_token = false;
-	}
-	if (upper == INF){
-		new_tokens.push_back(std::make_shared<Token>(TokenType::CONCAT));
-		new_tokens.push_back(std::make_shared<Token>(TokenType::LPAR));
-		new_tokens.insert(new_tokens.end(), old_tokens.begin(), old_tokens.end());
-		new_tokens.push_back(std::make_shared<Token>(TokenType::RPAR));
-		new_tokens.push_back(std::make_shared<Token>(TokenType::KLEENE));
+	else if (node->type == NodeType::KLEENE){
+		new_left = clone(node->left);
+		new_node = std::make_shared<SyntaxNode>(node->type, new_left);
 	}
 	else{
-		for (int i=lower; i<upper; ++i){
-			if (!first_token){
-				new_tokens.push_back(std::make_shared<Token>(TokenType::CONCAT));
-			}
-			new_tokens.push_back(std::make_shared<Token>(TokenType::LPAR));
-			new_tokens.insert(new_tokens.end(), old_tokens.begin(), old_tokens.end());
-			new_tokens.push_back(std::make_shared<Token>(TokenType::OR));
-			new_tokens.push_back(std::make_shared<Token>(TokenType::RPAR));
-			first_token = false;
-		}
+		new_node = std::make_shared<SyntaxNode>(node->type, node->value);
 	}
-	prev_type = TokenType::NONE;
-	new_tokens.push_front(std::make_shared<Token>(TokenType::LPAR));
-	new_tokens.push_back(std::make_shared<Token>(TokenType::RPAR));
-	return new_tokens;
+	return new_node;
 }
 
-std::pair<unsigned, unsigned> RegexParser::parse_range(const std::string& regex, int& i, std::list<std::shared_ptr<Token>>& tokens){
+std::pair<unsigned, unsigned> RegexParser::parse_range(){
 	std::string lower, upper;
-	bool is_upper = false;
+	bool is_upper = false, not_closed = true;
 	unsigned i_lower=0, i_upper=0;
-	while (i < regex.size()){
-		char sym = regex[i];
+	while (pos < regex_.size()){
+		char sym = next();
 		if (sym == '}'){
+			not_closed = false;
 			break;
 		}
 		else if (sym == ',' and is_upper == false){
@@ -149,15 +193,17 @@ std::pair<unsigned, unsigned> RegexParser::parse_range(const std::string& regex,
 			}
 		}
 		else if (sym != '{'){
-			throw SyntaxError(regex);
+			throw SyntaxError(regex_);
 		}
-		++i;
 	}
-	if (i>=regex.size()){
-		throw ParenthesesError(regex);
+	if (pos >= regex_.size() and not_closed){
+		throw ParenthesesError(regex_);
+	}
+	if (lower.empty() and upper.empty()){
+		throw SyntaxError(regex_);
 	}
 	if (lower.empty()){
-		throw SyntaxError(regex);
+		lower = "0";
 	}
 	if (upper.empty()){
 		if (is_upper == true){
@@ -174,7 +220,7 @@ std::pair<unsigned, unsigned> RegexParser::parse_range(const std::string& regex,
 		}
 	}
 	catch (std::invalid_argument& e){
-		throw SyntaxError(regex);
+		throw SyntaxError(regex_);
 	}
 	if (i_lower > i_upper){
 		throw RangeError(i_lower, i_upper);
