@@ -216,7 +216,7 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
 
     // Стартовая стрелка
     out << "  start [shape=point];\n";
-    out << "  start -> " << DFA::start_state << ";\n";
+    out << "  start -> " << dfa.start_state << ";\n";
 
     // Переходы
     for (size_t from = 0; from < dfa.transitions.size(); ++from) {
@@ -230,7 +230,7 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
 
 
 int main(){
-	std::string test = "v+";
+	std::string test = "a{7,8}*";
 
 	// TODO: test new searches
 
@@ -241,10 +241,14 @@ int main(){
 	visualize(node, "visuals/ast.dot");
 	visualize_with_sets(node, "visuals/ast_plus.dot", context);
 
-	DFA dfa = compile(test);
+	DFABuilder builder;
+	DFA dfa = builder.buildDFA(node, context);
 	std::ofstream dotFile("visuals/automaton.dot");
 	dump_dfa_dot(dfa, dotFile);
 	
+	DFA min_dfa = builder.minimize_dfa(dfa, context);
+	std::ofstream minfile("visuals/minimal.dot");\
+	dump_dfa_dot(min_dfa, minfile);
 	std::string expr = "vvv";
 	if (search(expr, dfa)){
 		std::cout << "\nTRUE\n";

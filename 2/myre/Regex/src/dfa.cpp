@@ -1,5 +1,7 @@
 #include "dfa.hpp"
 #include <queue>
+#include <algorithm>
+#include <stack>
 #include <iostream>
 
 namespace myre
@@ -52,6 +54,90 @@ DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root, Context& context){
 	}
 	return automaton;
 }
+
+DFA DFABuilder::minimize_dfa(const DFA& dfa, Context& context) {
+    using State = unsigned;
+	std::vector<std::vector<State>> groups(2);
+	std::vector<char> alphabet;
+	std::map<std::vector<unsigned>, std::vector<State>> sign_to_state;
+	std::map<State, unsigned> state_to_group;
+
+	for (int i = 0; i<dfa.transitions.size(); ++i){
+		if (dfa.accepting_states.contains(i)){
+			groups[1].push_back(i);
+		}
+		else{
+			groups[0].push_back(i);
+		}
+	}
+	for (auto& [c, _] : context.symbols){
+		if (c != '\0'){
+			alphabet.push_back(c);
+		}
+	}
+	bool changed = false;
+	do{
+		changed = false;
+		state_to_group.clear();
+		sign_to_state.clear();
+		std::vector<unsigned> signature(alphabet.size()+1);
+		for (unsigned i=0; i<groups.size(); ++i){
+			for (auto& state : groups[i]){
+				state_to_group[state] = i;
+			}
+		}
+		for (auto& group : groups){
+			for (auto& state : group){
+				for (int i=0; i<alphabet.size(); ++i){
+					auto tr_iter = std::find_if(dfa.transitions[state].begin(), dfa.transitions[state].end(), [&](const Transition& tr){
+						return tr.symbol == alphabet[i];
+					});
+					if (tr_iter != dfa.transitions[state].end()){
+						signature[i+1] = state_to_group[tr_iter->to];
+					}
+					else{
+						signature[i+1] = -1;
+					}
+				}
+				signature[0] = state_to_group[state];
+				sign_to_state[signature].push_back(state);
+			}
+		}
+		if (sign_to_state.size() != groups.size()){
+			changed = true;
+			groups.clear();
+			int i = 0;
+			for (auto& [sign, new_gr] : sign_to_state){
+				groups.push_back(new_gr);
+				++i;
+			}
+		}
+		
+	} while (changed);
+	
+	DFA new_dfa;
+	new_dfa.start_state = state_to_group[dfa.start_state];
+	new_dfa.transitions.resize(groups.size());
+	for (unsigned i=0; i<groups.size(); ++i){
+		for (auto& state : groups[i]){
+			for (auto& tranz : dfa.transitions[state]){
+				auto iter = std::find_if(new_dfa.transitions[i].begin(), new_dfa.transitions[i].end(), [&](const Transition& tr){
+					return tr.symbol == tranz.symbol;
+				});
+				if (iter == new_dfa.transitions[i].end()){
+					new_dfa.transitions[i].push_back({tranz.symbol, state_to_group[tranz.to]});
+				}
+			}
+			if (dfa.accepting_states.contains(state)){
+				new_dfa.accepting_states.insert(i);
+			}
+		}
+	}
+	return new_dfa;
+}
+
+
+
 
 } // namespace myre
 

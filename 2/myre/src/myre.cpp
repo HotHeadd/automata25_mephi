@@ -13,7 +13,7 @@ DFA compile(const std::string& regex){
 }
 
 bool fullmatch(const std::string& expr, DFA& dfa){
-	unsigned curr_state = DFA::start_state;
+	unsigned curr_state = dfa.start_state;
 	for (auto ch: expr){
 		bool no_tranz = true;
 		for (auto& tranz : dfa.transitions[curr_state]){
@@ -34,7 +34,7 @@ bool fullmatch(const std::string& expr, DFA& dfa){
 }
 
 bool search_first(const std::string& expr, DFA& dfa, Match& match){
-	unsigned start_state = DFA::start_state;
+	unsigned start_state = dfa.start_state;
 	if (dfa.accepting_states.contains(start_state)){
 		match.begin = expr.begin();
 		match.end = expr.begin()+1;
@@ -71,7 +71,7 @@ auto make_lazy_search(const std::string& expr, DFA& dfa){
 	Match match;
 
 	return [&expr, &dfa, pos, match]() mutable -> std::optional<Match> { // mutable чтобы можно было менять pos, match
-		unsigned start_state = DFA::start_state;
+		unsigned start_state = dfa.start_state;
 
 		while (pos <= expr.size()) {
             unsigned curr_state = start_state;

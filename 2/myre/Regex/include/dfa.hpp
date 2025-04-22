@@ -16,7 +16,7 @@ struct Transition{
 };
 
 struct DFA {
-	static constexpr unsigned start_state = 0;
+	unsigned start_state = 0;
 	std::vector<std::vector<Transition>> transitions;
 	std::set<unsigned> accepting_states;
 };
@@ -24,6 +24,7 @@ struct DFA {
 class DFABuilder {
 public:
 	DFA buildDFA(std::shared_ptr<SyntaxNode> tree, Context& context);
+	DFA minimize_dfa(const DFA& dfa, Context& context);
 };
 
 } // namespace myre
