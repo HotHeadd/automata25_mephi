@@ -1,8 +1,6 @@
 #include "dfa.hpp"
 #include <queue>
 #include <algorithm>
-#include <stack>
-#include <iostream>
 
 namespace myre
 {

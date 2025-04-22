@@ -23,7 +23,7 @@ bool fullmatch(const std::string& expr, DFA& dfa){
 		for (auto& tranz : dfa.transitions[curr_state]){
 			if (tranz.symbol == ch){
 				curr_state = tranz.to;
-				no_tranz;
+				no_tranz = false;
 				break;
 			}
 		}
@@ -52,7 +52,7 @@ bool search_first(const std::string& expr, DFA& dfa, Match& match){
 			for (auto& tranz : dfa.transitions[curr_state]){
 				if (tranz.symbol == expr[curr_ind]){
 					curr_state = tranz.to;
-					no_tranz;
+					no_tranz = false;
 					if (dfa.accepting_states.contains(curr_state)){
 						match.begin = expr.begin()+start_ind;
 						match.end = expr.begin()+curr_ind+1;
