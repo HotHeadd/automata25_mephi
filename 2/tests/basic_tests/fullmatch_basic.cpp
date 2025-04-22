@@ -5,17 +5,21 @@ using namespace myre;
 
 TEST(fullmatch, basic_plus){
 	std::string test = "v+";
-	DFA dfa = compile(test);
+	DFA dfa_old = compile(test);
+	DFA dfa_min = compile(test, true);
 
-	ASSERT_TRUE(fullmatch("v", dfa));
-	ASSERT_TRUE(fullmatch("vvv", dfa));
-	ASSERT_TRUE(fullmatch("vvvvvvvvvvvvv", dfa));
-
-	ASSERT_FALSE(fullmatch("vvvvDD", dfa));
-	ASSERT_FALSE(fullmatch("dDvv", dfa));
-	ASSERT_FALSE(fullmatch("d", dfa));
-	ASSERT_FALSE(fullmatch("VV", dfa));
-	ASSERT_FALSE(fullmatch("", dfa));
+	std::array<std::reference_wrapper<DFA>, 2> dfas = {std::ref(dfa_old), std::ref(dfa_min)};
+	for (auto& dfa : dfas){
+		ASSERT_TRUE(fullmatch("v", dfa));
+		ASSERT_TRUE(fullmatch("vvv", dfa));
+		ASSERT_TRUE(fullmatch("vvvvvvvvvvvvv", dfa));
+	
+		ASSERT_FALSE(fullmatch("vvvvDD", dfa));
+		ASSERT_FALSE(fullmatch("dDvv", dfa));
+		ASSERT_FALSE(fullmatch("d", dfa));
+		ASSERT_FALSE(fullmatch("VV", dfa));
+		ASSERT_FALSE(fullmatch("", dfa));
+	}
 }
 
 TEST(fullmatch, basic_empty){

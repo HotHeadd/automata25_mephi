@@ -230,7 +230,7 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
 
 
 int main(){
-	std::string test = "a{7,8}*";
+	std::string test = "a{2,3}{0,2}{3,4}*";
 
 	// TODO: test new searches
 

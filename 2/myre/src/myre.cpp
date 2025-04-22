@@ -4,12 +4,16 @@
 namespace myre
 {
 
-DFA compile(const std::string& regex){
+DFA compile(const std::string& regex, bool optimize){
 	RegexParser parser;
 	DFABuilder builder;
 	Context context;
 	std::shared_ptr<SyntaxNode> tree = parser.parse(regex, context);
-	return builder.buildDFA(tree, context);
+	DFA dfa = builder.buildDFA(tree, context);
+	// if (optimize){
+	// 	dfa = builder.minimize_dfa(dfa, context);
+	// }
+	return dfa;
 }
 
 bool fullmatch(const std::string& expr, DFA& dfa){
@@ -19,7 +23,7 @@ bool fullmatch(const std::string& expr, DFA& dfa){
 		for (auto& tranz : dfa.transitions[curr_state]){
 			if (tranz.symbol == ch){
 				curr_state = tranz.to;
-				no_tranz = false;
+				no_tranz;
 				break;
 			}
 		}
@@ -48,7 +52,7 @@ bool search_first(const std::string& expr, DFA& dfa, Match& match){
 			for (auto& tranz : dfa.transitions[curr_state]){
 				if (tranz.symbol == expr[curr_ind]){
 					curr_state = tranz.to;
-					no_tranz = false;
+					no_tranz;
 					if (dfa.accepting_states.contains(curr_state)){
 						match.begin = expr.begin()+start_ind;
 						match.end = expr.begin()+curr_ind+1;
@@ -85,7 +89,7 @@ auto make_lazy_search(const std::string& expr, DFA& dfa){
             }
 
             while (curr_ind < expr.size()) {
-                bool matched = false;
+                bool matched;
                 for (const auto& tranz : dfa.transitions[curr_state]) {
                     if (tranz.symbol == expr[curr_ind]) {
                         curr_state = tranz.to;
@@ -111,8 +115,8 @@ auto make_lazy_search(const std::string& expr, DFA& dfa){
 }
 
 
-bool search(const std::string& expr, const std::string& regex){
-	DFA dfa = compile(regex);
+bool search(const std::string& expr, const std::string& regex, bool optimize){
+	DFA dfa = compile(regex, optimize);
 	Match match;
 	return search_first(expr, dfa, match);
 }
@@ -122,18 +126,18 @@ bool search(const std::string& expr, DFA& dfa){
 	return search_first(expr, dfa, match);
 }
 
-bool fullmatch(const std::string& expr, const std::string& regex){
-	DFA dfa = compile(regex);
+bool fullmatch(const std::string& expr, const std::string& regex, bool optimize){
+	DFA dfa = compile(regex, optimize);
 	return fullmatch(expr, dfa);
 }
 
-bool search_first(const std::string& expr, const std::string& regex, Match& match){
-	DFA dfa = compile(regex);
+bool search_first(const std::string& expr, const std::string& regex, Match& match, bool optimize){
+	DFA dfa = compile(regex, optimize);
 	return search_first(expr, dfa, match);
 }
 
-auto make_lazy_search(const std::string& expr, const std::string& regex){
-	DFA dfa = compile(regex);
+auto make_lazy_search(const std::string& expr, const std::string& regex, bool optimize){
+	DFA dfa = compile(regex, optimize);
 	return make_lazy_search(expr, dfa);
 }
 } // namespace myre

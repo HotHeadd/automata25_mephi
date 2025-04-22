@@ -27,18 +27,18 @@ struct Match {
 	}
 };
 
-DFA compile(const std::string& regex); // parse + toDFA
+DFA compile(const std::string& regex, bool optimize = false); // parse + toDFA
 
-bool search(const std::string& expr, const std::string& regex);
+bool search(const std::string& expr, const std::string& regex, bool optimize = false);
 bool search(const std::string& expr, DFA& dfa);
 
-bool search_first(const std::string& expr, const std::string& regex, Match& match);
+bool search_first(const std::string& expr, const std::string& regex, Match& match, bool optimize = false);
 bool search_first(const std::string& expr, DFA& dfa, Match& match);
 
-auto make_lazy_search(const std::string& expr, const std::string& regex);
+auto make_lazy_search(const std::string& expr, const std::string& regex, bool optimize = false);
 auto make_lazy_search(const std::string& expr, DFA& dfa);
 
-bool fullmatch(const std::string& expr, const std::string& regex);
+bool fullmatch(const std::string& expr, const std::string& regex, bool optimize = false);
 bool fullmatch(const std::string& expr, DFA& dfa);
 	
 } // namespace myre
