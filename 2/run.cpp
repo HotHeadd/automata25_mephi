@@ -4,7 +4,7 @@
 using namespace myre;
 
 int main(){
-	std::string test = "abc";
+	std::string test = "(qwertyuiopasdfghjklzxcvbnm)*";
 
 	// TODO: test new searches
 	RegexParser parser;
@@ -28,7 +28,7 @@ int main(){
 	dump_dfa_dot(complement, c_file);
 
 
-	std::string expr = "xxxabcxxabcxx";
+	std::string expr = "qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm";
 
 	auto gen = make_lazy_search(expr, dfa);
 
@@ -38,11 +38,11 @@ int main(){
 	std::cout << match->str() << std::endl;
 
 
-	// if (fullmatch(expr, min_dfa)){
-	// 	std::cout << "\nTRUE\n";
-	// }
-	// else{
-	// 	std::cout << "\nFALSE\n";
-	// }
+	if (fullmatch(expr, min_dfa)){
+		std::cout << "\nTRUE\n";
+	}
+	else{
+		std::cout << "\nFALSE\n";
+	}
 	return 0;
 }
