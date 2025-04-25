@@ -4,13 +4,20 @@
 
 int main(){
 	std::string regex;
-	for (int i=0; i<10000; ++i){
-		regex += 'a';
-		if (i%2 == 0){
-			regex += "{2,3}";
-		}
-		if (i%3 == 0){
-			regex += "|";
+	for (int i = 0; i < 700; ++i) {
+		char c1 = 'a'+i%26;
+		char c2 = 'a'+(i+1)%26;
+		regex += "(";
+		regex += c1;
+		regex += "|";
+		regex += c2;
+		regex += ")";
+		if (i % 3 == 0) {
+			regex += "*";
+		} else if (i % 5 == 0) {
+			regex += "+";
+		} else if (i % 7 == 0) {
+			regex += "?";
 		}
 	}
 	double sum=0;
