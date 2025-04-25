@@ -2,6 +2,8 @@
 #include <chrono>
 #include "myre.hpp"
 
+using namespace myre;
+
 int main(){
 	std::string regex;
 	for (int i = 0; i < 500; ++i) {
@@ -40,26 +42,22 @@ int main(){
 
 	// runtime speed test
 	std::string tmpl = "qwertyuiopasdfghjklzxcvbnm";
-	std::string runtime_test = "(" + tmpl + ")" + "*";
-	std::cout << runtime_test << std::endl;
+	std::string new_regex = "(" + tmpl + ")" + "*";
 	std::string expr;
-	for (int i=0; i<100; ++i){
+	for (int i=0; i<200000; ++i){
 		expr += tmpl;
 	}
-	
 
-	myre::DFA dfa = myre::compile(runtime_test);
-	repeats = 20;
-	sum = 0;
-	std::cout << expr << std::endl;
-	std::cout << myre::fullmatch(expr, tmpl) << std::endl;
-	for (int i=0; i<repeats; ++i){
+	myre::DFA dfa = myre::compile(new_regex);
+	int new_repeats = 20;
+	int new_sum = 0;
+	for (int i=0; i<new_repeats; ++i){
 		auto start = std::chrono::high_resolution_clock::now();
-		myre::fullmatch(expr, runtime_test);
+		myre::fullmatch(expr, new_regex);
 		auto end = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
-		sum += duration.count();
+		new_sum += duration.count();
 	}
-	std::cout << "Average fullmatch time is: " << sum/repeats << " ms\n";
+	std::cout << "Average fullmatch time is: " << new_sum/new_repeats << " ms\n";
 	return 0;
 }
