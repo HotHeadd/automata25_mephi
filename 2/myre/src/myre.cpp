@@ -10,9 +10,9 @@ DFA compile(const std::string& regex, bool optimize){
 	Context context;
 	std::shared_ptr<SyntaxNode> tree = parser.parse(regex, context);
 	DFA dfa = builder.buildDFA(tree, context);
-	// if (optimize){
-	// 	dfa = builder.minimize_dfa(dfa, context);
-	// }
+	if (optimize){
+		dfa = builder.minimize_dfa(dfa, context);
+	}
 	return dfa;
 }
 
@@ -28,7 +28,7 @@ bool fullmatch(const std::string& expr, DFA& dfa){
 			}
 		}
 		if (no_tranz){
-			return false;
+			return dfa.accepting_states.contains(dfa.null_state);
 		}
 	}
 	if (dfa.accepting_states.contains(curr_state)){
@@ -62,6 +62,11 @@ bool search_first(const std::string& expr, DFA& dfa, Match& match){
 				}
 			}
 			if (no_tranz){
+				if (dfa.accepting_states.contains(dfa.null_state)){
+					match.begin = expr.begin()+start_ind;
+					match.end = expr.begin()+curr_ind+1;
+					return true;
+				}
 				break;
 			}
 			++curr_ind;
@@ -105,7 +110,13 @@ auto make_lazy_search(const std::string& expr, DFA& dfa){
                         break;
                     }
                 }
-                if (!matched) break;
+                if (!matched) {
+					if (dfa.accepting_states.contains(dfa.null_state)){
+						match.begin = expr.begin()+pos;
+						match.end = expr.begin()+curr_ind+1;
+						return match;
+					}
+				};
             }
             ++pos;
         }

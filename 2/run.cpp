@@ -230,7 +230,7 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
 
 
 int main(){
-	std::string test = "a{2,3}{0,2}{3,4}*";
+	std::string test = "aadf|";
 
 	// TODO: test new searches
 
@@ -249,8 +249,14 @@ int main(){
 	DFA min_dfa = builder.minimize_dfa(dfa, context);
 	std::ofstream minfile("visuals/minimal.dot");\
 	dump_dfa_dot(min_dfa, minfile);
-	std::string expr = "vvv";
-	if (search(expr, dfa)){
+
+	DFA complement = builder.build_complement(min_dfa);
+	std::ofstream c_file("visuals/complement.dot");\
+	dump_dfa_dot(complement, c_file);
+
+
+	std::string expr = "aadf";
+	if (fullmatch(expr, complement)){
 		std::cout << "\nTRUE\n";
 	}
 	else{

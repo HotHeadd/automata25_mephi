@@ -3,12 +3,6 @@
 
 using namespace myre;
 
-#include <gtest/gtest.h>
-#include "myre.hpp"
-#include <ranges>
-
-using namespace myre;
-
 TEST(fullmatch, basic_plus){
     std::string test = "v+";
     DFA dfa_old = compile(test);

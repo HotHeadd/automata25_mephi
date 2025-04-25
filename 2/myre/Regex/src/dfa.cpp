@@ -5,7 +5,7 @@
 namespace myre
 {
 
-std::set<unsigned> form_intersection(std::set<unsigned>& a, std::set<unsigned>& b){
+std::set<unsigned> DFABuilder::set_intersection(std::set<unsigned>& a, std::set<unsigned>& b){
 	const std::set<unsigned>& smaller = (a.size() < b.size()) ? a : b;
     const std::set<unsigned>& larger  = (a.size() < b.size()) ? b : a;
 	std::set<unsigned> result;
@@ -34,7 +34,7 @@ DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root, Context& context){
 		}
 		for (auto sym_pair : context.symbols){
 			std::set<unsigned> new_pos_set;
-			std::set<unsigned> intersection = form_intersection(current_state, sym_pair.second);
+			std::set<unsigned> intersection = set_intersection(current_state, sym_pair.second);
 			for (auto pos : intersection){
 				new_pos_set.insert(followpos[pos].begin(), followpos[pos].end());
 			}
