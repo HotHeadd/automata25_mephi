@@ -41,7 +41,7 @@ bool search_first(const std::string& expr, DFA& dfa, Match& match){
 	unsigned start_state = dfa.start_state;
 	if (dfa.accepting_states.contains(start_state)){
 		match.begin = expr.begin();
-		match.end = expr.begin()+1;
+		match.end = expr.begin();
 		return true;
 	}
 	for (int start_ind=0; start_ind<expr.size(); ++start_ind){
