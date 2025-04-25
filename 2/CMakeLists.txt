@@ -12,3 +12,6 @@ add_executable(run ${SOURCE_EXE})
 set_target_properties(run PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 target_link_libraries(run PUBLIC MyReLib)
+
+target_include_directories(run PUBLIC display_functions)
+target_sources(run PRIVATE display_functions/display.cpp)
