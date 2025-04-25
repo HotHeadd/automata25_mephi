@@ -209,19 +209,32 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
     // Принимающие состояния
     out << "  node [shape = doublecircle];\n";
     for (unsigned state : dfa.accepting_states) {
-        out << "  " << state << ";\n";
+        if (state == DFA::null_state) {
+            out << "  null;\n";  // null_state — особый случай
+        } else {
+            out << "  " << state << ";\n";
+        }
     }
 
+    // Остальные состояния — кружки
     out << "  node [shape = circle];\n";
 
     // Стартовая стрелка
     out << "  start [shape=point];\n";
     out << "  start -> " << dfa.start_state << ";\n";
 
+    // Отображаем null_state всегда
+    out << "  null [label=\"⊘\", style=dashed";
+    if (!dfa.accepting_states.count(DFA::null_state)) {
+        out << ", shape=circle";  // непринимающий null_state — обычный кружок
+    }
+    out << "];\n";
+
     // Переходы
     for (size_t from = 0; from < dfa.transitions.size(); ++from) {
         for (const auto& t : dfa.transitions[from]) {
-            out << "  " << from << " -> " << t.to << " [label=\"" << t.symbol << "\"];\n";
+            std::string to_state = (t.to == DFA::null_state) ? "null" : std::to_string(t.to);
+            out << "  " << from << " -> " << to_state << " [label=\"" << t.symbol << "\"];\n";
         }
     }
 
@@ -230,7 +243,7 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out = std::cout) {
 
 
 int main(){
-	std::string test = "aadf|";
+	std::string test = "a{0,2}";
 
 	// TODO: test new searches
 
@@ -255,8 +268,8 @@ int main(){
 	dump_dfa_dot(complement, c_file);
 
 
-	std::string expr = "aadf";
-	if (fullmatch(expr, complement)){
+	std::string expr = "aaa";
+	if (fullmatch(expr, min_dfa)){
 		std::cout << "\nTRUE\n";
 	}
 	else{

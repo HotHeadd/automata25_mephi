@@ -55,18 +55,27 @@ DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root, Context& context){
 
 DFA DFABuilder::minimize_dfa(const DFA& dfa, Context& context) {
     using State = unsigned;
-	std::vector<std::vector<State>> groups(2);
+	std::vector<std::vector<State>> groups;
 	std::vector<char> alphabet;
 	std::map<std::vector<unsigned>, std::vector<State>> sign_to_state;
 	std::map<State, unsigned> state_to_group;
 
+
+	std::vector<State> A, NA;
 	for (int i = 0; i<dfa.transitions.size(); ++i){
 		if (dfa.accepting_states.contains(i)){
-			groups[1].push_back(i);
+			A.push_back(i);
 		}
 		else{
-			groups[0].push_back(i);
+			NA.push_back(i);
 		}
+	}
+
+	if (!A.empty()){
+		groups.push_back(std::move(A));
+	}
+	if (!NA.empty()){
+		groups.push_back(std::move(NA));
 	}
 	for (auto& [c, _] : context.symbols){
 		if (c != '\0'){
@@ -130,6 +139,9 @@ DFA DFABuilder::minimize_dfa(const DFA& dfa, Context& context) {
 				new_dfa.accepting_states.insert(i);
 			}
 		}
+	}
+	if (dfa.accepting_states.contains(dfa.null_state)){
+		new_dfa.accepting_states.insert(new_dfa.null_state);
 	}
 	return new_dfa;
 }
