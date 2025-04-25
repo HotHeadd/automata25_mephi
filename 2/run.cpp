@@ -4,7 +4,7 @@
 using namespace myre;
 
 int main(){
-	std::string test = "a{0,2}";
+	std::string test = "abc";
 
 	// TODO: test new searches
 	RegexParser parser;
@@ -28,12 +28,21 @@ int main(){
 	dump_dfa_dot(complement, c_file);
 
 
-	std::string expr = "aaa";
-	if (fullmatch(expr, min_dfa)){
-		std::cout << "\nTRUE\n";
-	}
-	else{
-		std::cout << "\nFALSE\n";
-	}
+	std::string expr = "xxxabcxxabcxx";
+
+	auto gen = make_lazy_search(expr, dfa);
+
+	std::optional<Match> match = gen();
+	std::cout << match->str() << std::endl;
+	match = gen();
+	std::cout << match->str() << std::endl;
+
+
+	// if (fullmatch(expr, min_dfa)){
+	// 	std::cout << "\nTRUE\n";
+	// }
+	// else{
+	// 	std::cout << "\nFALSE\n";
+	// }
 	return 0;
 }

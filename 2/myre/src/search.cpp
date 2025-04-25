@@ -1,5 +1,4 @@
 #include "myre.hpp"
-#include <optional>
 
 namespace myre
 {
@@ -42,7 +41,7 @@ bool search_first(const std::string& expr, DFA& dfa, Match& match){
 	return false;
 }
 
-auto make_lazy_search(const std::string& expr, DFA& dfa){
+std::function<std::optional<Match>()> make_lazy_search(const std::string& expr, DFA& dfa){
 	unsigned pos = 0;
 	Match match;
 
@@ -61,7 +60,7 @@ auto make_lazy_search(const std::string& expr, DFA& dfa){
 			}
 
 			while (curr_ind < expr.size()) {
-				bool matched;
+				bool matched = false;
 				for (const auto& tranz : dfa.transitions[curr_state]) {
 					if (tranz.symbol == expr[curr_ind]) {
 						curr_state = tranz.to;
@@ -71,7 +70,7 @@ auto make_lazy_search(const std::string& expr, DFA& dfa){
 						if (dfa.accepting_states.contains(curr_state)) {
 							match.begin = expr.begin() + pos;
 							match.end = expr.begin() + curr_ind;
-							pos += 1;
+							++pos;
 							return match;
 						}
 						break;
@@ -81,8 +80,10 @@ auto make_lazy_search(const std::string& expr, DFA& dfa){
 					if (dfa.accepting_states.contains(dfa.null_state)){
 						match.begin = expr.begin()+pos;
 						match.end = expr.begin()+curr_ind+1;
+						++pos;
 						return match;
 					}
+					break;
 				};
 			}
 			++pos;
@@ -104,7 +105,7 @@ bool search(const std::string& expr, DFA& dfa){
 	return search_first(expr, dfa, match);
 }
 
-auto make_lazy_search(const std::string& expr, const std::string& regex, bool optimize){
+std::function<std::optional<Match>()> make_lazy_search(const std::string& expr, const std::string& regex, bool optimize){
 	DFA dfa = compile(regex, optimize);
 	return make_lazy_search(expr, dfa);
 }
