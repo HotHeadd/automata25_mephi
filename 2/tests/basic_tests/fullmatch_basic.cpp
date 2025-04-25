@@ -262,3 +262,22 @@ TEST(fullmatch, shielding){
         ASSERT_FALSE(fullmatch("a)(a)(a)(a)(a)(", dfa));
     }
 }
+
+TEST(fullmatch, shielding_shielding){
+    std::string test = "(a##){2,3}";
+    DFA dfa_old = compile(test);
+    DFA dfa_min = compile(test, true);
+
+    std::array<std::reference_wrapper<DFA>, 2> dfas = {std::ref(dfa_old), std::ref(dfa_min)};
+    for (auto& dfa : dfas){
+        ASSERT_TRUE(fullmatch("a#a#", dfa));
+        ASSERT_TRUE(fullmatch("a#a#a#", dfa));
+
+        ASSERT_FALSE(fullmatch("a#", dfa));
+        ASSERT_FALSE(fullmatch("", dfa));
+        ASSERT_FALSE(fullmatch("a#a#a#a#", dfa));
+        ASSERT_FALSE(fullmatch("a#a#a#a#a#a#a#a#a#a#a#a#a#a#a#", dfa));
+        ASSERT_FALSE(fullmatch("a#a#a", dfa));
+        ASSERT_FALSE(fullmatch("a#a#a#a#a#a#a#aa#a#a#a#a#a#a#", dfa));
+    }
+}

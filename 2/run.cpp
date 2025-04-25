@@ -5,7 +5,7 @@ using namespace myre;
 
 int main(){
 
-	std::string test = "abc";
+	std::string test = "()";
 
 	RegexParser parser;
 	Context context;
@@ -27,8 +27,12 @@ int main(){
 	std::ofstream c_file("visuals/complement.dot");\
 	dump_dfa_dot(complement, c_file);
 
-	std::string expr = "abc";
-	auto gen = make_lazy_search(expr, dfa);
+	DFA intersection = builder.build_intersection(dfa, dfa);
+
+	std::ofstream inter_file("visuals/intersection.dot");\
+	dump_dfa_dot(intersection, inter_file);
+
+	// auto gen = make_lazy_search(expr, dfa);
 
 	// std::optional<Match> match = gen();
 	// std::cout << match->str() << std::endl;
@@ -36,11 +40,17 @@ int main(){
 	// std::cout << match->str() << std::endl;
 	
 
-	if (fullmatch(expr, dfa)){
-		std::cout << "\nTRUE\n";
-	}
-	else{
-		std::cout << "\nFALSE\n";
-	}
+	// if (fullmatch(expr, dfa)){
+	// 	std::cout << "\nTRUE\n";
+	// }
+	// else{
+	// 	std::cout << "\nFALSE\n";
+	// }
+
+	//TODO: fix shared ptrs in AST
+	//TODO: dfa transition vector of maps
+	//TODO: unite test cases in single table, check compile time
+	//TODO: parse group number (super easy)
+	//TODO: K-PATH, ADD TO TESTS
 	return 0;
 }
