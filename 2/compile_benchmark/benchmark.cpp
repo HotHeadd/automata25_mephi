@@ -16,10 +16,11 @@ int main(){
 	double sum=0;
 	myre::RegexParser parser;
 	myre::DFABuilder builder;
-	auto node = parser.parse(regex);
+	myre::Context context;
+	auto node = parser.parse(regex, context);
 	for (int i=0; i<10; ++i){
 		auto start = std::chrono::high_resolution_clock::now();
-		builder.buildDFA(node);
+		builder.buildDFA(node, context);
 		auto end = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
 		sum += duration.count();
