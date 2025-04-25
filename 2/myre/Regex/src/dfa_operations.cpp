@@ -25,15 +25,15 @@ DFA DFABuilder::build_intersection(const DFA& dfa1, const DFA& dfa2){
 	DFA intersection;
 	using NewState = std::pair<unsigned, unsigned>;
 
-	std::set<char> alphabet;
+	std::vector<char> alphabet;
 	for (const auto& tlist : dfa1.transitions){
 		for (const auto& t : tlist){
-			alphabet.insert(t.symbol);
+			alphabet.push_back(t.symbol);
 		}
 	}
 	for (const auto& tlist : dfa2.transitions){
 		for (const auto& t : tlist){
-			alphabet.insert(t.symbol);
+			alphabet.push_back(t.symbol);
 		}
 	}
 	std::map<NewState, unsigned> new_state_to_ind;

@@ -44,7 +44,7 @@ bool search_first(const std::string& expr, DFA& dfa, Match& match){
 std::function<std::optional<Match>()> make_lazy_search(const std::string& expr, DFA& dfa){
 	unsigned pos = 0;
 	Match match;
-
+	
 	return [&expr, &dfa, pos, match]() mutable -> std::optional<Match> { // mutable чтобы можно было менять pos, match
 		unsigned start_state = dfa.start_state;
 
