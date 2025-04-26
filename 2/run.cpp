@@ -6,7 +6,7 @@ using namespace myre;
 
 int main(){
 
-	std::string test = "(ab)*|(cd)";
+	std::string test = "(a#)#(){2,3}";
 
 	RegexParser parser;
 	Context context;
@@ -43,7 +43,7 @@ int main(){
 	// match = gen();
 	// std::cout << match->str() << std::endl;
 	
-	std::string expr = "cd";
+	std::string expr = "";
 
 	if (fullmatch(expr, min_dfa)){
 		std::cout << "\nTRUE\n";

@@ -23,6 +23,8 @@ std::string regex_kleene(std::string& f){
 }
 
 std::string decompile(const DFA& dfa){
+	static const std::set<char> special_symbols = {'(', ')', '{', '}', ',', '+', '?', '*', '|', ':', '#'};
+
 	size_t N = dfa.transitions.size();
 	std::vector<std::vector<std::string>> R(N, std::vector<std::string>(N, ""));
 	for (unsigned state=0; state<N; ++state){
@@ -31,7 +33,9 @@ std::string decompile(const DFA& dfa){
 		}
 		for (const auto& [ch, to] : dfa.transitions[state]){
 			std::string symbol(1, ch);
-
+			if (special_symbols.contains(ch)){
+				symbol = '#' + symbol;
+			}
 			if (R[state][to].empty()){
 				R[state][to] = symbol;
 			}
@@ -40,6 +44,7 @@ std::string decompile(const DFA& dfa){
 			}
 		}
 	}
+	
 	for (unsigned k = 0; k < N; ++k)
     	for (unsigned i = 0; i < N; ++i)
 			for (unsigned j = 0; j < N; ++j) {
@@ -56,12 +61,22 @@ std::string decompile(const DFA& dfa){
 				else
 					R[i][j] = regex_union(R[i][j], path);
 			}
-	std::string regex;
+
+	std::vector<std::string> parts;
 	for (unsigned acc : dfa.accepting_states) {
-		if (regex.empty())
-			regex = R[dfa.start_state][acc];
-		else
-			regex = regex_union(regex, R[dfa.start_state][acc]);
+		if (!R[dfa.start_state][acc].empty()){
+			parts.push_back(R[dfa.start_state][acc]);
+		}
+	}
+	if (parts.empty()){
+		return "";
+	}
+	std::string regex = parts[0];
+	for (int i = 1; i < parts.size(); ++i){
+		regex = regex_union(regex, parts[i]);
+	}
+	if (dfa.accepting_states.contains(dfa.start_state)){
+		regex = "(" + regex + ")?";
 	}
 	return regex;
 }
