@@ -49,7 +49,6 @@ int main(){
 		std::cout << "\nFALSE\n";
 	}
 
-	//TODO: dfa transition vector of maps
 	//TODO: unite test cases in single table, check compile time
 	//TODO: parse group number (super easy)
 	//TODO: K-PATH, ADD TO TESTS

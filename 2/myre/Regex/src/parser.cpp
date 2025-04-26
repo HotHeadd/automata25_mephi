@@ -64,11 +64,12 @@ ContextIndex RegexParser::parse_atom(Context& context){
         ++paren_balance;
         // пустые скобки ()
         if (peek() == ')') {
-            ++pos;            // пропускаем ')'
-            --paren_balance;  // баланс вернулся
+            ++pos;
+            --paren_balance;
             node = context.emplace_node(NodeType::EPSYLON);
         }
         else {
+			parse_group_name();
             node = parse_expression(context);
             if (!consume_if_match(')')) {
                 throw ParenthesesError(regex_);
@@ -109,6 +110,17 @@ ContextIndex RegexParser::parse_atom(Context& context){
         }
     }
 	return node;
+}
+
+void RegexParser::parse_group_name(){
+	int bonus = 0;
+	while (regex_[pos+bonus] - '0' >= 0 and regex_[pos+bonus] - '9' <= 0){
+		++bonus;
+	}
+	if (regex_[pos+bonus] == ':'){
+		++bonus;
+		pos += bonus;
+	}
 }
 
 ContextIndex RegexParser::transform_range(unsigned lower, unsigned upper, ContextIndex base, Context& context){

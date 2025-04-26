@@ -19,14 +19,14 @@ private:
 	bool consume_if_match(char c);
 
 	std::pair<unsigned, unsigned> parse_range();
+	void parse_group_name();
+
 	ContextIndex transform_range(unsigned lower, unsigned upper, ContextIndex node, Context& context);
 	ContextIndex clone(ContextIndex node, Context& context);
 
 	ContextIndex parse_expression(Context& context);
 	ContextIndex parse_term(Context& context);
 	ContextIndex parse_atom(Context& context);
-
-	
 
 	std::string regex_;
 	unsigned pos=0, paren_balance = 0;
