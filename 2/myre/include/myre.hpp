@@ -29,7 +29,8 @@ struct Match {
 	}
 };
 
-DFA compile(const std::string& regex, bool optimize = false); // parse + toDFA
+DFA compile(const std::string& regex, bool optimize = false);
+std::string decompile(const DFA& dfa);
 
 bool search(const std::string& expr, const std::string& regex, bool optimize = false);
 bool search(const std::string& expr, DFA& dfa);

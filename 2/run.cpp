@@ -6,7 +6,7 @@ using namespace myre;
 
 int main(){
 
-	std::string test = "v+";
+	std::string test = "(ab)*|(cd)";
 
 	RegexParser parser;
 	Context context;
@@ -33,6 +33,9 @@ int main(){
 	std::ofstream inter_file("visuals/intersection.dot");\
 	dump_dfa_dot(intersection, inter_file);
 
+	std::string back = decompile(dfa);
+	std::cout << "\n" <<  back << std::endl;
+
 	// auto gen = make_lazy_search(expr, dfa);
 
 	// std::optional<Match> match = gen();
@@ -40,7 +43,7 @@ int main(){
 	// match = gen();
 	// std::cout << match->str() << std::endl;
 	
-	std::string expr = "vvv";
+	std::string expr = "cd";
 
 	if (fullmatch(expr, min_dfa)){
 		std::cout << "\nTRUE\n";

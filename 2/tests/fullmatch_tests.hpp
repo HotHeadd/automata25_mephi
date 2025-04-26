@@ -193,5 +193,10 @@ std::vector<TestCase> test_cases = {
         "(1234:ab){2,3}",
         {"abab", "ababab"},
         {"", "ab", "abababab", "aab", "1234:ab1234:ab", "1234ab1234ab", "12341234", ":ab:ab:ab", ":ab:ab"}
-    }
+    },
+    {
+        "(ab)*|(cd)",
+        {"ab", "abab", "cd", ""},
+        {"cdcd", "aba"}
+    },
 };

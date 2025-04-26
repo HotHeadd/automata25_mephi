@@ -17,10 +17,10 @@ TEST(complement, tests_for_fullmatch_reversed){
 
         for (auto& dfa : dfas){
             for (auto& good : tc.good){
-                EXPECT_FALSE(fullmatch(good, dfa)) << "DEFAULT FULLMATCH Good test: " << good  << ", for regex: " << test; 
+                EXPECT_FALSE(fullmatch(good, dfa)) << " COMPLEMENT Good test: " << good  << ", for regex: " << test; 
             }
             for (auto& bad : tc.bad){
-                EXPECT_TRUE(fullmatch(bad, dfa)) << "DEFAULT FULLMATCH Bad test: " << bad << ", for regex: " << test; 
+                EXPECT_TRUE(fullmatch(bad, dfa)) << "COMPLEMENT Bad test: " << bad << ", for regex: " << test; 
             }
         }
     }
