@@ -27,6 +27,7 @@ public:
 		number_count = 0;
 		symbols.clear();
 		followpos.clear();
+		nodes.clear();
 	}
 
 	void deduce_sets(SyntaxNode* node);

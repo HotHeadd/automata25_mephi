@@ -29,7 +29,7 @@ ContextIndex RegexParser::parse_expression(Context& context){
 	}
 	while (consume_if_match('|')){
 		right = parse_term(context);
-		if (!right) {
+		if (right == -1) {
 			right = context.emplace_node(NodeType::EPSYLON);
 		}
 		node = context.emplace_node(NodeType::OR, node, right);

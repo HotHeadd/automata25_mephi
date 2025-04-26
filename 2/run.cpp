@@ -6,7 +6,7 @@ using namespace myre;
 
 int main(){
 
-	std::string test = "abc";
+	std::string test = "a|";
 
 	RegexParser parser;
 	Context context;
@@ -47,13 +47,14 @@ int main(){
 	// match = gen();
 	// std::cout << match->str() << std::endl;
 	
+	std::string expr = "vvv";
 
-	// if (fullmatch(expr, dfa)){
-	// 	std::cout << "\nTRUE\n";
-	// }
-	// else{
-	// 	std::cout << "\nFALSE\n";
-	// }
+	if (fullmatch(expr, dfa)){
+		std::cout << "\nTRUE\n";
+	}
+	else{
+		std::cout << "\nFALSE\n";
+	}
 
 	//TODO: dfa transition vector of maps
 	//TODO: unite test cases in single table, check compile time

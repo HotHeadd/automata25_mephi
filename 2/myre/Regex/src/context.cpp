@@ -45,10 +45,9 @@ void Context::deduce_sets(SyntaxNode* node){
 	}
 	else if (node->type == NodeType::KLEENE){
 		SyntaxNode& left = get_node(node->left);
-		SyntaxNode& right = get_node(node->right);
 		node->is_nullable = true;
-		node->first_pos = right.first_pos;
-		node->last_pos = right.last_pos;
+		node->first_pos = left.first_pos;
+		node->last_pos = left.last_pos;
 		handle_kleene_followpos(node);
 	}
 	else if (node->type == NodeType::OR){
