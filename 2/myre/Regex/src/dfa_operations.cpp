@@ -2,6 +2,7 @@
 #include <set>
 #include <queue>
 #include <algorithm>
+#include <map>
 
 namespace myre
 {
@@ -27,13 +28,13 @@ DFA DFABuilder::build_intersection(const DFA& dfa1, const DFA& dfa2){
 
 	std::vector<char> alphabet;
 	for (const auto& tlist : dfa1.transitions){
-		for (const auto& t : tlist){
-			alphabet.push_back(t.symbol);
+		for (const auto& [symbol, to] : tlist){
+			alphabet.push_back(symbol);
 		}
 	}
 	for (const auto& tlist : dfa2.transitions){
-		for (const auto& t : tlist){
-			alphabet.push_back(t.symbol);
+		for (const auto& [symbol, to] : tlist){
+			alphabet.push_back(symbol);
 		}
 	}
 	std::map<NewState, unsigned> new_state_to_ind;
@@ -56,15 +57,9 @@ DFA DFABuilder::build_intersection(const DFA& dfa1, const DFA& dfa2){
 		NewState current = queue.front(); queue.pop();
 		unsigned s1 = current.first, s2 = current.second, current_index = new_state_to_ind[current];
 		for (char c : alphabet){
-			auto iter_first = std::find_if(dfa1.transitions[s1].begin(), dfa1.transitions[s1].end(), [&](const Transition& tr){
-				return c == tr.symbol;
-			});
-			auto iter_second = std::find_if(dfa2.transitions[s2].begin(), dfa2.transitions[s2].end(), [&](const Transition& tr){
-				return c == tr.symbol;
-			});
-			if (iter_first != dfa1.transitions[s1].end() and iter_second != dfa2.transitions[s1].end()){
-				unsigned next_ind = get_or_create_state(iter_first->to, iter_second->to);
-				intersection.transitions[current_index].push_back({c, next_ind});
+			if (dfa1.transitions[s1].contains(c) and dfa2.transitions[s2].contains(c)){
+				unsigned next_ind = get_or_create_state(dfa1.transitions[s1].at(c), dfa2.transitions[s2].at(c));
+				intersection.transitions[current_index].insert({c, next_ind});
 			}
 		}
 	}

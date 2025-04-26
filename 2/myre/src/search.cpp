@@ -14,20 +14,15 @@ bool search_first(const std::string& expr, DFA& dfa, Match& match){
 		int curr_ind = start_ind;
 		unsigned curr_state = start_state;
 		while (curr_ind < expr.size()){
-			bool no_tranz = true;
-			for (auto& tranz : dfa.transitions[curr_state]){
-				if (tranz.symbol == expr[curr_ind]){
-					curr_state = tranz.to;
-					no_tranz = false;
-					if (dfa.accepting_states.contains(curr_state)){
-						match.begin = expr.begin()+start_ind;
-						match.end = expr.begin()+curr_ind+1;
-						return true;
-					}
-					break;
+			if (dfa.transitions[curr_state].contains(expr[curr_ind])){
+				curr_state = dfa.transitions[curr_state][expr[curr_ind]];
+				if (dfa.accepting_states.contains(curr_state)){
+					match.begin = expr.begin()+start_ind;
+					match.end = expr.begin()+curr_ind+1;
+					return true;
 				}
 			}
-			if (no_tranz){
+			else{
 				if (dfa.accepting_states.contains(dfa.null_state)){
 					match.begin = expr.begin()+start_ind;
 					match.end = expr.begin()+curr_ind+1;
@@ -61,22 +56,19 @@ std::function<std::optional<Match>()> make_lazy_search(const std::string& expr, 
 
 			while (curr_ind < expr.size()) {
 				bool matched = false;
-				for (const auto& tranz : dfa.transitions[curr_state]) {
-					if (tranz.symbol == expr[curr_ind]) {
-						curr_state = tranz.to;
-						++curr_ind;
-						matched = true;
+				if (dfa.transitions[curr_state].contains(expr[curr_ind])) {
+					curr_state = dfa.transitions[curr_state][expr[curr_ind]];
+					++curr_ind;
+					matched = true;
 
-						if (dfa.accepting_states.contains(curr_state)) {
-							match.begin = expr.begin() + pos;
-							match.end = expr.begin() + curr_ind;
-							++pos;
-							return match;
-						}
-						break;
+					if (dfa.accepting_states.contains(curr_state)) {
+						match.begin = expr.begin() + pos;
+						match.end = expr.begin() + curr_ind;
+						++pos;
+						return match;
 					}
 				}
-				if (!matched) {
+				else {
 					if (dfa.accepting_states.contains(dfa.null_state)){
 						match.begin = expr.begin()+pos;
 						match.end = expr.begin()+curr_ind+1;

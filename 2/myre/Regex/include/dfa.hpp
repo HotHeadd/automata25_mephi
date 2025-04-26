@@ -2,23 +2,16 @@
 
 #include "parser.hpp"
 #include <set>
-#include <map>
+#include <unordered_map>
 #include "context.hpp"
 
 namespace myre
 {
 
-struct Transition{
-	char symbol;
-	unsigned to;
-	Transition(char sym, unsigned ind) : symbol(sym), to(ind) {}
-	Transition() {}
-};
-
 struct DFA {
 	unsigned start_state = 0;
 	static constexpr unsigned null_state = -1;
-	std::vector<std::vector<Transition>> transitions;
+	std::vector<std::unordered_map<char, unsigned>> transitions;
 	std::set<unsigned> accepting_states;
 };
 

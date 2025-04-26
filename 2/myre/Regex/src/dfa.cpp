@@ -1,6 +1,7 @@
 #include "dfa.hpp"
 #include <queue>
 #include <algorithm>
+#include <map>
 
 namespace myre
 {
@@ -47,7 +48,7 @@ DFA DFABuilder::buildDFA(ContextIndex root_ind, Context& context){
 			}
 			if (set_to_ind.contains(new_pos_set)){
 				unsigned index = set_to_ind[new_pos_set];
-				automaton.transitions[set_to_ind[current_state]].push_back({sym_pair.first, index});
+				automaton.transitions[set_to_ind[current_state]].insert({sym_pair.first, index});
 			}
 		}
 	}
@@ -79,8 +80,8 @@ DFA DFABuilder::minimize_dfa(const DFA& dfa) {
 		groups.push_back(std::move(NA));
 	}
 	for (const auto& tlist : dfa.transitions){
-		for (const auto& t : tlist){
-			alphabet.push_back(t.symbol);
+		for (const auto& [symbol, to] : tlist){
+			alphabet.push_back(symbol);
 		}
 	}
 	bool changed = false;
@@ -97,11 +98,9 @@ DFA DFABuilder::minimize_dfa(const DFA& dfa) {
 		for (auto& group : groups){
 			for (auto& state : group){
 				for (int i=0; i<alphabet.size(); ++i){
-					auto tr_iter = std::find_if(dfa.transitions[state].begin(), dfa.transitions[state].end(), [&](const Transition& tr){
-						return tr.symbol == alphabet[i];
-					});
-					if (tr_iter != dfa.transitions[state].end()){
-						signature[i+1] = state_to_group[tr_iter->to];
+					auto& tr_map = dfa.transitions[state];
+					if (tr_map.contains(alphabet[i])){
+						signature[i+1] = state_to_group[tr_map.at(alphabet[i])];
 					}
 					else{
 						signature[i+1] = -1;
@@ -128,13 +127,9 @@ DFA DFABuilder::minimize_dfa(const DFA& dfa) {
 	new_dfa.transitions.resize(groups.size());
 	for (unsigned i=0; i<groups.size(); ++i){
 		for (auto& state : groups[i]){
-			for (auto& tranz : dfa.transitions[state]){
-				auto iter = std::find_if(new_dfa.transitions[i].begin(), new_dfa.transitions[i].end(), [&](const Transition& tr){
-					return tr.symbol == tranz.symbol;
-				});
-				if (iter == new_dfa.transitions[i].end()){
-					new_dfa.transitions[i].push_back({tranz.symbol, state_to_group[tranz.to]});
-				}
+			for (auto& [symbol, to] : dfa.transitions[state]){
+				auto& tr_map = new_dfa.transitions[i];
+				new_dfa.transitions[i][symbol] = state_to_group[to];
 			}
 			if (dfa.accepting_states.contains(state)){
 				new_dfa.accepting_states.insert(i);

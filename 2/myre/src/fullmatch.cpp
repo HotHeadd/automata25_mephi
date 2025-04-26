@@ -1,20 +1,14 @@
 #include "myre.hpp"
-#include <optional>
 
 namespace myre
 {
 bool fullmatch(const std::string& expr, DFA& dfa){
 	unsigned curr_state = dfa.start_state;
 	for (auto ch: expr){
-		bool no_tranz = true;
-		for (auto& tranz : dfa.transitions[curr_state]){
-			if (tranz.symbol == ch){
-				curr_state = tranz.to;
-				no_tranz = false;
-				break;
-			}
+		if (dfa.transitions[curr_state].contains(ch)){
+			curr_state = dfa.transitions[curr_state][ch];
 		}
-		if (no_tranz){
+		else{
 			return dfa.accepting_states.contains(dfa.null_state);
 		}
 	}

@@ -230,14 +230,14 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out) {
         }
     }
 
-    // Остальные состояния — кружки
+    // Остальные состояния
     out << "  node [shape = circle];\n";
 
     // Стартовая стрелка
     out << "  start [shape=point];\n";
     out << "  start -> " << dfa.start_state << ";\n";
 
-    // Отображаем null_state всегда
+    // Узел null_state
     out << "  null [label=\"⊘\", style=dashed";
     if (!dfa.accepting_states.count(DFA::null_state)) {
         out << ", shape=circle";  // непринимающий null_state — обычный кружок
@@ -246,9 +246,9 @@ void dump_dfa_dot(const DFA& dfa, std::ostream& out) {
 
     // Переходы
     for (size_t from = 0; from < dfa.transitions.size(); ++from) {
-        for (const auto& t : dfa.transitions[from]) {
-            std::string to_state = (t.to == DFA::null_state) ? "null" : std::to_string(t.to);
-            out << "  " << from << " -> " << to_state << " [label=\"" << t.symbol << "\"];\n";
+        for (const auto& [symbol, to] : dfa.transitions[from]) {
+            std::string to_state = (to == DFA::null_state) ? "null" : std::to_string(to);
+            out << "  " << from << " -> " << to_state << " [label=\"" << symbol << "\"];\n";
         }
     }
 
