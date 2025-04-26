@@ -49,8 +49,7 @@ int main(){
 		std::cout << "\nFALSE\n";
 	}
 
-	//TODO: unite test cases in single table, check compile time
-	//TODO: parse group number (super easy)
+	//TODO: unite test cases in single table
 	//TODO: K-PATH, ADD TO TESTS
 	return 0;
 }
