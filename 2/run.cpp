@@ -52,6 +52,5 @@ int main(){
 		std::cout << "\nFALSE\n";
 	}
 
-	//TODO: K-PATH, ADD TO TESTS
 	return 0;
 }
