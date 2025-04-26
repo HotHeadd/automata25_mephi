@@ -5,69 +5,68 @@
 namespace myre
 {
 
-std::shared_ptr<SyntaxNode> RegexParser::parse(const std::string& regex, Context& context){
+ContextIndex RegexParser::parse(const std::string& regex, Context& context){
 	regex_ = regex;
 	context.reset();
 	pos = 0;
-	std::shared_ptr<SyntaxNode> node = parse_expression(context);
+	ContextIndex node = parse_expression(context);
 	if (pos != regex.size()) {
 		if (regex[pos] == ')') throw ParenthesesError(regex_);
 		throw SyntaxError(regex_);
 	}
-	return std::make_shared<SyntaxNode>(
-				NodeType::CONCAT,
-				context,
-				node, 
-				std::make_shared<SyntaxNode>(NodeType::EOS, context)
-	);
+	return context.emplace_node(
+		NodeType::CONCAT,
+		node, 
+		context.emplace_node(NodeType::EOS)
+	);;
 }
 
-std::shared_ptr<SyntaxNode> RegexParser::parse_expression(Context& context){
-	std::shared_ptr<SyntaxNode> node = parse_term(context);
-	std::shared_ptr<SyntaxNode> right;
-	if (!node) {
-		node = std::make_shared<SyntaxNode>(NodeType::EPSYLON, context);
+ContextIndex RegexParser::parse_expression(Context& context){
+	ContextIndex node = parse_term(context);
+	ContextIndex right;
+	if (node == -1) {
+		node = context.emplace_node(NodeType::EPSYLON);
 	}
 	while (consume_if_match('|')){
 		right = parse_term(context);
 		if (!right) {
-			right = std::make_shared<SyntaxNode>(NodeType::EPSYLON, context);
+			right = context.emplace_node(NodeType::EPSYLON);
 		}
-		node = std::make_shared<SyntaxNode>(NodeType::OR, context, node, right);
+		node = context.emplace_node(NodeType::OR, node, right);
 	}
 	return node;
 }
 
-std::shared_ptr<SyntaxNode> RegexParser::parse_term(Context& context){
-	std::shared_ptr<SyntaxNode> node = nullptr, right;
+ContextIndex RegexParser::parse_term(Context& context){
+	ContextIndex node = -1, right;
 	while (true){
 		char next_char = peek();
 		if (next_char == '\0' or next_char == ')' or next_char == '|'){
 			break;
 		}
 		right = parse_atom(context);
-		if (!right){
+		if (right == -1){
 			break;
 		}
-		if (!node) {
+		if (node == -1) {
 			node = right;
 		} 
 		else {
-			node = std::make_shared<SyntaxNode>(NodeType::CONCAT, context, node, right);
+			node = context.emplace_node(NodeType::CONCAT, node, right);
 		}
 	}
 	return node;
 }
 
-std::shared_ptr<SyntaxNode> RegexParser::parse_atom(Context& context){
-	std::shared_ptr<SyntaxNode> node;
+ContextIndex RegexParser::parse_atom(Context& context){
+	ContextIndex node;
 	if (consume_if_match('(')) {
         ++paren_balance;
         // пустые скобки ()
         if (peek() == ')') {
             ++pos;            // пропускаем ')'
             --paren_balance;  // баланс вернулся
-            node = std::make_shared<SyntaxNode>(NodeType::EPSYLON, context);
+            node = context.emplace_node(NodeType::EPSYLON);
         }
         else {
             node = parse_expression(context);
@@ -89,11 +88,11 @@ std::shared_ptr<SyntaxNode> RegexParser::parse_atom(Context& context){
             if (pos >= regex_.size()) throw SyntaxError(regex_);
             c = next();
         }
-        node = std::make_shared<SyntaxNode>(NodeType::CHAR, context, c);
+        node = context.emplace_node(NodeType::CHAR, c);
     }
 	while (true) {
         if (consume_if_match('*')) {
-            node = std::make_shared<SyntaxNode>(NodeType::KLEENE, context, node);
+            node = context.emplace_node(NodeType::KLEENE, node);
         }
         else if (consume_if_match('+')) {
             node = transform_range(1, INF, node, context);
@@ -112,67 +111,64 @@ std::shared_ptr<SyntaxNode> RegexParser::parse_atom(Context& context){
 	return node;
 }
 
-std::shared_ptr<SyntaxNode> RegexParser::transform_range(unsigned lower, unsigned upper, std::shared_ptr<SyntaxNode> base, Context& context){
-	std::shared_ptr<SyntaxNode> node = nullptr;
+ContextIndex RegexParser::transform_range(unsigned lower, unsigned upper, ContextIndex base, Context& context){
+	ContextIndex node = -1;
 	for (int i=0; i<lower; ++i){
 		if (i==0){
 			node = base;
 		}
 		else{
-			node = std::make_shared<SyntaxNode>(NodeType::CONCAT, context, node, clone(base, context));
+			node = context.emplace_node(NodeType::CONCAT, node, clone(base, context));
 		}
 	}
 	if (upper == INF){
-		if (node == nullptr){
-			node = std::make_shared<SyntaxNode>(NodeType::KLEENE, context, base);
+		if (node == -1){
+			node = context.emplace_node(NodeType::KLEENE, base);
 		}
 		else{
-			node = std::make_shared<SyntaxNode>(
+			node = context.emplace_node(
 				NodeType::CONCAT,
-				context,
 				node, 
-				std::make_shared<SyntaxNode>(NodeType::KLEENE,context, clone(base, context))
+				context.emplace_node(NodeType::KLEENE, clone(base, context))
 			);
 		}
 	}
 	else{
 		for (int i=lower; i<upper; ++i){
-			if (node == nullptr){
-				node = std::make_shared<SyntaxNode>(
+			if (node == -1){
+				node = context.emplace_node(
 					NodeType::OR, 
-					context,
 					base,
-					std::make_shared<SyntaxNode>(NodeType::EPSYLON, context));
+					context.emplace_node(NodeType::EPSYLON));
 			}
 			else{
-				node = std::make_shared<SyntaxNode>(
+				node = context.emplace_node(
 					NodeType::CONCAT,
-					context,
 					node,
-					std::make_shared<SyntaxNode>(
+					context.emplace_node(
 						NodeType::OR,
-						context,
 						clone(base, context),
-						std::make_shared<SyntaxNode>(NodeType::EPSYLON, context)));
+						context.emplace_node(NodeType::EPSYLON)));
 			}
 		}
 	}
 	return node;
 }
 
-std::shared_ptr<SyntaxNode> RegexParser::clone(const std::shared_ptr<SyntaxNode>& node, Context& context){
-	std::shared_ptr<SyntaxNode> new_left, new_right, new_node;
-	if (node->type == NodeType::CONCAT or node->type == NodeType::OR){
-		new_left = clone(node->left, context);
-		new_right = clone(node->right, context);
-		new_node = std::make_shared<SyntaxNode>(node->type, context, new_left, new_right);
+ContextIndex RegexParser::clone(ContextIndex node_indx, Context& context){
+	ContextIndex new_left, new_right, new_node;
+	SyntaxNode& node = context.get_node(node_indx);
+	if (node.type == NodeType::CONCAT or node.type == NodeType::OR){
+		new_left = clone(node.left, context);
+		new_right = clone(node.right, context);
+		new_node = context.emplace_node(node.type, new_left, new_right);
 	}
-	else if (node->type == NodeType::KLEENE){
-		new_left = clone(node->left, context);
-		new_node = std::make_shared<SyntaxNode>(node->type, context, new_left);
+	else if (node.type == NodeType::KLEENE){
+		new_left = clone(node.left, context);
+		new_node = context.emplace_node(node.type, new_left);
 	}
 	else{
-		new_node = std::make_shared<SyntaxNode>(node->type, context, node->value);
+		new_node = context.emplace_node(node.type, node.value);
 	}
 	return new_node;
 }

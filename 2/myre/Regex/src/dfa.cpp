@@ -17,13 +17,14 @@ std::set<unsigned> DFABuilder::set_intersection(std::set<unsigned>& a, std::set<
 	return result;
 }
 
-DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root, Context& context){
+DFA DFABuilder::buildDFA(ContextIndex root_ind, Context& context){
 	std::queue<std::set<unsigned>> sets_q;
 	std::map<std::set<unsigned>, int> set_to_ind;
 	std::unordered_map<unsigned, std::set<unsigned>>& followpos = context.followpos;
 	DFA automaton;
-	sets_q.push(root->first_pos);
-	set_to_ind.emplace(root->first_pos, 0);
+	SyntaxNode& root = context.get_node(root_ind);
+	sets_q.push(root.first_pos);
+	set_to_ind.emplace(root.first_pos, 0);
 	automaton.transitions.push_back({});
 	unsigned state_counter = 0;
 	while (sets_q.empty() == false){
@@ -53,7 +54,7 @@ DFA DFABuilder::buildDFA(std::shared_ptr<SyntaxNode> root, Context& context){
 	return automaton;
 }
 
-DFA DFABuilder::minimize_dfa(const DFA& dfa, Context& context) {
+DFA DFABuilder::minimize_dfa(const DFA& dfa) {
     using State = unsigned;
 	std::vector<std::vector<State>> groups;
 	std::vector<char> alphabet;
@@ -77,9 +78,9 @@ DFA DFABuilder::minimize_dfa(const DFA& dfa, Context& context) {
 	if (!NA.empty()){
 		groups.push_back(std::move(NA));
 	}
-	for (auto& [c, _] : context.symbols){
-		if (c != '\0'){
-			alphabet.push_back(c);
+	for (const auto& tlist : dfa.transitions){
+		for (const auto& t : tlist){
+			alphabet.push_back(t.symbol);
 		}
 	}
 	bool changed = false;

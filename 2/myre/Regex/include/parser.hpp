@@ -12,19 +12,21 @@ namespace myre
 
 class RegexParser {
 public:
-	std::shared_ptr<SyntaxNode> parse(const std::string& regex, Context& context); // возвращает корень дерева разбора
+ContextIndex parse(const std::string& regex, Context& context); // возвращает корень дерева разбора
 private:
 	char peek() const;
 	char next();
 	bool consume_if_match(char c);
 
 	std::pair<unsigned, unsigned> parse_range();
-	std::shared_ptr<SyntaxNode> transform_range(unsigned lower, unsigned upper, std::shared_ptr<SyntaxNode> node, Context& context);
-	std::shared_ptr<SyntaxNode> clone(const std::shared_ptr<SyntaxNode>& node, Context& context);
+	ContextIndex transform_range(unsigned lower, unsigned upper, ContextIndex node, Context& context);
+	ContextIndex clone(ContextIndex node, Context& context);
 
-	std::shared_ptr<SyntaxNode> parse_expression(Context& context);
-	std::shared_ptr<SyntaxNode> parse_term(Context& context);
-	std::shared_ptr<SyntaxNode> parse_atom(Context& context);
+	ContextIndex parse_expression(Context& context);
+	ContextIndex parse_term(Context& context);
+	ContextIndex parse_atom(Context& context);
+
+	
 
 	std::string regex_;
 	unsigned pos=0, paren_balance = 0;

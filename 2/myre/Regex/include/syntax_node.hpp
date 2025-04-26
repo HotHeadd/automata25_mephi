@@ -5,7 +5,9 @@
 
 namespace myre
 {
-	
+
+using ContextIndex = size_t;
+
 enum class NodeType{
 	KLEENE,
 	OR,
@@ -21,7 +23,7 @@ class SyntaxNode {
 public:
 	NodeType type;
 	char value='\0';
-	std::shared_ptr<SyntaxNode> left=nullptr, right=nullptr;
+	ContextIndex left=-1, right=-1;
 
 	unsigned number;
 	bool is_nullable;
@@ -31,8 +33,8 @@ public:
 	SyntaxNode(
 		NodeType type_i,
 		Context& context,
-		std::shared_ptr<SyntaxNode> left_kid = nullptr, 
-		std::shared_ptr<SyntaxNode> right_kid = nullptr
+		ContextIndex left_kid = -1, 
+		ContextIndex right_kid = -1
 	);
 	SyntaxNode(
 		NodeType type_i, 

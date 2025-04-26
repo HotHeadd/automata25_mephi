@@ -1,25 +1,33 @@
 #include "display.hpp"
 #include "myre.hpp"
+#include <iostream>
 
 using namespace myre;
 
 int main(){
 
-	std::string test = "()";
+	std::string test = "abc";
 
 	RegexParser parser;
 	Context context;
 
-	std::shared_ptr<SyntaxNode> node = parser.parse(test, context);
-	visualize(node, "visuals/ast.dot");
-	visualize_with_sets(node, "visuals/ast_plus.dot", context);
+	std::cout << "Parsing\n" << std::endl;
+	ContextIndex node = parser.parse(test, context);
+	std::cout << "vizualising\n" << std::endl;
+	visualize(context, "visuals/ast.dot");
+	std::cout << "new_vizualining\n" << std::endl;
+	visualize_with_sets(context, "visuals/ast_plus.dot");
 
+	std::cout << "Building\n" << std::endl;
 	DFABuilder builder;
 	DFA dfa = builder.buildDFA(node, context);
+	std::cout << "vizualising\n" << std::endl;
 	std::ofstream dotFile("visuals/automaton.dot");
 	dump_dfa_dot(dfa, dotFile);
 	
-	DFA min_dfa = builder.minimize_dfa(dfa, context);
+	std::cout << "Minimizing\n" << std::endl;
+	DFA min_dfa = builder.minimize_dfa(dfa);
+	std::cout << "vizualising\n" << std::endl;
 	std::ofstream minfile("visuals/minimal.dot");\
 	dump_dfa_dot(min_dfa, minfile);
 
@@ -47,10 +55,10 @@ int main(){
 	// 	std::cout << "\nFALSE\n";
 	// }
 
-	//TODO: fix shared ptrs in AST
 	//TODO: dfa transition vector of maps
 	//TODO: unite test cases in single table, check compile time
 	//TODO: parse group number (super easy)
 	//TODO: K-PATH, ADD TO TESTS
+	//TODO: fix shared ptrs in AST
 	return 0;
 }

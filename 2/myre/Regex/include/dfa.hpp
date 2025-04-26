@@ -24,8 +24,8 @@ struct DFA {
 
 class DFABuilder {
 public:
-	DFA buildDFA(std::shared_ptr<SyntaxNode> tree, Context& context);
-	DFA minimize_dfa(const DFA& dfa, Context& context);
+	DFA buildDFA(ContextIndex tree_ind, Context& context);
+	DFA minimize_dfa(const DFA& dfa);
 	DFA build_complement(const DFA& dfa);
 	DFA build_intersection(const DFA& first, const DFA& second);
 private:

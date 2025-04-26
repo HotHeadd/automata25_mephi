@@ -7,8 +7,8 @@ namespace myre
 SyntaxNode::SyntaxNode(
 	NodeType type_i,
 	Context& context,
-	std::shared_ptr<SyntaxNode> left_kid, 
-	std::shared_ptr<SyntaxNode> right_kid
+	ContextIndex left_kid, 
+	ContextIndex right_kid
 )
 : type(type_i), left(left_kid), right(right_kid) {
 	context.deduce_sets(this);
