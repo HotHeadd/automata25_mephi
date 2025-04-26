@@ -179,4 +179,19 @@ std::vector<TestCase> test_cases = {
 		{"a#a#", "a#a#a#"}, 
 		{"a#", "", "a#a#a#a#", "a#a#a#a#a#a#a#a#a#a#a#a#a#a#a#", "a#a#a", "a#a#a#a#a#a#a#aa#a#a#a#a#a#a#"}
 	},
+    {
+        "(a|b|c|d|e)*",
+        {"abebcbde", "", "a", "b", "c", "d", "e", "ab", "ed", "abb"},
+        {"f", "abcfde", "00ab"}
+    },
+    {
+        "(a|b|c|)+",
+        {"", "a", "b", "c", "aaabc", "bc"},
+        {"f", "a b", "dc"}
+    },
+    {
+        "(1234:ab){2,3}",
+        {"abab", "ababab"},
+        {"", "ab", "abababab", "aab", "1234:ab1234:ab", "1234ab1234ab", "12341234", ":ab:ab:ab", ":ab:ab"}
+    }
 };
