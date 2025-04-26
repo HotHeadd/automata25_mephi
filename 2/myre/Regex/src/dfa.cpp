@@ -32,7 +32,7 @@ DFA DFABuilder::buildDFA(ContextIndex root_ind, Context& context){
 		std::set<unsigned> current_state = std::move(sets_q.front());
 		sets_q.pop();
 		if (current_state.contains(context.get_final_ind())){
-			automaton.accepting_states.insert(state_counter);
+			automaton.accepting_states.insert(set_to_ind[current_state]);
 		}
 		for (auto sym_pair : context.symbols){
 			std::set<unsigned> new_pos_set;
