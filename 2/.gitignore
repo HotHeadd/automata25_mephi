@@ -1,0 +1,8 @@
+.vscode
+build
+buildtest
+bin
+coverage_report
+buildtests
+visuals
+build_bm
