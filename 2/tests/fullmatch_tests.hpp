@@ -206,5 +206,10 @@ std::vector<TestCase> fullmatch_test_cases = {
         "(123)?",
         {"123", ""},
         {"1234", "123123", "12"}
+    },
+    {
+        "(:abc)?",
+        {"", "abc"},
+        {":abc", "abcab", "abcabc", "ab", ":ab"}
     }
 };
