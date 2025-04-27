@@ -216,5 +216,10 @@ std::vector<TestCase> fullmatch_test_cases = {
         "(abc:123)?",
         {"", "abc:123"},
         {"abc", "123", "abc123", "abcabc", "123123"}
+    },
+    {
+        "((ab|ac|ad)(ba|ca|da)(ab|ba|cb))*",
+        {"abcaab", "", "abbaababbaab", "acbacb"},
+        {"abba", "bacb", "addac", "add", "abbaabba", "abbaabaddaa"}
     }
 };
