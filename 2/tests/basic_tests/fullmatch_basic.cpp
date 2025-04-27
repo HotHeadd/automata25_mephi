@@ -5,7 +5,7 @@
 using namespace myre;
 
 TEST(fullmatch, all_basic){
-    for (auto& tc : test_cases){
+    for (auto& tc : fullmatch_test_cases){
         std::string test = tc.regex;
         DFA dfa_old = compile(test);
         DFA dfa_min = compile(test, true);
@@ -35,3 +35,4 @@ TEST(fullmatch, all_basic){
         }
     }
 }
+

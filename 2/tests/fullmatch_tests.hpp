@@ -11,7 +11,10 @@ struct TestCase {
     std::vector<std::string> bad;
 };
 
-std::vector<TestCase> test_cases = {
+// regex
+// correct expressions
+// incorrect expressions
+std::vector<TestCase> fullmatch_test_cases = {
     {
         "a{2,3}{1,2}",
         {"aa", "aaa", "aaaa", "aaaaa", "aaaaaa"},
